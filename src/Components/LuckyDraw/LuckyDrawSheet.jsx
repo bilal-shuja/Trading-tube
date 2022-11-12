@@ -1,43 +1,50 @@
-import React, {useState,useEffect} from "react";
+import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
-import colorScheme from "../Colors/Styles.js";
+import colorScheme from '../Colors/Styles.js';
 import ReadMoreReact from "read-more-react";
-// import { Link } from "react-router-dom";
 import Filter from "../Filters/Filter";
-import {toast} from "react-toastify";
+import { toast } from "react-toastify";
 import {Modal} from 'pretty-modal';
-import axios from 'axios';
+import axios from "axios";
 
-const PackagesTable = () => {
-
-  const PackageTableIdentifier = "PackageTable";
-
-  const[getPackageSheet , setPackageSheet] = useState([]);
-  const[tempPackageArr , setTempPackageArr] = useState([]);
-  const [packageStatus , setPackageStatus] = useState('All');
+const LuckyDrawSheet = () => {
+  const [luckyDrawData , setLuckyDrawData] = useState([]);
+  const[luckyDrawTemp , setLuckyDrawTemp] = useState([])
+  const LuckyDrawSheetIdentifier = "LuckyDrawSheet";
   const [stateID , setStateID] = useState('');
+  const[luckyDrawStatus ,setLuckyDrawStatus] = useState('All')
   const [isOpen, setIsOpen] = useState(false)
 
-
-  function gettingPackages(){
-
-    axios.get(`${process.env.REACT_APP_BASE_URL}fetchallpackage`)
+  function gettingLuckyDraw(){
+    axios.get(`${process.env.REACT_APP_BASE_URL}fetch_all_luckydraw`)
     .then((res)=>{
-      setPackageSheet(res.data.Packages)
-      setTempPackageArr(res.data.Packages)
+      setLuckyDrawData(res.data.Lucky_draws)
+      setLuckyDrawTemp(res.data.Lucky_draws)
     })
     .catch((error)=>{
       console.log(error)
     })
   }
 
+  function delLuckyDraw(id){
+    axios.post(`${process.env.REACT_APP_BASE_URL}delete_luckydraw/${id}`)
+    .then((res)=>{
+      toast.error("Lucky Draw Deleted",{theme:"dark"});
+      setTimeout(() => {
+          window.location.reload(true)
+      }, 2000);
 
+    })
+    .catch((error)=>{
+      toast.warn("Something went wrong",{theme:"dark"});
+    })
+  }
 
-  function changingPackageStatus(){
-    const packStatus = {
-      status:packageStatus
+  function changingLuckyDrawStatus(){
+    const LuckykStatus = {
+      status:luckyDrawStatus
     }
-    axios.post(`${process.env.REACT_APP_BASE_URL}UpdatePackageStatus/${stateID}`,packStatus)
+    axios.post(`${process.env.REACT_APP_BASE_URL}UpdateluckydrawStatus/${stateID}`,LuckykStatus)
     .then((res)=>{
       toast.info("Status Updated",{theme:"dark"});
       setTimeout(() => {
@@ -48,60 +55,31 @@ const PackagesTable = () => {
       toast.warn("Something went wrong",{theme:"dark"});
     })
   }
-
-  function deletePackage(id){
-    axios.post(`${process.env.REACT_APP_BASE_URL}deletepackage/${id}`)
-    .then((res)=>{
-        toast.error("Package deleted" , {theme:"dark"})
-        setTimeout(() => {
-          window.location.reload(true)
-        }, 3000);
-        })
-    .catch((res)=>{
-      toast.warn("Something went wrong" , {theme:"dark"})
-    })
-  }
-
-
-  
-  
   function gettingDate(val){
-    setTempPackageArr(val)
+    setLuckyDrawTemp(val)
   }
-  
   function gettingStatus(val){
-    setTempPackageArr(val)
+    setLuckyDrawTemp(val)
   }
-
   function gettingPrice(val){
-    setTempPackageArr(val)
-    
+    setLuckyDrawTemp(val)
   }
 
-
-
-
-useEffect(() => {
-  gettingPackages()
-
-}, [])
-
-
-
-
-
-
+  useEffect(() => {
+    gettingLuckyDraw()
+  }, [])
   
+
   return (
     <>
-  <div className="scroll-view-two scrollbar-secondary-two">
+      <div className="scroll-view-two scrollbar-secondary-two">
       <div className="content-wrapper p-3" style={{ background: colorScheme.body_bg_color }}>
         <section className="content-header">
           <div className="container-fluid">
             <div className="row mb-2">
               <div className="col-sm-6">
                 <h1 style={{ color: colorScheme.card_txt_color }}>
-                  Packages Sheet
+                  Lucky Draw Sheet
                 </h1>
               </div>
               <div className="col-sm-6">
@@ -121,42 +99,27 @@ useEffect(() => {
 
                 <div className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one,}}>
                   <div className="card-header">
-                    <h5>Packge Sheet</h5>   
-                        <button className="btn btn-outline-info btn-sm" onClick={()=>{window.location.reload()}}>Reset Filters</button>
-                        <div className="row p-2">  
-                        <Filter PackageData={getPackageSheet} DateFilter={gettingDate} StatusFilter={gettingStatus} PriceStatus={gettingPrice} PackageTableIdentifier={PackageTableIdentifier}/>
-                    </div>
+                    <h5>Lucky Draw Sheet</h5>   
+                        <button className="btn btn-outline-info" onClick={()=>{window.location.reload()}}>Reset Filters</button>
                   </div>
                   <div className="card-body table-responsive p-2">
-                  
-                    {
-                        tempPackageArr.length !==0?
+                    <div className="row p-2">               
+                        <Filter luckyDrawData={luckyDrawData} DateFilter={gettingDate} StatusFilter={gettingStatus} PriceStatus={gettingPrice} LuckyDrawSheetIdentifier={LuckyDrawSheetIdentifier}/>
+                    </div>
+
                     <table className="table  text-nowrap">
                       <thead className="text-center">
                         <tr>
                           <th>#</th>
                           <th>Title</th>
-                          <th>Quantity</th>
-                          <th>Price</th>
-                          <th>Income</th>
-
-                          <th>Profit Income</th>
-                          <th>Profit Duration</th>
-                          <th>Cycle Income</th>
-                          <th>Cycle Duration</th>
-                          <th>Single Payment</th>
-
+                          <th>Fee</th>
                           <th>Description</th>
                           <th>Status</th>
-                          <th>Total Days</th>
-                          <th>Image</th>
                           <th>Date</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
-                     
                       <tbody className="text-center">
-                       {/* { isLoading && <h5>Taking couple of seconds ...</h5>} */}
                         {/* {
                           priceOp === "H-to-L" ?
                           PackageData.sort((a,b) => b.Price-a.Price).map((items,index)=>{
@@ -559,107 +522,76 @@ useEffect(() => {
                           })
                         }
                         */}
-
-                         {      
-
-              
-
-                    tempPackageArr.map((items,index)=>{
-        
-                          return(
-                            <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                            <td>{items.id}</td>
-                            <td>{items.title}</td>
-                            <td >{items.quantity}</td>
-                            <td>{items.price}</td>
-                            <td>{items.income}</td>
-                            <td>{items.profit_income}</td>
-                            <td>{items.profit_duration}</td>
-                            <td>{items.cycle_income}</td>
-                            <td>{items.cycle_duration}</td>
-                            <td>{items.single_payment}</td>
-                            <td>
+                        {      
+                        
+                        luckyDrawTemp.map((items,index)=>{
+                            return(
+                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                              <td>{items.id}</td>
+                              <td>{items.title}</td>
+                              <td>{items.fees}</td>
+                              <td >
                               <ReadMoreReact
-                             
-                                text={
-                                 items.description
-                                }
-                                min={10}
-                                ideal={35}
-                                max={80}
-                                readMoreText="...Read More"
-                              />
-                            </td>
-                            {
-                              items.status === "active"?
-                            <td style={{color:"#64dd17"}}>{items.status}</td>
-                            :
-                            <td style={{color:"#ff1744"}}>{items.status}</td>
-                  
-                            }
-                            <td>{items.total_days}</td>
-                            <td>
-                              <img className="img-fluid" src={`${process.env.REACT_APP_IMG_URL}${items.image}`} alt="package_img"
-                              style={{cursor:"pointer"}}
-                              onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.image}`, "_blank")}
-                              />
-                            </td>
-                            <td>{items.Idate}</td>
-                            <td>
-                              <div className="d-flex">
-                                {/* <Link
-                                  to="/UpdatePackageForm"
-                                  state={{ID:items.id}}
-                                  className="btn btn-outline-info btn-sm"
+                                  text={
+                                   items.body
+                                  }
+                                  min={8}
+                                  ideal={20}
+                                  max={30}
+                                  readMoreText="...Read More"
+                                />                                
+                                </td>
+                              {
+                                items.status === "active"?
+                              <td style={{color:"#64dd17"}}>{items.status}</td>
+                              :
+                              <td style={{color:"#ff1744"}}>{items.status}</td>
 
-                                >
-                                  <i className="fa fa-pencil"></i>
-                                </Link>
-                                &nbsp;&nbsp; */}
-                                <button   onClick={() => {
+                              }
+                          
+                              <td>{items.Idate}</td>
+
+                              <td>
+                               <div className="d-flex justify-content-center">
+                                <button onClick={()=>delLuckyDraw(items.id)} className="btn btn-outline-danger btn-sm">
+                                    <i className="fa fa-trash"></i>
+                                  </button>
+                                  &nbsp;&nbsp;&nbsp;
+                                  <button onClick={() => {
                                   setIsOpen(true) 
                                   setStateID(items.id)}}  className="btn btn-outline-warning btn-sm">
                                 <i className="fa-solid fa-spinner"></i>
                                 </button>
-                                &nbsp;&nbsp;
-                                <button className="btn btn-outline-danger btn-sm" onClick={()=>deletePackage(items.id)}>
-                                  <i className="fa fa-trash"></i>
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                 
-                          )
+                              
+                                </div>   
+                                 
+                              </td>
+                            </tr>
+                            )
+                          })
                         
-                        })
-                      
-                        
-                        } 
+                        }
 
                       </tbody>
-                     
                     </table>
-                     :
-                     <div className="text-center">
-                     <h2>No Record Found</h2>
-                     </div>
-                     }
-                  </div>
-                </div>
-                 <Modal  onClose={() => {setIsOpen(false)}} open={isOpen}>
+                    <Modal  onClose={() => {setIsOpen(false)}} open={isOpen}>
                            <div className="card-body ">
                            <div className="form-group">
                            <p><b>Change Status</b></p>
                            <select className="form-control-sm" aria-label="Default select example"style={{ background: colorScheme.login_card_bg,color: colorScheme.card_txt_color,paddingRight:"11em"}}
-                             onChange={(e) => setPackageStatus(e.target.value)}>
+                             onChange={(e) => setLuckyDrawStatus(e.target.value)}>
                              <option value="All">All</option>
-                             <option value="active">active</option>
-                             <option value="in-active">in-active</option>
+                             <option value="Active">Active</option>
+                             <option value="In-Active">In-Active</option>
                              </select>
                            </div>
-                           <button onClick={()=>{changingPackageStatus()}} className="btn btn-outline-info btn-sm">Submit</button>
+                           <button onClick={()=>{changingLuckyDrawStatus()}} className="btn btn-outline-info btn-sm">Submit</button>
                            </div>
                            </Modal>
+                    
+                  </div>
+                </div>
+                
               </div>
             </div>
           </div>
@@ -667,7 +599,7 @@ useEffect(() => {
       </div>
     </div>
     </>
-  );
-};
+  )
+}
 
-export default PackagesTable;
+export default LuckyDrawSheet

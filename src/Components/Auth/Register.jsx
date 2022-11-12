@@ -1,9 +1,56 @@
-import React from 'react';
+import React,{useState} from 'react';
 import {Link} from 'react-router-dom';
+import { toast } from "react-toastify";
 import colorScheme from '../Colors/Styles.js';
+import "react-toastify/dist/ReactToastify.css";
+import {useRegPostMutation} from '../services/Auth.js';
 
 
 const Register = () => {
+
+  const [regPost , result] = useRegPostMutation();
+
+  const [userName , setUsername ] = useState('');
+  const [password , setPassword] = useState('');
+  const [rePassword , setRePassword] = useState('');
+  const [email , setEmail] = useState('');
+  const [phone ,setPhone] = useState('');
+
+  const regUser = async (e)=>{
+    e.preventDefault()
+    const regUserObj ={
+      username:userName,
+      password:password,
+      password_confirmation:password,
+      email:email,
+      phone:phone,
+      role_id:"admin"
+    }
+    
+    
+    
+    if(password !== rePassword){
+      toast.warn("Password doesn't match!",{theme:"dark"})
+    }
+    else{
+      await regPost(regUserObj).unwrap()
+      .then((res)=>{
+        toast.info("Registered", {theme:"dark"})
+
+      })
+      .catch((res)=>{
+        toast.warn(res.data.message,{theme:"dark"})
+      })
+    }
+ 
+    setUsername("");
+    setPassword("");
+    setRePassword("");
+    setEmail("");
+    setPhone("");
+  }
+  
+  
   return (
     <div className="wrapper ">
     <div class="hold-transition register-page " style={{background:colorScheme.card_bg_color}}>
@@ -14,9 +61,9 @@ const Register = () => {
   <div className="card"  style={{background:colorScheme.login_card_bg, boxShadow:colorScheme.box_shadow_one}}>
     <div className="card-body">
       <p className="login-box-msg" style={{color:colorScheme.card_txt_color}}>Register a new membership</p>
-      <form action="#" method="post">
+      <form onSubmit={regUser}>
         <div className="input-group mb-3">
-          <input type="text" className="form-control" placeholder="Username"  style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+          <input type="text" className="form-control" value={userName} placeholder="Username" onChange={(e)=>{setUsername(e.target.value)}} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
           <div className="input-group-append">
             <div className="input-group-text">
               <span className="fas fa-user" />
@@ -24,7 +71,7 @@ const Register = () => {
           </div>
         </div>
         <div className="input-group mb-3">
-          <input type="email" className="form-control" placeholder="Email"  style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+          <input type="email" className="form-control" value={email} placeholder="Email" onChange={(e)=>{setEmail(e.target.value)}}  style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} required/>
           <div className="input-group-append">
             <div className="input-group-text">
               <span className="fas fa-envelope" />
@@ -32,7 +79,7 @@ const Register = () => {
           </div>
         </div>
         <div className="input-group mb-3">
-          <input type="password" className="form-control" placeholder="Password"  style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+          <input type="password" className="form-control"value ={password} placeholder="Password" onChange={(e)=>{setPassword(e.target.value)}} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
           <div className="input-group-append">
             <div className="input-group-text">
               <span className="fas fa-lock" />
@@ -40,7 +87,7 @@ const Register = () => {
           </div>
         </div>
         <div className="input-group mb-3">
-          <input type="password" className="form-control" placeholder="Retype password"  style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+          <input type="password" className="form-control" value={rePassword} placeholder="Retype password" onChange={(e)=>{setRePassword(e.target.value)}}   style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
           <div className="input-group-append">
             <div className="input-group-text">
               <span className="fas fa-lock" />
@@ -48,7 +95,7 @@ const Register = () => {
           </div>
         </div>
         <div className="input-group mb-3">
-          <input type="number" className="form-control" placeholder="Phone"  style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+          <input type="number" className="form-control" value={phone} placeholder="Phone" onChange={(e)=>{setPhone(e.target.value)}} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
           <div className="input-group-append">
             <div className="input-group-text">
               <span className="fas fa-phone" />
@@ -56,21 +103,8 @@ const Register = () => {
           </div>
         </div>
        
-        {/* <div className="row"> */}
-          {/* <div className="col-8">
-            <div className="icheck-primary">
-              <input type="checkbox" id="agreeTerms" name="terms" defaultValue="agree" />
-              <label htmlFor="agreeTerms">
-                I agree to the <a href="#">terms</a>
-              </label>
-            </div>
-          </div> */}
-          {/* /.col */}
-          {/* <div className="col-4"> */}
-            <button type="submit" className="btn btn-outline-info btn-block ">Register</button>
-          {/* </div> */}
-          {/* /.col */}
-        {/* </div> */}
+            <button type="submit"className="btn btn-outline-info btn-block ">Register</button>
+
       </form>
    <p className="text-center mt-4 mb-0">
       <Link to="/"  style={{ color:colorScheme.card_txt_color}}>Already have an account? &nbsp; <span className="text-info">Sign in instead</span> </Link>

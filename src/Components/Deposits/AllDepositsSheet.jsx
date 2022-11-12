@@ -1,11 +1,31 @@
-import colorScheme from '../Colors/Styles.js';
-import DepositData from '../Json/Data.js';
 import React,{useState,useEffect} from 'react';
+import "react-toastify/dist/ReactToastify.css";
+import colorScheme from '../Colors/Styles.js';
+import { toast } from "react-toastify";
+import Filter from '../Filters/Filter';
+import axios from 'axios';
 
 const AllDepositsTable = () => {
     const [checkBox , setCheckBox] = useState(false);
+    const[getDepos , setDepos] = useState([]);
+
     const[depoChecks , setDepoChecks] = useState([]);
+    const[depoTemArr , depoTempArr] = useState([]);
     const [depoDate , setDepoDate] = useState('');
+
+    const DepoSheetIdentifier = "DepositSheet";
+
+      function gettingDeposits(){
+        axios.post(`${process.env.REACT_APP_BASE_URL}getalldeposits`)
+        .then((res)=>{
+          setDepos(res.data.Data)
+          depoTempArr(res.data.Data)
+        })
+        .catch((error)=>{
+          console.log(error)
+        })
+
+      }
 
     const depoHandler = (id)=>{
         setDepoChecks( prevState =>{
@@ -16,12 +36,69 @@ const AllDepositsTable = () => {
     }
     const despositCheckArr = ()=>{
         console.log("IDs arr",depoChecks)
-        setCheckBox(false)
+        setTimeout(() => {
+          
+          setCheckBox(false)
+        }, 2000);
+    }
+
+    function gettingDate(val){
+      depoTempArr(val)
+    }
+  
+    function gettingStatus(val){
+      depoTempArr(val)
+    }
+  
+    function gettingPrice(val){
+      depoTempArr(val)
     }
 
 
+    function approveSingleDepo(id){
+      const depObj ={
+        id:id,
+        status:"approved"
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}show`,depObj)
+      .then((res)=>{
+      toast.info("Status Updated!",{theme:"dark"});
+      setTimeout(() => {
+        window.location.reload(true)
+      }, 2000);
+      })
+      .catch((error)=>{
+        toast.info("Something went wrong",{theme:"dark"});
+      })
+    }
+
+    function approveDepoByDate(){
+      const dateDepObj={
+        Idate:depoDate
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}approve_deposit_bydate`,dateDepObj)
+      .then((res)=>{
+        toast.info("Status Updated!",{theme:"dark"});
+        setTimeout(() => {
+          window.location.reload(true)
+        }, 2000);
+      })
+      .catch((error)=>{
+        toast.warn("Something went wrong",{theme:"dark"});
+
+      })
+    }
+
+  
+
+    useEffect(() => {
+      gettingDeposits()
+    }, [])
+    
+
   return (
     <>
+<div className="scroll-view-two scrollbar-secondary-two">
 <div className="content-wrapper p-3 " style={{background:colorScheme.body_bg_color}}>
 <section className="content-header">
     <div className="container-fluid">
@@ -46,18 +123,23 @@ const AllDepositsTable = () => {
       <div className="card-header">
 
         <h3>Deposits Sheet</h3>
-        <button className="btn btn-outline-info  btn-md mt-2" onClick={()=>setCheckBox(true)}>
-            Check & Approve
-        </button>
-        &nbsp;&nbsp;&nbsp;&nbsp; 
-        {
-            checkBox === true ?
-          <button className="btn btn-outline-info  btn-md mt-2" onClick={despositCheckArr}>
-          <i className="fa-solid fa-check-double"></i>
-          </button> 
-          :
-          null
-        }
+      <button className="btn btn-outline-info mt-2 btn-sm" onClick={()=>{window.location.reload()}}>Reset Filters</button>
+      &nbsp;&nbsp;&nbsp;&nbsp; 
+
+          {/* <button className="btn btn-outline-info  btn-md mt-2" onClick={()=>setCheckBox(true)}>
+              Check & Approve
+          </button>
+          &nbsp;&nbsp;&nbsp;&nbsp; 
+          {
+              checkBox === true ?
+            <button className="btn btn-outline-info  btn-md mt-2" onClick={despositCheckArr}>
+            <i className="fa-solid fa-check-double"></i>
+            </button> 
+            :
+            null
+          }
+          &nbsp;&nbsp; */}
+
 
          <div className="row float-right deposit-date-row">
           <div className="col-8">
@@ -67,20 +149,25 @@ const AllDepositsTable = () => {
           
             </div>
             <div className="col-4">
-            <button className="btn btn-outline-info ">
+            <button onClick={()=> approveDepoByDate()} className="btn btn-outline-info">
            Approve
             </button>
             </div>
           </div>
       
       </div>
+      <div className="row p-3">
+          <Filter DepositData={getDepos} DateFilter={gettingDate} StatusFilter={gettingStatus} PriceStatus={gettingPrice} DepoSheetIdentifier={DepoSheetIdentifier} />
+        </div>
       
-      <div className="card-body table-responsive p-0">
-   
+      <div className="card-body table-responsive p-2">
+
+       
         <table className="table  text-nowrap">
           <thead className="text-center">
             <tr>
             <th>#</th>
+            <th>Deposit ID</th>
             <th>Account Title</th>
             <th>Account Type</th>
             <th>Account Sub-Type</th>
@@ -96,24 +183,40 @@ const AllDepositsTable = () => {
           </thead>
           <tbody className="text-center">
             {
-                DepositData.map((items)=>{
+                depoTemArr.map((items)=>{
                     return(
                         <tr key={items.id} style={{ color: colorScheme.card_txt_color }}>
                             <td>{items.id}</td>
+                            <td>{items.payer_id}</td>
                             <td>{items.account_title}</td>
                             <td>{items.account_type}</td>
                             <td>{items.account_subType}</td>
                             <td>{items.account_no}</td>
                             <td>{items.amount}</td>
                             <td>
-                            <img src={items.deposit_slip} alt=""  width={60}/>
+                            <img className="img-fluid" src={`${process.env.REACT_APP_IMG_URL}${items.proof_image}`} alt=""  width={60}
+                             style={{cursor:"pointer"}}
+                             onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.proof_image}`, "_blank")}
+                            />
                             </td>
-                            <td>{items.Verified_Status}</td>
-                            <td>{items.Status}</td>
-                            <td>{items.date}</td>
+                            {
+                             items.verified === "true"?
+                            <td style={{color:"#64dd17"}}>{items.verified}</td>
+                            :
+                            <td style={{color:"#ff1744"}}>{items.verified}</td>
+                            }
+
+                            {
+                              items.status === "approved"?
+                              <td style={{color:"#64dd17"}}>{items.status}</td>
+                              :
+                              <td style={{color:"#ff1744"}}>{items.status}</td>
+
+                            }
+                            <td>{items.Idate}</td>
                         <td>
                         <div className="d-flex align-items-center">
-                          <button  className="btn btn-outline-info btn-sm" >
+                          <button onClick={()=> approveSingleDepo(items.id)}  className="btn btn-outline-info btn-sm" >
                             <i  className="fa fa-person-circle-check"></i>
                           </button>
                           &nbsp;&nbsp;&nbsp;&nbsp;
@@ -147,7 +250,7 @@ const AllDepositsTable = () => {
 </div>
 </section>
 </div>
-
+</div>
     </>
   )
 }

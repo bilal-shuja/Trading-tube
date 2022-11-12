@@ -1,84 +1,106 @@
-import { toast } from "react-toastify";
+import {useLoginPostMutation} from '../services/Auth.js';
 import "react-toastify/dist/ReactToastify.css";
+import colorScheme from '../Colors/Styles.js';
+import { toast } from "react-toastify";
 import {Link} from 'react-router-dom';
 import React,{useState} from 'react';
-import colorScheme from '../Colors/Styles.js';
-import axios from 'axios';
 
 toast.configure()
 const Login = () => {
+  const [loginPost , result] = useLoginPostMutation();
     const [login, setLogin] = useState({
         email:'',
         password:''
       })
     
-      const [loading , setLoading] = useState(false)
-    //   const [loginUser , {isLoading,isError,isSuccess}] = useLoginUserMutation();
+      const [loading , setLoading] = useState(false);
+      const [input , setInput] = useState(false);
       
       const inputHandler = (e) => {
         setLogin({ ...login, [e.target.name]: e.target.value });
       };
       
-      const submit =  (e)=>{
+      const userLogin = async (e)=>{
         e.preventDefault()
         setLoading(true)
-        const userObj = {
+        const loginObj = {
           email:login.email,
           password:login.password
         }
   
-    
-        axios.post(`https://www.essayapi.khannburger.com/api/login`,userObj)
-        .then((res) =>{
-                
-                if(res.data.user){
-                  setLoading(false)
-                  localStorage.setItem('login',true);
-    
-                  localStorage.setItem('email',login.email);
-                  localStorage.setItem('password',login.password);
-                  localStorage.setItem('id',res.data.user.id);
-                  toast.info("Successfully logged In!");
-                  setInterval(() => {
-                    window.location.reload(true);
-                  }, 1500);
-                }
-                else{
-                  setLoading(false)
-    
-                  toast.warn("Invalid User");
-                }
+      
+          await loginPost(loginObj).unwrap()
+          .then((res) =>{
+  
+                  if(res.company.id ){
+                    setLoading(false)
+                    setInput(false)
+                    localStorage.setItem('login',true);
+                    localStorage.setItem('email',login.email);
+                    localStorage.setItem('id',res.company.id);
+                    localStorage.setItem('mem_Name',res.company.username);
+
+                    toast.info("Successfully logged In!",{theme:"dark"});
+                    setInterval(() => {
+                      window.location.reload(true);
+                    }, 1500);
+                  }
+                  else if(login.email === "" && login.password === "")
+                  {
+                    toast.warn("Input fields are empty")
+                    setLoading(false)
+                    setInput(true)
+                  }
+                  else{
+                    setLoading(false)
+                    setInput(true)
+
+                  }
+          })
+          .catch((error) =>{
+            if(error.status === 401){
+              setLoading(false)
+              setInput(true)
+                toast.warn(error.data.message,{theme: "dark"})
+            }
+            else{
+              setLoading(false)
+              setInput(true)
+                toast.warn("Wrong Credentials",{theme: "dark"})
               
-               
-        })
-        .catch((error) =>{
-          setLoading(false)
-            toast.warn("Wrong Credentials")
-            console.log(error)
-          }
-        )
-    
-        setLogin({
-          email:'',
-          password:''
-        });
+            }
+          
+            }
+          )
+        
+
+        
+        // setLogin({
+        //   email:'',
+        //   password:''
+        // });
+
       }
+      function displayMessage(){
+        toast.info("Kindly contact your service provider",{theme:"dark"})
+      }
+    
       return (
         <>
  <div className="hold-transition login-page" style={{background:colorScheme.card_bg_color}}>
   <div className="login-box">
     <div className="login-logo">
-      <a href="#" style={{color:colorScheme.card_txt_color}}><b>Trading</b>&nbsp;Tube</a>
+      <a href="#b" style={{color:colorScheme.card_txt_color}}><b>Trading</b>&nbsp;Tube</a>
     </div>
     {/* /.login-logo */}
     <div className="login-bg-inner">
     <div className="card" style={{background:colorScheme.login_card_bg, boxShadow:colorScheme.box_shadow_one}}> 
       <div className="card-body">
         <p className="login-box-msg" style={{color:colorScheme.card_txt_color}}>Sign in to start your session</p>
-        <form onSubmit={submit}>
+        <form onSubmit={userLogin}>
             <label htmlFor="" className="form-label" style={{ color:colorScheme.card_txt_color}}>Email</label>
           <div className="input-group mb-3">
-            <input type="email" className="form-control" name="email" placeholder="john@example.com" onChange={inputHandler}  style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+            <input type="email" className={login.email ===" " && input === true ? "form-control border border-danger":"form-control"} name="email" placeholder="john@example.com" value={login.email} onChange={inputHandler}  style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
             <div className="input-group-append">
               <div className="input-group-text">
                 <span className="fas fa-envelope" />
@@ -87,7 +109,7 @@ const Login = () => {
           </div>
           <label htmlFor="" className="form-label" style={{ color:colorScheme.card_txt_color}}>Password</label>
           <div className="input-group mb-3">
-            <input type="password" className="form-control" name="password" placeholder="Password" onChange={inputHandler} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+            <input type="password" className={login.password ===" " && input === true ? "form-control border border-danger":"form-control"} name="password" placeholder="Password"  value={login.password} onChange={inputHandler} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
             <div className="input-group-append">
               <div className="input-group-text">
                 <span className="fas fa-lock" />
@@ -124,7 +146,7 @@ const Login = () => {
           <a href="forgot-password.html">I forgot my password</a>
         </p> */}
         <p className="text-center mb-0">
-          <Link to="/Registeration" style={{ color:colorScheme.card_txt_color}}>New on our platform? <span  className="text-info">Create an account</span> </Link>
+          <a  onClick={()=>{displayMessage()}} style={{ color:colorScheme.card_txt_color, cursor:"pointer"}}>New on our platform? <span  className="text-info">Create an account</span> </a>
         </p>
       </div>
       {/* /.login-card-body */}

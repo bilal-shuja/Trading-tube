@@ -1,11 +1,88 @@
-import React from 'react';
+import {useLocation , useNavigate} from 'react-router-dom';
+import "react-toastify/dist/ReactToastify.css";
+import React,{useState , useEffect} from 'react';
 import colorScheme from '../Colors/Styles.js';
+import { toast } from "react-toastify";
+import axios from 'axios';
 
 
 const UpdatePackageForm = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const {ID} = location.state;
+
+  const [packageTitle, setPackageTitle] = useState("");
+  const [packageQuantity, setPackageQuantity] = useState("");
+  const [packagePrice, setPackagePrice] = useState("");
+  const [packageIncome, setPackageIncome] = useState("");
+  const [packageDays , setPackageDays] = useState("");
+  const [packageDescrip, setPackageDescrip] = useState("");
+  const [packageStatus, setPackageStatus] = useState("All");
+  const [packageImage, setPackageImage] = useState("");
+
+  const[packageImgTemp , setPackageImgTemp] = useState('');
+
+  const[loading , setLoading] = useState(false)
+
+  function gettingIndPackage(){
+      axios.get(`${process.env.REACT_APP_BASE_URL}fetch_package_id/${ID}`)
+      .then((res)=>{
+        setPackageTitle(res.data.data.title)
+        setPackageQuantity(res.data.data.quantity)
+        setPackagePrice(res.data.data.price)
+        setPackageIncome(res.data.data.income)
+        setPackageDays(res.data.data.total_days)
+        setPackageDescrip(res.data.data.description)
+        setPackageStatus(res.data.data.status)
+        setPackageImgTemp(res.data.data.image)
+
+      })
+      .catch((error)=>{
+        console.log(error)
+      })
+  }
+
+  function submitUpdatePackage(e){
+    e.preventDefault()
+    setLoading(true)
+
+    var formdata = new FormData();
+formdata.append("title",packageTitle);
+formdata.append("quantity", packageQuantity);
+formdata.append("price",packagePrice);
+formdata.append("income", packageIncome);
+formdata.append("total_days", packageDays);
+formdata.append("description", packageDescrip);
+formdata.append("status", packageStatus);
+
+packageImage !== "" && formdata.append("image", packageImage);
+
+
+
+    axios.post(`${process.env.REACT_APP_BASE_URL}UpdatePackage/${ID}`,formdata)
+    .then((res)=>{
+      toast.info("Package Submitted!",{theme:"dark"});
+      setLoading(false)
+      setTimeout(() => {
+        navigate('/PackageSheet')
+      }, 2500);
+    })
+    .catch((error)=>{
+      setLoading(false)
+      toast.warn("Something went wrong",{theme:"dark"})
+    })
+  }
+  useEffect(() => {
+    gettingIndPackage();
+
+  }, [])
+  
+
   return (
     <>
-    <div className="content-wrapper p-3" style={{background:colorScheme.body_bg_color}}>
+     <div className="scroll-view-two scrollbar-secondary-two">
+
+  <div className="content-wrapper p-3" style={{background:colorScheme.body_bg_color}}>
   <section className="content-header">
     <div className="container-fluid">
       <div className="row mb-2">
@@ -33,21 +110,28 @@ const UpdatePackageForm = () => {
             </div>
             {/* /.card-header */}
             {/* form start */}
-            <form id="quickForm">
+            <form onSubmit={submitUpdatePackage}>
               <div className="card-body">
                 <div className="row">
-                    <div className="col-6">
+                    <div className="col-4">
                     <div className="form-group">
                         <label htmlFor="exampleInputEmail1">Title*</label>
-                        <input type="text" name="title" className="form-control" id="exampleInputEmail1" placeholder="Enter Title" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+                        <input type="text" name="title"  className="form-control " defaultValue={packageTitle} id="exampleInputEmail1" placeholder="Enter Title"   onChange={(e)=>setPackageTitle(e.target.value)} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
                     </div>
                     </div>
-                    <div className="col-6">
+                    <div className="col-4">
                     <div className="form-group">
-                  <label htmlFor="exampleInputPassword1">Quantity*</label>
-                  <input type="number" name="Quantity" className="form-control" id="exampleInputPassword1" placeholder="Enter Quantity" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
-                </div>
+                      <label htmlFor="exampleInputPassword1">Quantity*</label>
+                      <input type="text" name="Quantity"  className="form-control"  defaultValue={packageQuantity}  id="exampleInputPassword1" placeholder="Enter Quantity"onChange={(e)=>setPackageQuantity(e.target.value)} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
                     </div>
+                  </div>
+
+                  <div className="col-4">
+                    <div className="form-group">
+                      <label htmlFor="exampleInputPassword1">Total Days*</label>
+                      <input type="number" name="total_Days"  className="form-control"  defaultValue={packageDays} id="exampleInputPassword1" placeholder="Enter Total Days" onChange={(e) => setPackageDays(e.target.value)}style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+                    </div>
+                  </div>
 
                 </div>
 
@@ -55,13 +139,17 @@ const UpdatePackageForm = () => {
                 <div className="col-6">
                     <div className="form-group">
                   <label htmlFor="exampleInputPassword1">Price*</label>
-                  <input type="number" name="Price" className="form-control" id="exampleInputPassword1" placeholder="Enter Price" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+                  <input type="number" name="Price"  className="form-control" id="exampleInputPassword1"  defaultValue={packagePrice} placeholder="Enter Price" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}
+                  onChange={(e) =>setPackagePrice(e.target.value)}
+                  />
                 </div>
                     </div>
                     <div className="col-6">
                     <div className="form-group">
                         <label htmlFor="exampleInputEmail1">Income*</label>
-                        <input type="number" name="Income" className="form-control" id="exampleInputEmail1" placeholder="Enter Income" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+                        <input type="number" name="Income"  className="form-control" id="exampleInputEmail1"  defaultValue={packageIncome} placeholder="Enter Income" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}
+                        onChange={(e) =>setPackageIncome(e.target.value)}
+                        />
                     </div>
                     </div>
                 </div>
@@ -71,42 +159,63 @@ const UpdatePackageForm = () => {
                 <label className="form-label" htmlFor="company-column"> 
                     <b>Description*</b> 
                 </label>
-                <textarea type="text" id="company-column" className="form-control" name="Description" placeholder="Description..." rows={4} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} />
+                <textarea type="text" id="company-column"   className="form-control" name="Description"  defaultValue={packageDescrip} placeholder="Description..." rows={4} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} 
+                 onChange={(e) =>setPackageDescrip(e.target.value)}
+                />
                 
                 </div>
                 </div>
 
 
-                <div className="row">
-                <div className="col-6">
-                    <div className="form-group">
-                  <label htmlFor="exampleInputPassword1">Status*</label>
-                  <input type="text" name="Status" className="form-control" id="exampleInputPassword1" placeholder="Enter Status" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
-                </div>
-                    </div>
+                      <div className="row">
+                      <div className="col-6">
+                      <div className="form-group">
+                              <label className="form-label">
+                                Status*
+                              </label>
+                              <select
+                               className="form-control"
+                               
+                                aria-label="Default select example"
+                                style={{
+                                  background: colorScheme.login_card_bg,
+                                  color: colorScheme.card_txt_color,
+                                }}
+                              onChange={(e) => setPackageStatus(e.target.value)}
+                              value={packageStatus}
+                              >
+                                <option value="All">All</option>
+                                <option value="Active">Active</option>
+                                <option value="In-Active">In-Active</option>
+                              </select>
+                            </div>
+                      </div>
                     <div className="col-6">
                   
                     <div className="form-group" >
                 <label htmlFor="exampleInputFile">Image*</label>
                 <div className="input-group">
                     <div className="custom-file">
-                    <input type="file" className="custom-file-input" id="exampleInputFile"  />
-                    <label className="custom-file-label" htmlFor="exampleInputFile" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}>Choose file</label>
-                    </div>
-                    <div className="input-group-append">
-                    <span className="input-group-text">Upload</span>
-                    </div>
-                </div>
-                </div>
-
+                    <input type="file" className="custom-file-input" id="exampleInputFile"    onChange={(e) =>setPackageImage(e.target.files[0])}  />
+                    <label className="custom-file-label" htmlFor="exampleInputFile" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}>{packageImage.name}</label>
                     </div>
 
                 </div>
+                    <img className="img-fluid w-50 rounded mt-2" src={`${process.env.REACT_APP_IMG_URL}${packageImgTemp}`} alt=""/>
+                </div>
 
-              </div>
+                    </div>
+
+                </div>
+
+              </div> 
               {/* /.card-body */}
               <div className="card-footer text-right">
-                <button type="submit" className="btn btn-outline-info">Submit</button>
+                <button type="submit" className="btn btn-outline-info">
+                  {
+                    loading === true?"loading...":"Submit"
+                  }
+                </button>
               </div>
             </form>
           </div>
@@ -122,7 +231,7 @@ const UpdatePackageForm = () => {
     </div>{/* /.container-fluid */}
   </section>
 </div>
-
+</div>
     </>
   )
 }

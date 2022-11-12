@@ -1,15 +1,28 @@
-import React from "react";
+import BalanceData from '../Json/BalanceData.js';
 import colorScheme from "../Colors/Styles.js";
-import showImage from "../Images/profile.jpg";
 import { Link } from "react-router-dom";
+import Filter from '../Filters/Filter';
+import React,{useState} from "react";
 
 const BalanceSheet = () => {
+  const [balanceData , setBalanceData] = useState(BalanceData)
+  const BalanceSheetIdentifier = "BalanceSheet";
+
+  function gettingDate(val){
+    setBalanceData(val)
+  }
+
+  function gettingStatus(val){
+    setBalanceData(val)
+  }
+
+  function gettingPrice(val){
+    setBalanceData(val)
+  }
   return (
     <>
-      <div
-        className="content-wrapper p-3"
-        style={{ background: colorScheme.body_bg_color }}
-      >
+      <div className="scroll-view-two scrollbar-secondary-two">
+      <div className="content-wrapper p-3" style={{ background: colorScheme.body_bg_color }}>
         <section className="content-header">
           <div className="container-fluid">
             <div className="row mb-2">
@@ -33,20 +46,18 @@ const BalanceSheet = () => {
             <div className="row">
               <div className="col-12">
                 <div
-                  className="card"
-                  style={{
-                    background: colorScheme.card_bg_color,
-                    color: colorScheme.card_txt_color,
-                    boxShadow: colorScheme.box_shadow_one,
-                  }}
-                >
+                  className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one}}>
                   <div className="card-header">
                     <h3 className="card-title">Balance Sheet</h3>
                   </div>
-                  <div className="card-body table-responsive p-0">
+                  <div className="card-body table-responsive p-2">
+                  <div className="row">
+                    <Filter BalanceData={BalanceData} DateFilter={gettingDate} StatusFilter={gettingStatus} PriceStatus={gettingPrice} BalanceSheetIdentifier={BalanceSheetIdentifier}/>
+                  </div>
                     <table className="table  text-nowrap">
-                      <thead>
+                      <thead className="text-center">
                         <tr>
+                          <th>#</th>
                           <th>Account Title</th>
                           <th>Account Type</th>
                           <th>Account Sub-Type</th>
@@ -59,94 +70,45 @@ const BalanceSheet = () => {
                           <th>Actions</th>
                         </tr>
                       </thead>
-                      <tbody>
-                        <tr style={{ color: colorScheme.card_txt_color }}>
-                          <td>1</td>
-                          <td>700</td>
-                          <td style={{ color: "green" }}>Completed</td>
-                          <td>Bilal Shuja</td>
-                          <td>200,000</td>
-                          <td>
-                            <img src={showImage} alt="" width={70} />
-                          </td>
-                          <td>Lorem Ipsum</td>
-
-                          <td style={{ color: "red" }}>False</td>
-
-                          <td>3/30/2022</td>
-                          <td>
-                            <div className="d-flex">
-                              <Link
-                                to="/UpdatePackageForm"
-                                className="btn btn-outline-info btn-sm"
-                              >
-                                <i className="fa fa-pencil"></i>
-                              </Link>
-                              &nbsp;&nbsp;
-                              <button className="btn btn-outline-danger btn-sm">
-                                <i className="fa fa-trash"></i>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-
-                        <tr style={{ color: colorScheme.card_txt_color }}>
-                          <td>2</td>
-                          <td>800</td>
-                          <td style={{ color: "red" }}>Not Completed</td>
-                          <td>Affan Sheikh</td>
-                          <td>300,800</td>
-                          <td>
-                            <img
-                              className="img-fluid"
-                              src={showImage}
-                              alt=""
-                              width={70}
-                            />
-                          </td>
-                          <td>Lorem Ipsum</td>
-
-                          <td style={{ color: "green" }}>True</td>
-                          <td>3/30/2022</td>
-                          <td>
-                            <div className="d-flex">
-                              <button className="btn btn-outline-info btn-sm">
-                                <i className="fa fa-pencil"></i>
-                              </button>
-                              &nbsp;&nbsp;
-                              <button className="btn btn-outline-danger btn-sm">
-                                <i className="fa fa-trash"></i>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-
-                        <tr style={{ color: colorScheme.card_txt_color }}>
-                          <td>3</td>
-                          <td>900</td>
-                          <td style={{ color: "red" }}>Not Completed</td>
-                          <td>Fahad Arif</td>
-                          <td>89,00,000</td>
-                          <td>
-                            <img src={showImage} alt="" width={70} />
-                          </td>
-                          <td>Lorem Ipsum</td>
-
-                          <td style={{ color: "red" }}>False</td>
-                          <td>3/30/2022</td>
-
-                          <td>
-                            <div className="d-flex">
-                              <button className="btn btn-outline-info btn-sm">
-                                <i className="fa fa-pencil"></i>
-                              </button>
-                              &nbsp;&nbsp;
-                              <button className="btn btn-outline-danger btn-sm">
-                                <i className="fa fa-trash"></i>
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
+                      <tbody className="text-center">
+                        {
+                          balanceData.map((items, index)=>{
+                            return(
+                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                              
+                              <td>{items.id}</td>
+                              <td>{items.account_title}</td>
+                              <td>{items.account_type}</td>
+                              <td>{items.account_subType}</td>
+                              <td>{items.account_no}</td>
+                              <td>{items.amount}</td>
+                              <td>
+                                <img src={items.deposit_slip} alt="" width={70} />
+                              </td>
+                              <td>{items.Verified_Status}</td>
+    
+                              <td>{items.Status}</td>
+    
+                              <td>{items.date}</td>
+                              <td>
+                                <div className="d-flex">
+                                  <Link
+                                    to="/UpdatePackageForm"
+                                    className="btn btn-outline-info btn-sm"
+                                  >
+                                    <i className="fa fa-pencil"></i>
+                                  </Link>
+                                  &nbsp;&nbsp;
+                                  <button className="btn btn-outline-danger btn-sm">
+                                    <i className="fa fa-trash"></i>
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                            )
+                          })
+                        }
+                       
                       </tbody>
                     </table>
                   </div>
@@ -155,6 +117,7 @@ const BalanceSheet = () => {
             </div>
           </div>
         </section>
+      </div>
       </div>
     </>
   );

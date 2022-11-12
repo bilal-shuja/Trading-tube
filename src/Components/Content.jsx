@@ -4,12 +4,19 @@ import {useGetAllBlogsQuery} from '../Components/services/GetBlogs.js';
 const Content = () => {
   const {data, isError , isLoading , isSuccess} = useGetAllBlogsQuery();
 
+  const LogOut = ()=>{
+    localStorage.setItem('login', false);
+    window.location.reload(true);
+  }
+
   console.log({
     "data":data,
     "Success":isSuccess,
     "Loading":isLoading,
     "Error":isError
   }
+
+  // login
    
   );
   return (
@@ -25,8 +32,8 @@ const Content = () => {
         </div>{/* /.col */}
         <div className="col-sm-6">
           <ol className="breadcrumb float-sm-right">
-            <li className="breadcrumb-item" ><a href="#"  style={{color:"#d0d2d6"}}>Home</a></li>
-            <li className="breadcrumb-item active"  style={{color:"#d0d2d6"}}>Starter Page</li>
+            <li className="breadcrumb-item" ><a href="/" onClick={LogOut}  style={{color:"#d0d2d6"}}> <i className="fas fa-lock fa-2x" /></a></li>
+            {/* <li className="breadcrumb-item active"  style={{color:"#d0d2d6"}}>Starter Page</li> */}
           </ol>
         </div>{/* /.col */}
       </div>{/* /.row */}
@@ -44,7 +51,8 @@ const Content = () => {
               <p className="card-text">
                 Some quick example text to build on the card title and make up the bulk of the card's
                 content.
-                {
+                {isLoading && <p>Loading...</p>}
+                {isSuccess && (
                   data.map((items)=>{
                     return(
                       <>
@@ -53,7 +61,8 @@ const Content = () => {
                       </>
                     )
                   })
-                }
+                
+                )}
               </p>
               <a href="#" className="card-link" style={{color:"#d0d2d6"}}>Card link</a>
               <a href="#" className="card-link" style={{color:"#d0d2d6"}}>Another link</a>

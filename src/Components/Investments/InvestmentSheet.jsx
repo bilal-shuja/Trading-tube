@@ -1,12 +1,31 @@
-import React from "react";
+import React,{useState} from "react";
 import colorScheme from "../Colors/Styles.js";
 import InvestData from "../Json/InvestmentData.js";
 import ReadMoreReact from 'read-more-react';
+import Filter from '../Filters/Filter';
 import { Link } from "react-router-dom";
 
 const InvestmentSheet = () => {
+
+  const [investData , setInvestData] = useState(InvestData);
+  const InvestmentSheetIdentifier = "InvestmentSheet";
+
+  function gettingDate(val){
+    setInvestData(val)
+  }
+
+  function gettingStatus(val){
+    setInvestData(val)
+  }
+
+  function gettingPrice(val){
+    setInvestData(val)
+  }
+
   return (
     <>
+     <div className="scroll-view-two scrollbar-secondary-two">
+
       <div
         className="content-wrapper p-3"
         style={{ background: colorScheme.body_bg_color }}
@@ -44,7 +63,11 @@ const InvestmentSheet = () => {
                   <div className="card-header">
                     <h3 className="card-title">Investment Sheet</h3>
                   </div>
-                  <div className="card-body table-responsive p-0">
+                  <div className="card-body table-responsive p-2">
+                    <div className="row">
+
+                    <Filter InvestData={InvestData} DateFilter={gettingDate} StatusFilter={gettingStatus} PriceStatus={gettingPrice} InvestmentSheetIdentifier={InvestmentSheetIdentifier}/>
+                    </div>
                     <table className="table  text-nowrap">
                       <thead className="text-center">
                         <tr>
@@ -67,7 +90,7 @@ const InvestmentSheet = () => {
                      
                       <tbody className="text-center">
                            {
-                            InvestData.map((items)=>{
+                            investData.map((items)=>{
                          return(
                             <tr key={items.id} style={{ color: colorScheme.card_txt_color }}>
                                 <td>{items.id}</td>
@@ -111,6 +134,7 @@ const InvestmentSheet = () => {
             </div>
           </div>
         </section>
+      </div>
       </div>
     </>
   );

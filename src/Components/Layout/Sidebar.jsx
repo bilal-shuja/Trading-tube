@@ -16,6 +16,8 @@ const Sidebar = () => {
     <span className="brand-text font-weight-light">Trading Tube</span>
   </a>
   {/* Sidebar */}
+  <div className="scroll-view-two scrollbar-secondary-two">
+
   <div className="sidebar">
     {/* Sidebar user panel (optional) */}
     <div className="user-panel mt-3 pb-3 mb-3 d-flex">
@@ -23,23 +25,72 @@ const Sidebar = () => {
         <img src="assets/dist/img/user2-160x160.jpg" className="img-circle elevation-2" alt="User Image" />
       </div>
       <div className="info">
-        <a href="/" className="d-block">Bilal Shuja</a>
+        <a href="#" className="d-block">Bilal Shuja</a>
       </div>
     </div>
 
     {/* Sidebar Menu */}
+
     <nav className="mt-2">
       <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
         {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
-        <li className="nav-item menu treeview" style={{color:"#d0d2d6"}}>
-          <Link to="#" className="nav-link">
+          <li className="nav-item menu treeview" >
+          <a href="#" className="nav-link">
+            <i className="nav-icon fas fa-people-group mr-2" />
+            <p>
+              Members
+              <i className="right fas fa-angle-left" />
+            </p>
+          </a>
+          <ul className="nav nav-treeview">
+            <li className="nav-item">
+              <Link to="/RegMemForm" className="nav-link ">
+                <i className="far fa-circle nav-icon" />
+                <p>Member Form</p>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/MemberSheet" className="nav-link ">
+                <i className="far fa-circle nav-icon" />
+                <p>Member Sheet</p>
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/" className="nav-link">
+                <i className="far fa-circle nav-icon" />
+                <p>Member Profile</p>
+              </Link>
+            </li>
+          </ul>
+        </li>
+
+        <li className="nav-item menu treeview" >
+          <a href="#" className="nav-link">
+            <i className="nav-icon fas fa-user mr-2" />
+            <p>
+              Users
+              <i className="right fas fa-angle-left" />
+            </p>
+          </a>
+          <ul className="nav nav-treeview">
+            <li className="nav-item">
+              <Link to="/UserSheet" className="nav-link ">
+                <i className="far fa-circle nav-icon" />
+                <p>Users Sheet</p>
+              </Link>
+            </li>
+          </ul>
+        </li>
+
+        <li className="nav-item menu treeview" >
+          <a href="#" className="nav-link">
             <i className="nav-icon fas fa-box mr-2" />
             <p>
               Packages
               <i className="right fas fa-angle-left" />
             </p>
-          </Link>
+          </a>
           <ul className="nav nav-treeview">
             <li className="nav-item">
               <Link to="/AddPackageForm" className="nav-link ">
@@ -57,16 +108,16 @@ const Sidebar = () => {
         </li>
 
           <li className="nav-item menu treeview">
-            <Link to="#" className="nav-link   ">
+            <a href="#" className="nav-link   ">
               <i className="nav-icon fas fa-briefcase" />
               <p>
                 Deposits
                 <i className="right fas fa-angle-left" />
               </p>
-            </Link>
+            </a>
             <ul className="nav nav-treeview">
               <li className="nav-item">
-                <Link to="/AllDepositsTable" className="nav-link ">
+                <Link to="/AllDepositsSheet" className="nav-link ">
                   <i className="far fa-circle nav-icon" />
                   <p>Deposit Sheet</p>
                 </Link>
@@ -81,13 +132,13 @@ const Sidebar = () => {
           </li>
 
           <li className="nav-item menu treeview">
-            <Link to="#" className="nav-link   ">
+            <a href="#" className="nav-link   ">
               <i className="nav-icon fas fa-money-bill-transfer" />
               <p>
                 Investments
                 <i className="right fas fa-angle-left" />
               </p>
-            </Link>
+            </a>
             <ul className="nav nav-treeview">
               <li className="nav-item">
                 <Link to="/InvestmentSheet" className="nav-link ">
@@ -95,20 +146,161 @@ const Sidebar = () => {
                   <p>Investment Sheet</p>
                 </Link>
               </li>
-              {/* <li className="nav-item">
-                <Link to="/BalanceSheet" className="nav-link">
-                  <i className="far fa-circle nav-icon" />
-                  <p>Balance Sheet</p>
-                </Link>
-              </li> */}
             </ul>
           </li>
 
+          
+          <li className="nav-item menu treeview">
+            <a href="#" className="nav-link   ">
+              <i className="nav-icon fas fa-money-bill-wave" />
+              <p>
+              Withdrawal
+                <i className="right fas fa-angle-left" />
+              </p>
+            </a>
+            <ul className="nav nav-treeview">
+              <li className="nav-item">
+                <Link to="/WithdrawalSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Withdrawal Sheet</p>
+                </Link>
+              </li>
+            </ul>
+          </li>
 
-       
+          
+          <li className="nav-item menu treeview">
+            <a href="#" className="nav-link   ">
+            <i className="nav-icon  fa-solid fa-bullhorn"></i>             
+             <p>
+              Promotions
+                <i className="right fas fa-angle-left" />
+              </p>
+            </a>
+            <ul className="nav nav-treeview">
+              <li className="nav-item">
+                <Link to="/RewardApprovalSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Reward Approval Sheet</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to="/StopPromotionSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Stop Promotions</p>
+                </Link>
+              </li>
+            </ul>
+
+          </li>
+
+
+
+          <li className="nav-item menu treeview">
+            <a href="#" className="nav-link   ">
+            <i className="nav-icon  fa-solid fa-star"></i>             
+             <p>
+              Lucky Draws
+                <i className="right fas fa-angle-left" />
+              </p>
+            </a>
+            <ul className="nav nav-treeview">
+              <li className="nav-item">
+                <Link to="/AddLuckyDrawForm" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Add Lucky-Draw</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to="/LuckyDrawSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Lucky Draw Sheet</p>
+                </Link>
+              </li>
+
+              
+              <li className="nav-item">
+                <Link to="/ParticipantSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Participants Sheet</p>
+                </Link>
+              </li>
+            </ul>
+
+          </li>
+
+          <li className="nav-item menu treeview">
+            <a href="#" className="nav-link   ">
+            <i className="nav-icon  fa-solid fa-chart-column"></i>             
+             <p>
+             Statistics
+                <i className="right fas fa-angle-left" />
+              </p>
+            </a>
+            <ul className="nav nav-treeview">
+              <li className="nav-item">
+                <Link to="/DailyChart" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Daily Chart</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to="/RevenueChart" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Revenue Chart</p>
+                </Link>
+              </li>
+            </ul>
+
+          </li>
+
+          <li className="nav-item menu treeview">
+            <a href="#" className="nav-link   ">
+            <i className="nav-icon  fa-solid fa-signal"></i>             
+             <p>
+             Levels
+                <i className="right fas fa-angle-left" />
+              </p>
+            </a>
+            <ul className="nav nav-treeview">
+              <li className="nav-item">
+                <Link to="/AddLevelForm" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Add Levels</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to="/LevelSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Levels Sheet</p>
+                </Link>
+              </li>
+            </ul>
+
+          </li>
+
+          <li className="nav-item ">
+                <Link to="/LiveChat" className="nav-link">
+                  <i className="fa-solid fa-tower-broadcast nav-icon"/>&nbsp;&nbsp;
+                  <p>Live Chat</p>
+                </Link>
+              </li>
+
+
+          <li className="nav-item ">
+                <Link to="/HelpCenter" className="nav-link">
+                  <i className="fa-solid fa-comments nav-icon"/>&nbsp;&nbsp;
+                  <p>Help Center</p>
+                </Link>
+              </li>
       </ul>
     </nav>
     {/* /.sidebar-menu */}
+    </div>
   </div>
   {/* /.sidebar */}
 </aside>

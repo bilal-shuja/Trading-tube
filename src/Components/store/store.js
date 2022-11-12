@@ -1,18 +1,22 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 
-// import {userLogin} from '../services/Login';
+import {authPost} from '../services/Auth';
+import{Packages} from '../services/Packages';
+
 import {getBlogs} from '../services/GetBlogs';
 
 export const store = configureStore({
     reducer:{
-        // [userLogin.reducerPath]:userLogin.reducer,
+        [authPost.reducerPath]:authPost.reducer,
+        [Packages.reducerPath]:Packages.reducer,
         [getBlogs.reducerPath]:getBlogs.reducer
     },
     middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat
     ([
-            // userLogin.middleware,
+            authPost.middleware,
+            Packages.middleware,
             getBlogs.middleware
         ])
 })

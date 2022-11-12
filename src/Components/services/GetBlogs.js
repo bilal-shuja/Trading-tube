@@ -1,10 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import baseURL from '../Urls/baseURL';
 
 export const getBlogs = createApi({
+
     reducerPath:"getBlogs",
     baseQuery:fetchBaseQuery({
-        baseUrl:baseURL
+        baseUrl:process.env.REACT_APP_BASE_URL
     }),
 
     endpoints:(builder)=>({
@@ -13,9 +13,24 @@ export const getBlogs = createApi({
                 url:`fetchblog`,
                 method:'GET'
             })
-        })
+        }),
+        createPost: builder.mutation({
+            query:(formdata)=>{    
+                console.log(formdata)       
+             return{
+                url:`login`,
+                method:'POST',
+                body:formdata
+                // headers: {
+                //     'Content-type': 'application/json; charset=UTF-8',
+                //   }
+                }
+            }
+        }),
+
+
+
     })
 })
 
-
-export const {useGetAllBlogsQuery} = getBlogs;
+export const {useGetAllBlogsQuery, useCreatePostMutation} = getBlogs;

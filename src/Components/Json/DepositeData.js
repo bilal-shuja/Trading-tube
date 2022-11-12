@@ -3,15 +3,15 @@ import showImage from '../Images/profile.jpg';
 const DepositData = [
     {
     id:"1",
-    account_title:"Affi's Kutti Cash",
+    account_title:"Affi Dalla",
     account_type:"Jazz Cash",
     account_subType:"Jazz Cash",
     account_no:"091-22271-9991",
     amount:"2000",
     deposit_slip:showImage,
     Verified_Status:"Lorem Ispum",
-    Status:"true",
-    date:"3/30/2022"
+    Status:"Active",
+    date:"2022-10-23"
 
 },
 {
@@ -23,8 +23,9 @@ const DepositData = [
     amount:"9000",
     deposit_slip:showImage,
     Verified_Status:"Lorem Ispum",
-    Status:"false",
-    date:"3/30/2022"
+    Status:"In-Active",
+    date:"2022-10-21"
+
 
 },
 
@@ -37,9 +38,8 @@ const DepositData = [
     amount:"5000",
     deposit_slip:showImage,
     Verified_Status:"Lorem Ispum",
-    Status:"false",
-    date:"3/30/2022"
-
+    Status:"In-Active",
+    date:"2022-10-20"
 },
 {
     id:"5",
@@ -47,11 +47,12 @@ const DepositData = [
     account_type:"Visa",
     account_subType:"UBL",
     account_no:"112-11671-9091",
-    amount:"5000",
+    amount:"6000",
     deposit_slip:showImage,
     Verified_Status:"Lorem Ispum",
-    Status:"true",
-    date:"3/30/2022"
+    Status:"Active",
+    date:"2022-10-19"
+
 
 },
 {
@@ -60,11 +61,12 @@ const DepositData = [
     account_type:"Visa",
     account_subType:"MCB Bank",
     account_no:"112-11671-9091",
-    amount:"5000",
+    amount:"7000",
     deposit_slip:showImage,
     Verified_Status:"Lorem Ispum",
-    Status:"true",
-    date:"3/30/2022"
+    Status:"Active",
+    date:"2022-09-27"
+
 
 },
 {
@@ -73,11 +75,11 @@ const DepositData = [
     account_type:"Visa",
     account_subType:"MCB Bank",
     account_no:"112-11671-9091",
-    amount:"5000",
+    amount:"8000",
     deposit_slip:showImage,
     Verified_Status:"Lorem Ispum",
-    Status:"false",
-    date:"3/30/2022"
+    Status:"In-Active",
+    date:"2022-10-28"
 
 }
 ,
@@ -87,11 +89,11 @@ const DepositData = [
     account_type:"Visa",
     account_subType:"MCB Bank",
     account_no:"112-11671-9091",
-    amount:"5000",
+    amount:"4000",
     deposit_slip:showImage,
     Verified_Status:"Lorem Ispum",
-    Status:"false",
-    date:"3/30/2022"
+    Status:"In-Active",
+    date:"2022-10-28"
 
 }
 
@@ -102,11 +104,11 @@ const DepositData = [
     account_type:"Visa",
     account_subType:"MCB Bank",
     account_no:"112-11671-9091",
-    amount:"5000",
+    amount:"3000",
     deposit_slip:showImage,
     Verified_Status:"Lorem Ispum",
-    Status:"Not Occupied",
-    date:"3/30/2022"
+    Status:"Active",
+    date:"2022-10-29"
 
 }
 ,
@@ -116,12 +118,11 @@ const DepositData = [
     account_type:"Visa",
     account_subType:"MCB Bank",
     account_no:"112-11671-9091",
-    amount:"5000",
+    amount:"1000",
     deposit_slip:showImage,
     Verified_Status:"Lorem Ispum",
-    Status:"true",
-    date:"3/30/2022"
-
+    Status:"Active",
+    date:"2022-10-30"
 }
 
 ]
