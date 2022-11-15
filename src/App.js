@@ -48,10 +48,16 @@ import ParticipantSheet from './Components/LuckyDraw/ParticipantSheet.jsx';
 import AddLevelForm from './Components/Levels/AddLevelForm.jsx';
 import LevelSheet from './Components/Levels/LevelSheet.jsx';
 
+
 // Statistics
 
 import DailyChart from './Components/Statistics/DailyChart.jsx';
 import RevenueChart from './Components/Statistics/RevenueChart.jsx';
+
+
+// Tips&Tricks
+import TipsTricksForm from './Components/Tips&Tricks/TipsTricksForm.jsx';
+import TipsTrickSheet from './Components/Tips&Tricks/TipsTrickSheet.jsx';
 
 // Help Center
 import HelpCenter from './Components/HelpCenter/HelpCenter.jsx';
@@ -131,6 +137,8 @@ function App() {
            <Route path="/AddLevelForm" element={<AddLevelForm/>}/>
            <Route path="/LevelSheet" element={<LevelSheet/>}/>
 
+           <Route path="/TipsTricksForm" element={<TipsTricksForm/>}/>
+           <Route path="/TipsTrickSheet" element={<TipsTrickSheet/>}/>
 
 
            

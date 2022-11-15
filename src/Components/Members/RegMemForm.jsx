@@ -10,7 +10,7 @@ const RegMemForm = () => {
 
     const [regPost , result] = useRegPostMutation();
 
-    const[role , setRole] = useState('');
+    const[role , setRole] = useState('none');
     const[email , setEmail] = useState('');
     const[userName , setUsername] = useState('');
     const[password , setPassword] = useState('');
@@ -117,7 +117,22 @@ const RegMemForm = () => {
                     <div className="col-lg-4 col-sm-12">
                     <div className="form-group">
                         <label htmlFor="exampleInputEmail1">Role*</label>
-                        <input type="number" name="title" value={role} className={role === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputEmail1" onChange={(e)=>setRole(e.target.value)} placeholder="Enter Role" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} />
+                        <select  className={role === ''&& input === true?"form-control border border-danger":"form-control"}
+                            style={{
+                              background: colorScheme.card_bg_color,
+                              color: colorScheme.card_txt_color,
+                              }}
+                              onChange={(e)=>setRole(e.target.value)}
+                              value={role}
+                              >
+                            <option value="none">None</option>
+                            <option value="1">Super Admin</option>
+                            <option value="2">Admin</option>
+                            <option value="3">Manager</option>
+                            <option value="4">Staff</option>
+                            <option value="5">User</option>
+
+                          </select>
                     </div>
                     </div>
                     <div className="col-lg-4 col-sm-12">

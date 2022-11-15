@@ -4,32 +4,33 @@ export const Packages = createApi({
     reducerPath:"Packages",
     baseQuery:fetchBaseQuery({
         baseUrl:process.env.REACT_APP_BASE_URL
+        
     }),
     
     endpoints:(builder)=>({
-        
         packagePost: builder.mutation({
             query:(formdata)=>{    
-             return{
-                url:`AddPackage`,
-                method:'POST',
-                body:formdata
+                return{
+                    url:`AddPackage`,
+                    method:'POST',
+                    body:formdata
                 }
+                
             }
-
+            
         }),
         getPackage: builder.query({
             query:()=>{    
-             return{
-                url:`fetchallpackage`,
-                method:'GET',
+                return{
+                    url:`fetchallpackage`,
+                    method:'GET',
                 }
             }
-
+            
         }),
-
-
-
+        
+        
+        
     })
 })
 

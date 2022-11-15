@@ -20,8 +20,6 @@ const LiveChatCenter = () => {
     const[liveChatMessage , sendLiveChatMessage] = useState('');
     const[chatList , setChatList] = useState([]);
 
-    const[newLiveChatCount , setNewLiveChatCount] = useState(0);
-    const[oldLiveChatCount, setOldLiveChatCount] = useState(0);
     const SetLocalLogin = async () => {
         try {
           let mem_Name = await localStorage.getItem('mem_Name');
@@ -32,7 +30,6 @@ const LiveChatCenter = () => {
             setMemName(mem_Name);
             setAdminID(admin_ID);
             setAdminEmail(admin_Email);
-            gettingLiveChat()
           }
     
         } catch {
@@ -58,7 +55,6 @@ const LiveChatCenter = () => {
             toast.info("Message Send!",{theme:"dark"});
             setLoading(false)
             sendLiveChatMessage('');
-            gettingLiveChat(user_ID)
 
         })
         .catch((error)=>{
@@ -81,41 +77,19 @@ function gettingLiveChat(){
     axios.post(`${process.env.REACT_APP_BASE_URL}chat_list`,chatID)
     .then((res)=>{
         setChatList(res.data.messages)
-        setOldLiveChatCount(res.data.messages.length)
 
     })
     .catch((error)=>{
        toast.warn(error, {theme:"dark"})
     })
 }
-console.log(oldLiveChatCount , newLiveChatCount)
 
-function gettingChatCount(userID){
-  const chatCountID ={
-    user_id:"2"
-  }
-axios.post(`${process.env.REACT_APP_BASE_URL}chatcount`,chatCountID)
-.then((res)=>{
-  setNewLiveChatCount(res.data.chat_count)
-  if(res.data.chat_count > oldLiveChatCount){
-    gettingLiveChat()
-    console.log("new count"+res.data.chat_count)
-  }
-})
-.catch((error)=>{
-  toast.warn(error,{theme:"dark"})
-})
-}
 
  
 
 useEffect(() => {
         SetLocalLogin()
-     const interval =    setInterval(() => {
-          gettingChatCount()
-          console.log("I'm running")
-        }, 7000);
-        return () => clearInterval(interval);
+        gettingLiveChat()
       }, [])
       
   return (

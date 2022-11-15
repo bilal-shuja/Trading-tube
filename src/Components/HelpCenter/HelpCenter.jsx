@@ -6,13 +6,13 @@ import axios from 'axios';
 
 const HelpCenter = () => {
   const [helpCenter, setHelpCenter] = useState([]);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("pending");
 
   const changePeriod = (e) => {
     console.log(e.target.checked);
-    if (e.target.checked === false) {
+    if (e.target.checked === true) {
       setStatus("pending");
-    } else if (e.target.checked === true) {
+    } else if (e.target.checked === false) {
       setStatus("closed");
     } else {
     }
@@ -62,10 +62,10 @@ const HelpCenter = () => {
           <div className="container-fluid">
             <h4 style={{ color: colorScheme.card_txt_color }}>Check Tickets</h4>
             <label className="switch mb-4 mr-5">
-              <input type="checkbox" onChange={changePeriod} />
+              <input type="checkbox" onChange={changePeriod} value={status}/>
               <div className="slider round">
-                <div className="off">Pending</div>
-                <div className="on">Closed</div>
+                <div className="on">Pending</div>
+                <div className="off">Closed</div>
               </div>
             </label>
             <button
@@ -149,6 +149,7 @@ const HelpCenter = () => {
                                 userID: items.user_id,
                                 userName:items.username,
                                 userTitle:items.title,
+                                ticketStatus:items.status,
                                 userBody:items.body,
                                 userDate:items.created_at
 
@@ -163,7 +164,7 @@ const HelpCenter = () => {
                       })
                   : status === "closed"
                   ? helpCenter
-                      .filter((items) => items.Status === status)
+                      .filter((items) => items.status === status)
                       .map((items) => {
                         return (
                           <div
@@ -232,6 +233,7 @@ const HelpCenter = () => {
                                 userID: items.user_id,
                                 userName:items.username,
                                 userTitle:items.title,
+                                ticketStatus:items.status,
                                 userBody:items.body,
                                 userDate:items.created_at
                               }}
@@ -312,6 +314,7 @@ const HelpCenter = () => {
                                 userID: items.user_id,
                                 userName:items.username,
                                 userTitle:items.title,
+                                ticketStatus:items.status,
                                 userBody:items.body,
                                 userDate:items.created_at
                               }}

@@ -1,5 +1,6 @@
+import React,{useState , useEffect , useRef } from "react";
+import Cancel from '../Images/cancel.svg';
 import { Link, useLocation } from "react-router-dom";
-import React,{useState , useEffect} from "react";
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
 import { toast } from "react-toastify";
@@ -8,19 +9,20 @@ import axios from 'axios';
 const HelpChatCenter = () => {
   const location = useLocation();
   const ID = location.state.ID
-  const userID = location.state.userID;
   const userName = location.state.userName;
   const title = location.state.userTitle;
+  const ticketStatus = location.state.ticketStatus;
   const body = location.state.userBody;
   const date = location.state.userDate
 
 
-  const[userTickets , setTickets] = useState([])
+
   const[getTicketReplys , setTicketReplys] = useState([])
   const [adminID , setAdminID] = useState('')
   const[memName , setMemName] = useState('')
   const[ticketReply , setTicketReply] = useState('');
   const[loading , setLoading] = useState(false);
+
 
   const SetLocalLogin = async () => {
     try {
@@ -37,18 +39,8 @@ const HelpChatCenter = () => {
     }
   }
 
-  function gettingUserTickets(){
-    const userTicketID = {
-      user_id:userID
-    }
-    axios.post(`${process.env.REACT_APP_BASE_URL}fetch_ticket_by_userid`,userTicketID)
-    .then((res)=>{
-      setTickets(res.data.data)
-    })
-    .catch((error)=>{
-      console.log(error)
-    })
-  }
+ 
+
 
   function replyingTicket(){
     setLoading(true)
@@ -86,20 +78,53 @@ const HelpChatCenter = () => {
     axios.post(`${process.env.REACT_APP_BASE_URL}fetch_reply_by_ticketid`,ticketID)
     .then((res)=>{
       setTicketReplys(res.data.Reply)
-      console.log(res.data.Reply)
     })
     .catch((error)=>{
       console.log(error)
     })
   }
 
-  console.log(getTicketReplys)
+  function useChatScroll(newMessage){
+    const ref = useRef();
+    useEffect(() => {
+     if(ref.current){
+      ref.current.scrollTop = ref.current.scrollHeight;
+     } 
+    }, [newMessage])
+    return ref;
+  }
 
+  
+  const ref = useChatScroll(getTicketReplys)
+
+
+  function closeTicket(ID){
+const statusObj ={
+  status:"closed"
+}
+  axios.post(`${process.env.REACT_APP_BASE_URL}update_ticket_status_byid/${ID}`,statusObj)
+  .then((res)=>{
+    toast.info("This ticket is closed !",{theme:"dark"})
+  })
+.catch((error)=>{
+  if(error.status === 401){
+    toast.warn(error.data.message , {theme:"dark"})
+  }
+  else{
+    toast.warn("Something went wrong" , {theme:"dark"})
+
+  }
+})
+  }
   useEffect(() => {
-    gettingUserTickets()
     gettingRelpyTicket()
     SetLocalLogin()
   }, [])
+
+
+
+
+  
   
 
   return (
@@ -115,11 +140,12 @@ const HelpChatCenter = () => {
                   <div className="d-flex">
                     <i className="fas fa-life-ring" />
                     &nbsp;&nbsp;
-                    <h4 style={{ fontFamily: colorScheme.FontFamily }}>
+                    <h4>
                       <strong>{title}</strong>
                     </h4>
                     &nbsp;&nbsp; (#{ID})
                   </div>
+                  <button className="btn btn-outline-success" onClick={()=> closeTicket(ID)}>Close Ticket</button>
                 </h1>
               </div>
               <div className="col-sm-3">
@@ -139,16 +165,16 @@ const HelpChatCenter = () => {
         </section>
 
         <div className="border-line mx-auto" />
+      
 
         
-<section className="content mt-3">
+<div  className="content mt-3">
   <div className="container">
     <div className="row">
-      <div className="scroll-view-two scrollbar-secondary-two">
- 
-          <div className="col-lg-10 col-sm-12">
+      <div ref={ref} className="scroll-view-two scrollbar-secondary-two">
+          <div  className="col-lg-8 col-md-8 col-sm-8">
           {/* User Area */}
-          <div className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one,}}>
+          <div className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one}}>
             <div className="card-header">
               <div className="card-tools">
                 <button type="button" className="btn btn-tool user-date-box rounded text-white mr-2" data-card-widget="" title="Remove">
@@ -174,14 +200,15 @@ const HelpChatCenter = () => {
 
       
            {/* Staff Area */}
-           {
-            getTicketReplys.map((items)=>{
+            {
+            getTicketReplys.map((items,index)=>{
               return(
-                <div className={items.sender_type === "Admin"?"col-lg-10 col-sm-12 float-right":"ml-4 col-lg-10 col-sm-12 float-left"}>
+                <>
+                <div key={index} className={items.sender_type === "Admin"?"col-lg-8 col-md-8 col-sm-8 float-right":"ml-4 col-lg-8 col-md-8 col-sm-8 float-left"}>
                 <div className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one,}}>
              <div className="card-header">
                <div className="card-tools">
-                 <button type="button" className={items.sender_type === "Admin"?"btn btn-tool staff-date-box rounded text-white mr-2":"btn btn-tool staff-date-box rounded text-white mr-2"} data-card-widget="" title="Remove">
+                 <button type="button" className={items.sender_type === "Admin"?"btn btn-tool staff-date-box rounded text-white mr-2":"btn btn-tool user-date-box rounded text-white mr-2"} data-card-widget="" title="Remove">
                  {items.Idate}
                  </button>
                </div>
@@ -196,15 +223,19 @@ const HelpChatCenter = () => {
              <div className="card-body">
              {items.body}
              </div>
+
            </div>
            </div>
+            </>
               )
             })
            }
 
-
         </div>
-              
+
+{
+ticketStatus === "closed"? <img className="img-fluid d-block mx-auto mt-4 mb-2" src={Cancel} alt="Cancel" width={230}/>:
+            
         <div className="col-lg-11 col-sm-12 mx-auto mb-2 mt-2">
         <div className="text-box">
         <textarea className="form-control type-message rounded p-4" placeholder="Type your message here..." value={ticketReply} onChange={(e)=>{setTicketReply(e.target.value)}} rows={5}  style={{ background: colorScheme.body_bg_color , color: colorScheme.card_txt_color  }} />
@@ -217,11 +248,11 @@ const HelpChatCenter = () => {
         </div>
         </div>
 
-      
+  } 
     
     </div>
   </div>
-</section>
+</div>
 
     </div>
       </div>

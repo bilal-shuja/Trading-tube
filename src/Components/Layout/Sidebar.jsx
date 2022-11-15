@@ -283,6 +283,32 @@ const Sidebar = () => {
 
           </li>
 
+          <li className="nav-item menu treeview">
+            <a href="#" className="nav-link   ">
+            <i className="nav-icon  fa-solid fa-wand-magic-sparkles"></i>             
+             <p>
+             Tips & Tricks
+                <i className="right fas fa-angle-left" />
+              </p>
+            </a>
+            <ul className="nav nav-treeview">
+              <li className="nav-item">
+                <Link to="/TipsTricksForm" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Tips & Tricks Form</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to="/TipsTrickSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Tips & Tricks Sheet</p>
+                </Link>
+              </li>
+            </ul>
+
+          </li>
+
           <li className="nav-item ">
                 <Link to="/LiveChat" className="nav-link">
                   <i className="fa-solid fa-tower-broadcast nav-icon"/>&nbsp;&nbsp;

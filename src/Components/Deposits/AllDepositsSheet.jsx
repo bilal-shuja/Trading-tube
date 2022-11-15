@@ -183,6 +183,7 @@ const AllDepositsTable = () => {
           </thead>
           <tbody className="text-center">
             {
+              depoTemArr.length !==0 ?
                 depoTemArr.map((items)=>{
                     return(
                         <tr key={items.id} style={{ color: colorScheme.card_txt_color }}>
@@ -190,7 +191,7 @@ const AllDepositsTable = () => {
                             <td>{items.payer_id}</td>
                             <td>{items.account_title}</td>
                             <td>{items.account_type}</td>
-                            <td>{items.account_subType}</td>
+                            <td>{items.account_subtype}</td>
                             <td>{items.account_no}</td>
                             <td>{items.amount}</td>
                             <td>
@@ -236,6 +237,10 @@ const AllDepositsTable = () => {
                       </tr>
                     )
                 })
+                :
+                <div className="text-center">
+                <h2>No Record Found</h2>
+                </div>
             }
     
 

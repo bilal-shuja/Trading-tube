@@ -23,7 +23,7 @@ const AddPackagesForm = () => {
 
   const [packageDays , setPackageDays] = useState("");
   const [packageDescrip, setPackageDescrip] = useState("");
-  const [packageStatus, setPackageStatus] = useState("Active");
+  const [packageStatus, setPackageStatus] = useState("active");
   const [packageImage, setPackageImage] = useState("");
 
   const[loading , setLoading] = useState(false)
@@ -47,8 +47,8 @@ const AddPackagesForm = () => {
       else if(val>=2000 && val<50000){
       
 
-        const result =  Math.round((35/100)*val);
-        const singleRes =  Math.round((val/30));
+        const result = Math.round((35/100)*val);
+        const singleRes = Math.round((result/30));
         const cycle_Income = Math.round((11.66/100)*val);
         setProfitIncome(result)
         setProfitDuration(30)
@@ -63,7 +63,7 @@ const AddPackagesForm = () => {
       }
       else if(val>=50000 && val<100000){
         const result =  Math.round((40/100)*val);
-        const singleRes =  Math.round((val/30));
+        const singleRes =  Math.round((result/30));
         const cycle_Income =  Math.round((20/100)*val);
         setProfitIncome(result)
         setProfitDuration(30)
@@ -78,7 +78,7 @@ const AddPackagesForm = () => {
       }
       else if(val>=100000 && val<500000){
         const result =  Math.round((45/100)*val);
-        const singleRes =  Math.round((val/30));
+        const singleRes =  Math.round((result/30));
         const cycle_Income =  Math.round((45/100)*val);
         setProfitIncome(result);
         setProfitDuration(30)
@@ -93,7 +93,7 @@ const AddPackagesForm = () => {
       }
       else if(val>=500000){
         const result =  Math.round((50/100)*val);
-        const singleRes =  Math.round((val/45));
+        const singleRes =  Math.round((result/45));
         const cycle_Income =  Math.round((50/100)*val);
         setProfitIncome(result)
         setProfitDuration(45)
