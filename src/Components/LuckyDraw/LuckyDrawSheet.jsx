@@ -13,7 +13,9 @@ const LuckyDrawSheet = () => {
   const LuckyDrawSheetIdentifier = "LuckyDrawSheet";
   const [stateID , setStateID] = useState('');
   const[luckyDrawStatus ,setLuckyDrawStatus] = useState('All')
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const[roleID , setRoleID] = useState('');
+
 
   function gettingLuckyDraw(){
     axios.get(`${process.env.REACT_APP_BASE_URL}fetch_all_luckydraw`)
@@ -65,8 +67,24 @@ const LuckyDrawSheet = () => {
     setLuckyDrawTemp(val)
   }
 
+  
+  const SetLocalLogin = async () => {
+    try {
+      let userObj = await localStorage.getItem('user');
+      let parseUserObj = JSON.parse(userObj)
+      
+      if (parseUserObj !== null) {
+        setRoleID(parseUserObj.role_id);
+      }
+  
+    } catch {
+      return null;
+    }
+  }
+
   useEffect(() => {
     gettingLuckyDraw()
+    SetLocalLogin()
   }, [])
   
 
@@ -116,7 +134,10 @@ const LuckyDrawSheet = () => {
                           <th>Description</th>
                           <th>Status</th>
                           <th>Date</th>
+                          {
+                        roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                           <th>Actions</th>
+                          }
                         </tr>
                       </thead>
                       <tbody className="text-center">
@@ -551,6 +572,8 @@ const LuckyDrawSheet = () => {
                           
                               <td>{items.Idate}</td>
 
+                              {
+                        roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>
                                <div className="d-flex justify-content-center">
                                 <button onClick={()=>delLuckyDraw(items.id)} className="btn btn-outline-danger btn-sm">
@@ -564,8 +587,8 @@ const LuckyDrawSheet = () => {
                                 </button>
                               
                                 </div>   
-                                 
                               </td>
+                        }
                             </tr>
                             )
                           })

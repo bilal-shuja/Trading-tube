@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState , useEffect} from 'react';
 import Filter from '../Filters/Filter';
 import colorScheme from "../Colors/Styles.js";
 import StopPromoData from '../Json/StopPromoData.js';
@@ -6,6 +6,7 @@ import StopPromoData from '../Json/StopPromoData.js';
 const StopPromotionSheet = () => {
 
     const [stopPromoData , setStopPromoData] = useState(StopPromoData)
+  const[roleID , setRoleID] = useState('');
     const StopPromoSheetIdentifier = "StopPromoSheet";
 
     function gettingDate(val){
@@ -15,6 +16,27 @@ const StopPromotionSheet = () => {
     function gettingPrice(val){
       setStopPromoData(val)
     }
+
+    
+  const SetLocalLogin = async () => {
+    try {
+      let userObj = await localStorage.getItem('user');
+      let parseUserObj = JSON.parse(userObj)
+      
+      if (parseUserObj !== null) {
+        setRoleID(parseUserObj.role_id);
+      }
+  
+    } catch {
+      return null;
+    }
+  }
+
+
+  useEffect(() => {
+    SetLocalLogin()
+  }, [])
+  
   return (
     <>
 <div className="scroll-view-two scrollbar-secondary-two">
@@ -25,14 +47,8 @@ const StopPromotionSheet = () => {
             <div className="row mb-2">
               <div className="col-sm-6">
                 <h1 style={{ color: colorScheme.card_txt_color }}>
-                Stop Promotions Sheet
+                Stop Promotions
                 </h1>
-              </div>
-              <div className="col-sm-6">
-                <ol className="breadcrumb float-sm-right">
-                  {/* <li className="breadcrumb-item" ><a href="#" style={{color:colorScheme.card_txt_color}}>Home</a></li> */}
-                  {/* <li className="breadcrumb-item active">Add Package</li> */}
-                </ol>
               </div>
             </div>
           </div>
@@ -61,7 +77,10 @@ const StopPromotionSheet = () => {
                           <th>Promotion ID</th>
                           <th>Promotion Amount</th>
                           <th>Date</th>
+                          {
+                        roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                           <th>Actions</th>
+                          }
                         </tr>
                       </thead>
                       <tbody className="text-center">
@@ -74,7 +93,8 @@ const StopPromotionSheet = () => {
                               <td>{items.Promo_id}</td>
                               <td>{items.Amount}</td>
                               <td>{items.date}</td>
-
+                              {
+                        roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>   
                               <div className="d-flex justify-content-center">                            
                                   <button className="btn btn-outline-info btn-sm">
@@ -86,6 +106,7 @@ const StopPromotionSheet = () => {
                                   </button>
                                   </div>
                               </td>
+                              }
                             </tr>
                             )
                           })

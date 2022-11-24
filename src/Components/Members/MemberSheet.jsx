@@ -1,7 +1,6 @@
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
-// import { Link } from "react-router-dom";
 import {toast} from "react-toastify";
 import axios from 'axios';
 
@@ -20,7 +19,7 @@ const MemberSheet = () => {
 
     function deleteMembers(id){
    
-        axios.post(`${process.env.REACT_APP_BASE_URL}deletemembers/${id}`)
+        axios.post(`${process.env.REACT_APP_BASE_URL}deleteuserwithid/${id}`)
         .then((res)=>{
             toast.error("Member deleted" , {theme:"dark"})
             setTimeout(() => {
@@ -31,8 +30,24 @@ const MemberSheet = () => {
           toast.warn("Something went wrong" , {theme:"dark"})
         })
     }
+
+    const[roleID , setRoleID] = useState('')
+  const SetLocalLogin = async () => {
+    try {
+      let userObj = await localStorage.getItem('user');
+      let parseUserObj = JSON.parse(userObj)
+      
+      if (parseUserObj !== null) {
+        setRoleID(parseUserObj.role_id)
+      }
+
+    } catch {
+      return null;
+    }
+  }
 useEffect(() => {
     gettingMembers();
+    SetLocalLogin();
 }, [])
 
   return (
@@ -83,414 +98,13 @@ useEffect(() => {
                           <th>Phone</th>
                           <th>Role</th>
                           <th>Date</th>
+                          {
+                        roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                           <th>Actions</th>
+}
                         </tr>
                       </thead>
                       <tbody className="text-center">
-
-                        {/* {
-                          priceOp === "H-to-L" ?
-                          PackageData.sort((a,b) => b.Price-a.Price).map((items,index)=>{
-                            return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{items.id}</td>
-                              <td>{items.Title}</td>
-                              <td >{items.Quantity}</td>
-                              <td>{items.Price}</td>
-                              <td>{items.Income}</td>
-                              <td>
-                                <ReadMoreReact
-                                  text={
-                                   items.Description
-                                  }
-                                  min={10}
-                                  ideal={35}
-                                  max={80}
-                                  readMoreText="...Read More"
-                                />
-                              </td>
-                              {
-                                items.Status === "Active"?
-                              <td style={{color:"#64dd17"}}>{items.Status}</td>
-                              :
-                              <td style={{color:"#ff1744"}}>{items.Status}</td>
-
-                              }
-                              <td>
-                                <img className="img-fluid" src={items.Image} alt="" width={70} />
-                              </td>
-                              <td>{items.Created_at}</td>
-                              <td>
-                                <div className="d-flex">
-                                  <Link
-                                    to="/UpdatePackageForm"
-                                    state={{ID:items.id}}
-                                    className="btn btn-outline-info btn-sm"
-                                  >
-                                    <i className="fa fa-pencil"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
-                                  <button className="btn btn-outline-danger btn-sm">
-                                    <i className="fa fa-trash"></i>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                            )
-                          })
-                          :
-                          priceOp ==="L-to-H"?
-                          PackageData.sort((a,b) => a.Price-b.Price).map((items,index)=>{
-                            return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{items.id}</td>
-                              <td>{items.Title}</td>
-                              <td >{items.Quantity}</td>
-                              <td>{items.Price}</td>
-                              <td>{items.Income}</td>
-                              <td>
-                                <ReadMoreReact
-                                  text={
-                                   items.Description
-                                  }
-                                  min={10}
-                                  ideal={35}
-                                  max={80}
-                                  readMoreText="...Read More"
-                                />
-                              </td>
-                              {
-                                items.Status === "Active"?
-                              <td style={{color:"#64dd17"}}>{items.Status}</td>
-                              :
-                              <td style={{color:"#ff1744"}}>{items.Status}</td>
-
-                              }
-                              <td>
-                                <img className="img-fluid" src={items.Image} alt="" width={70} />
-                              </td>
-                              <td>{items.Created_at}</td>
-                              <td>
-                                <div className="d-flex">
-                                  <Link
-                                    to="/UpdatePackageForm"
-                                    state={{ID:items.id}}
-                                    className="btn btn-outline-info btn-sm"
-                                  >
-                                    <i className="fa fa-pencil"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
-                                  <button className="btn btn-outline-danger btn-sm">
-                                    <i className="fa fa-trash"></i>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                            )
-                          })
-                          :
-                          searchByDate !=='' && searchByStatus ==='All'?
-                          PackageData.filter((item) => item.Created_at === searchByDate).map((items,index)=>{
-                            return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{items.id}</td>
-                              <td>{items.Title}</td>
-                              <td >{items.Quantity}</td>
-                              <td>{items.Price}</td>
-                              <td>{items.Income}</td>
-                              <td>
-                                <ReadMoreReact
-                                  text={
-                                   items.Description
-                                  }
-                                  min={10}
-                                  ideal={35}
-                                  max={80}
-                                  readMoreText="...Read More"
-                                />
-                              </td>
-                              {
-                                items.Status === "Active"?
-                              <td style={{color:"#64dd17"}}>{items.Status}</td>
-                              :
-                              <td style={{color:"#ff1744"}}>{items.Status}</td>
-
-                              }
-                              <td>
-                                <img className="img-fluid" src={items.Image} alt="" width={70} />
-                              </td>
-                              <td>{items.Created_at}</td>
-                              <td>
-                                <div className="d-flex">
-                                  <Link
-                                    to="/UpdatePackageForm"
-                                    state={{ID:items.id}}
-                                    className="btn btn-outline-info btn-sm"
-                                  >
-                                    <i className="fa fa-pencil"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
-                                  <button className="btn btn-outline-danger btn-sm">
-                                    <i className="fa fa-trash"></i>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                            )
-                          })
-                          :
-                          searchByDate ==='' &&  (searchByStatus ==='Active' || searchByStatus ==='In-Active')?
-                          PackageData.filter((item) => item.Status === searchByStatus).map((items,index)=>{
-                            return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{items.id}</td>
-                              <td>{items.Title}</td>
-                              <td >{items.Quantity}</td>
-                              <td>{items.Price}</td>
-                              <td>{items.Income}</td>
-                              <td>
-                                <ReadMoreReact
-                                  text={
-                                   items.Description
-                                  }
-                                  min={10}
-                                  ideal={35}
-                                  max={80}
-                                  readMoreText="...Read More"
-                                />
-                              </td>
-                              {
-                                items.Status === "Active"?
-                              <td style={{color:"#64dd17"}}>{items.Status}</td>
-                              :
-                              <td style={{color:"#ff1744"}}>{items.Status}</td>
-
-                              }
-                              <td>
-                                <img className="img-fluid" src={items.Image} alt="" width={70} />
-                              </td>
-                              <td>{items.Created_at}</td>
-                              <td>
-                                <div className="d-flex">
-                                  <Link
-                                    to="/UpdatePackageForm"
-                                    state={{ID:items.id}}
-                                    className="btn btn-outline-info btn-sm"
-                                  >
-                                    <i className="fa fa-pencil"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
-                                  <button className="btn btn-outline-danger btn-sm">
-                                    <i className="fa fa-trash"></i>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                            )
-                          })
-                          :
-                          searchByDate !=='' &&  (searchByStatus ==='Active' || searchByStatus ==='In-Active')?
-                          PackageData.filter((item) => item.Created_at === searchByDate && item.Status  ).map((items,index)=>{
-                            return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{items.id}</td>
-                              <td>{items.Title}</td>
-                              <td >{items.Quantity}</td>
-                              <td>{items.Price}</td>
-                              <td>{items.Income}</td>
-                              <td>
-                                <ReadMoreReact
-                                  text={
-                                   items.Description
-                                  }
-                                  min={10}
-                                  ideal={35}
-                                  max={80}
-                                  readMoreText="...Read More"
-                                />
-                              </td>
-                              {
-                                items.Status === "Active"?
-                              <td style={{color:"#64dd17"}}>{items.Status}</td>
-                              :
-                              <td style={{color:"#ff1744"}}>{items.Status}</td>
-
-                              }
-                              <td>
-                                <img className="img-fluid" src={items.Image} alt="" width={70} />
-                              </td>
-                              <td>{items.Created_at}</td>
-                              <td>
-                                <div className="d-flex">
-                                  <Link
-                                    to="/UpdatePackageForm"
-                                    state={{ID:items.id}}
-                                    className="btn btn-outline-info btn-sm"
-                                  >
-                                    <i className="fa fa-pencil"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
-                                  <button className="btn btn-outline-danger btn-sm">
-                                    <i className="fa fa-trash"></i>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                            )
-                          })
-                          :
-                          priceOp === "All"?
-                          PackageData.sort((a, b) =>new Date(...b.Created_at.split("/").reverse())-new Date(...a.Created_at.split("/").reverse())).map((items,index)=>{
-                            return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{items.id}</td>
-                              <td>{items.Title}</td>
-                              <td >{items.Quantity}</td>
-                              <td>{items.Price}</td>
-                              <td>{items.Income}</td>
-                              <td>
-                                <ReadMoreReact
-                                className="col-lg-3"
-                                  text={
-                                   items.Description
-                                  }
-                                  min={10}
-                                  ideal={35}
-                                  max={80}
-                                  readMoreText="...Read More"
-                                />
-                              </td>
-                              {
-                                items.Status === "Active"?
-                              <td style={{color:"#64dd17"}}>{items.Status}</td>
-                              :
-                              <td style={{color:"#ff1744"}}>{items.Status}</td>
-
-                              }
-                              <td>
-                                <img className="img-fluid" src={items.Image} alt="" width={70} />
-                              </td>
-                              <td>{items.Created_at}</td>
-                              <td>
-                                <div className="d-flex">
-                                  <Link
-                                    to="/UpdatePackageForm"
-                                    state={{ID:items.id}}
-                                    className="btn btn-outline-info btn-sm"
-                                  >
-                                    <i className="fa fa-pencil"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
-                                  <button className="btn btn-outline-danger btn-sm">
-                                    <i className="fa fa-trash"></i>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                            )
-                          })
-                          :
-                          searchByStatus === "All"?
-                          PackageData.sort((a, b) =>new Date(...b.Created_at.split("/").reverse())-new Date(...a.Created_at.split("/").reverse())).map((items,index)=>{
-                            return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{items.id}</td>
-                              <td>{items.Title}</td>
-                              <td >{items.Quantity}</td>
-                              <td>{items.Price}</td>
-                              <td>{items.Income}</td>
-                              <td>
-                                <ReadMoreReact
-                                  text={
-                                   items.Description
-                                  }
-                                  min={10}
-                                  ideal={35}
-                                  max={80}
-                                  readMoreText="...Read More"
-                                />
-                              </td>
-                              {
-                                items.Status === "Active"?
-                              <td style={{color:"#64dd17"}}>{items.Status}</td>
-                              :
-                              <td style={{color:"#ff1744"}}>{items.Status}</td>
-
-                              }
-                              <td>
-                                <img className="img-fluid" src={items.Image} alt="" width={70} />
-                              </td>
-                              <td>{items.Created_at}</td>
-                              <td>
-                                <div className="d-flex">
-                                  <Link
-                                    to="/UpdatePackageForm"
-                                    state={{ID:items.id}}
-                                    className="btn btn-outline-info btn-sm"
-                                  >
-                                    <i className="fa fa-pencil"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
-                                  <button className="btn btn-outline-danger btn-sm">
-                                    <i className="fa fa-trash"></i>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                            )
-                          })
-                          :
-                          PackageData.sort((a, b) =>new Date(...b.Created_at.split("/").reverse())-new Date(...a.Created_at.split("/").reverse())).map((items,index)=>{
-                            return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{items.id}</td>
-                              <td>{items.Title}</td>
-                              <td >{items.Quantity}</td>
-                              <td>{items.Price}</td>
-                              <td>{items.Income}</td>
-                              <td>
-                                <ReadMoreReact
-                                  text={
-                                   items.Description
-                                  }
-                                  min={10}
-                                  ideal={35}
-                                  max={80}
-                                  readMoreText="...Read More"
-                                />
-                              </td>
-                              {
-                                items.Status === "Active"?
-                              <td style={{color:"#64dd17"}}>{items.Status}</td>
-                              :
-                              <td style={{color:"#ff1744"}}>{items.Status}</td>
-
-                              }
-                              <td>
-                                <img className="img-fluid" src={items.Image} alt="" width={70} />
-                              </td>
-                              <td>{items.Created_at}</td>
-                              <td>
-                                <div className="d-flex">
-                                  <Link
-                                    to="/UpdatePackageForm"
-                                    state={{ID:items.id}}
-                                    className="btn btn-outline-info btn-sm"
-                                  >
-                                    <i className="fa fa-pencil"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
-                                  <button className="btn btn-outline-danger btn-sm">
-                                    <i className="fa fa-trash"></i>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                            )
-                          })
-                        }
-                        */}
-
                         {
                  
                         members.map((items,index)=>{
@@ -513,14 +127,20 @@ useEffect(() => {
                                 items.role_id === "4"?
                                 <td>Staff</td>
                                 :
+                                items.role_id !== null || undefined || " "?
+                                <td>User</td>
+                                :
                                 null
                               }
-                              <td>{items.created_at}</td>
+                              <td>{items.Idate}</td>
+                              {
+                        roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>
                               <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                                   <i className="fa fa-trash"></i>
                                 </button>
                               </td>
+                        }
                             </tr>
                             )
                           })

@@ -1,15 +1,8 @@
 import React from 'react';
 import colorScheme from '../Colors/Styles.js';
-import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const navigate = useNavigate();
-  const logOut = ()=>{
-    localStorage.setItem('login',false);
-    window.location.reload(true)
-    navigate("/");
-    
-  }
+ 
   return (
     <>
 {/* Navbar */}
@@ -20,15 +13,15 @@ const Navbar = () => {
       <a className="nav-link" data-widget="pushmenu" href="#" role="button"><i className="fas fa-bars" style={{color:colorScheme.card_txt_color}} /></a>
     </li>
     <li className="nav-item d-none d-sm-inline-block">
-      <a href="index3.html" className="nav-link" style={{color:"#d0d2d6"}}>Home</a>
+      <a href="index3.html" className="nav-link" style={{color:colorScheme.card_txt_color}}>Home</a>
     </li>
     <li className="nav-item d-none d-sm-inline-block">
-      <a href="#" className="nav-link" style={{color:"#d0d2d6"}}>Contact</a>
+      <a href="#" className="nav-link" style={{color:colorScheme.card_txt_color}}>Contact</a>
     </li>
   </ul>
-  {/* <ul className="navbar-nav ml-auto">
+  <ul className="navbar-nav ml-auto">
 
-    <li className="nav-item">
+    {/* <li className="nav-item">
       <a className="nav-link" data-widget="navbar-search" href="#" role="button">
         <i className="fas fa-search" />
       </a>
@@ -131,13 +124,13 @@ const Navbar = () => {
       <a className="nav-link" data-widget="fullscreen" href="#" role="button">
         <i className="fas fa-expand-arrows-alt" />
       </a>
-    </li>
-    <li className="nav-item">
-      <a className="nav-link" data-widget="control-sidebar" href="/" data-slide="true"  role="button" onClick={logOut}>
-        <i className="fas fa-lock"  />
+    </li> */}
+    {/* <li className="nav-item">
+      <a className="nav-link" data-widget="control-sidebar" href="/" data-slide="true"  role="button" onClick={logOut} style={{color:colorScheme.card_txt_color}}>
+        <i className="fas fa-lock " style={{fontSize:"1.4em"}}  />
       </a>
-    </li>
-  </ul> */}
+    </li> */}
+  </ul> 
 </nav>
 {/* /.navbar */}
 

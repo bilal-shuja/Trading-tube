@@ -2,14 +2,13 @@ import {useLoginPostMutation} from '../services/Auth.js';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from '../Colors/Styles.js';
 import { toast } from "react-toastify";
-import {Link} from 'react-router-dom';
 import React,{useState} from 'react';
 
 toast.configure()
 const Login = () => {
   const [loginPost , result] = useLoginPostMutation();
     const [login, setLogin] = useState({
-        email:'',
+        phone:'',
         password:''
       })
     
@@ -24,7 +23,7 @@ const Login = () => {
         e.preventDefault()
         setLoading(true)
         const loginObj = {
-          email:login.email,
+          phone:login.phone,
           password:login.password
         }
   
@@ -32,14 +31,11 @@ const Login = () => {
           await loginPost(loginObj).unwrap()
           .then((res) =>{
   
-                  if(res.company.id ){
+                  if(res.user.role_id !== 5){
                     setLoading(false)
                     setInput(false)
                     localStorage.setItem('login',true);
-                    localStorage.setItem('email',login.email);
-                    localStorage.setItem('id',res.company.id);
-                    localStorage.setItem('mem_Name',res.company.username);
-
+                    localStorage.setItem('user',JSON.stringify(res.user));
                     toast.info("Successfully logged In!",{theme:"dark"});
                     setInterval(() => {
                       window.location.reload(true);
@@ -98,12 +94,12 @@ const Login = () => {
       <div className="card-body">
         <p className="login-box-msg" style={{color:colorScheme.card_txt_color}}>Sign in to start your session</p>
         <form onSubmit={userLogin}>
-            <label htmlFor="" className="form-label" style={{ color:colorScheme.card_txt_color}}>Email</label>
+            <label htmlFor="" className="form-label" style={{ color:colorScheme.card_txt_color}}>Phone</label>
           <div className="input-group mb-3">
-            <input type="email" className={login.email ===" " && input === true ? "form-control border border-danger":"form-control"} name="email" placeholder="john@example.com" value={login.email} onChange={inputHandler}  style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+            <input type="number" className={login.phone ===" " && input === true ? "form-control border border-danger":"form-control"} name="phone" placeholder="Enter Phone no" value={login.phone} onChange={inputHandler}  style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
             <div className="input-group-append">
               <div className="input-group-text">
-                <span className="fas fa-envelope" />
+                <span className="fas fa-phone" />
               </div>
             </div>
           </div>

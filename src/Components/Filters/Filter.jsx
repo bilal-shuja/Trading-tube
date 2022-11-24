@@ -1,8 +1,8 @@
-import React,{useState } from 'react';
+import React from 'react';
 import colorScheme from "../Colors/Styles.js";
 
 
-const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,StopPromotionData,luckyDrawData,ParticipantData,DateFilter,StatusFilter , PriceStatus, PackageTableIdentifier, DepoSheetIdentifier,InvestmentSheetIdentifier,BalanceSheetIdentifier,PromotionSheetIdentifier,StopPromoSheetIdentifier,LuckyDrawSheetIdentifier,ParticipantSheetIdentifier}) => {
+const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,StopPromotionData,luckyDrawData,ParticipantData,DateFilter,StatusFilter,PhoneFilter , PriceStatus, PackageTableIdentifier, DepoSheetIdentifier,InvestmentSheetIdentifier,BalanceSheetIdentifier,PromotionSheetIdentifier,StopPromoSheetIdentifier,LuckyDrawSheetIdentifier,ParticipantSheetIdentifier}) => {
 
 
 
@@ -91,7 +91,6 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
     function searchByStatus(e){
       if(PackageTableIdentifier){
         if(e.target.value !== "All"){
-          console.log(PackageData)
           const statusFilter = PackageData.filter((items)=> items.status === e.target.value)
           StatusFilter(statusFilter)
         }
@@ -102,7 +101,6 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
       }
       else if(DepoSheetIdentifier){
         if(e.target.value !== "All"){
-          console.log(e.target.value)
           const statusFilter = DepositData.filter((items)=> items.status === e.target.value)
           StatusFilter(statusFilter)
         }
@@ -367,6 +365,16 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
 
     }
 
+    function searchByPhone(e){
+      if(e.target.value !== " "){
+        const dateFilter = DepositData.filter((items)=> items.phone === e.target.value)
+        PhoneFilter(dateFilter)      
+      }
+      else{
+        PhoneFilter(DepositData)
+      }
+    }
+
 
 
     
@@ -422,6 +430,24 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
                       />
                  </div>
             </div>
+{
+  DepoSheetIdentifier? 
+  <div className="col-sm-4">
+                <label htmlFor="" className="form-label "> Search with Phone:</label>
+                    <div className="form-group">
+                      <input type="text" className="form-control" placeholder="Search by Phone..."
+                       style={{
+                        background: colorScheme.card_bg_color,
+                        color: colorScheme.card_txt_color,
+                        }}
+                        onChange={(e)=> searchByPhone(e)}
+                      />
+                 </div>
+            </div>
+            :
+            null
+}
+            
 
     </>
   )

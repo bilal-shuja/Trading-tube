@@ -30,14 +30,19 @@ const RegMemForm = () => {
               password_confirmation:password,
               email:email,
               phone:phone,
-              role_id:role
+              role_id:role,
+              cnic:"kk1122",
+              code:"ACCA",
+              firstname:"something",
+              lastname:"something",
+              question:"hey there",
+              answer:"goood"
             }
             
         await regPost(regUserObj).unwrap()
         .then((res)=>{
             setLoading(false)
-            toast.info("Member Registered", {theme:"dark"})
-            
+            toast.info("Member Registered!", {theme:"dark"})
                 setRole('')
                 setEmail('')
                 setUsername('')
@@ -46,15 +51,14 @@ const RegMemForm = () => {
                 setPhone('')
    
         })
-        .catch((error)=>{
-          if(error.status === 401){
+        .catch((res)=>{
+          if(res.status === 401){
             setLoading(false)
-            toast.warn(error.data.message)
+            toast.warn(res.data.message,{theme:"dark"})
           }
           else{
             setLoading(false)
             toast.warn("Something went wrong",{theme:"dark"})
-            console.log(error)
 
           }
          
@@ -81,19 +85,13 @@ const RegMemForm = () => {
   return (
     <>
     <div className="scroll-view-two scrollbar-secondary-two">
-<div className="content-wrapper p-3" style={{background:colorScheme.body_bg_color}}>
+    <div className="content-wrapper p-3" style={{background:colorScheme.body_bg_color}}>
 
   <section className="content-header">
     <div className="container-fluid">
       <div className="row mb-2">
         <div className="col-sm-6">
-          <h1 style={{color:colorScheme.card_txt_color}}>Register Members</h1>
-        </div>
-        <div className="col-sm-6">
-          <ol className="breadcrumb float-sm-right">
-            {/* <li className="breadcrumb-item" ><a href="#" style={{color:colorScheme.card_txt_color}}><i className="fa-solid fa-lock fa-2x"></i></a></li> */}
-            {/* <li className="breadcrumb-item active">Add Package</li> */}
-          </ol>
+          <h1 style={{color:colorScheme.card_txt_color}}>Register</h1>
         </div>
       </div>
     </div>{/* /.container-fluid */}

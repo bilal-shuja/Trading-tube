@@ -141,6 +141,7 @@ const AddPackagesForm = () => {
     .then((res)=>{
       setLoading(false)
       toast.info("Package Submitted!",{theme:"dark"});
+      console.log(res)
 
     })
     .catch((error)=>{
@@ -154,11 +155,11 @@ const AddPackagesForm = () => {
     setPackageIncome('');
     setProfitIncome('');
     setProfitDuration('');
-     setCycleIncome('')
+    setCycleIncome('')
     setCycleDuration('')
     setSinglePayment('');
     setProfitPercent('');
-     setCyclePercent('');
+    setCyclePercent('');
     setPackageDays('');
     setPackageDescrip('');
     setPackageImage('');

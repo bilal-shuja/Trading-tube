@@ -26,12 +26,12 @@ const HelpChatCenter = () => {
 
   const SetLocalLogin = async () => {
     try {
-      let mem_Name = await localStorage.getItem('mem_Name');
-      let admin_ID = await localStorage.getItem('id');
+      let userObj = await localStorage.getItem('user');
+      let parseUserObj = JSON.parse(userObj)
   
-      if (mem_Name !== null && admin_ID !== null) {
-        setAdminID(admin_ID);
-        setMemName(mem_Name)
+      if (parseUserObj !== null) {
+        setAdminID(parseUserObj.id);
+        setMemName(parseUserObj.username)
       }
 
     } catch {
@@ -145,7 +145,12 @@ const statusObj ={
                     </h4>
                     &nbsp;&nbsp; (#{ID})
                   </div>
+                  {
+                    ticketStatus === "closed"? <h3 className="mt-4">This ticket is closed
+                    <i className="fa-light fa-octagon-exclamation"></i>
+                    </h3>:
                   <button className="btn btn-outline-success" onClick={()=> closeTicket(ID)}>Close Ticket</button>
+                  }
                 </h1>
               </div>
               <div className="col-sm-3">
@@ -170,9 +175,9 @@ const statusObj ={
         
 <div  className="content mt-3">
   <div className="container">
-    <div className="row">
+    {/* <di className="row"> */}
       <div ref={ref} className="scroll-view-two scrollbar-secondary-two">
-          <div  className="col-lg-8 col-md-8 col-sm-8">
+          <div  className="col-lg-8 col-sm-8">
           {/* User Area */}
           <div className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one}}>
             <div className="card-header">
@@ -204,7 +209,7 @@ const statusObj ={
             getTicketReplys.map((items,index)=>{
               return(
                 <>
-                <div key={index} className={items.sender_type === "Admin"?"col-lg-8 col-md-8 col-sm-8 float-right":"ml-4 col-lg-8 col-md-8 col-sm-8 float-left"}>
+                <div key={index} className={items.sender_type === "Admin"?"col-lg-8 col-sm-8 float-right":"col-lg-8 col-sm-8 float-left"}>
                 <div className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one,}}>
              <div className="card-header">
                <div className="card-tools">
@@ -234,7 +239,7 @@ const statusObj ={
         </div>
 
 {
-ticketStatus === "closed"? <img className="img-fluid d-block mx-auto mt-4 mb-2" src={Cancel} alt="Cancel" width={230}/>:
+ticketStatus === "closed"? null:
             
         <div className="col-lg-11 col-sm-12 mx-auto mb-2 mt-2">
         <div className="text-box">
@@ -250,7 +255,7 @@ ticketStatus === "closed"? <img className="img-fluid d-block mx-auto mt-4 mb-2" 
 
   } 
     
-    </div>
+    {/* </di> */}
   </div>
 </div>
 

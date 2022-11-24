@@ -44,9 +44,19 @@ import AddLuckyDrawForm from './Components/LuckyDraw/AddLuckyDraw.jsx';
 import LuckyDrawSheet from './Components/LuckyDraw/LuckyDrawSheet.jsx';
 import ParticipantSheet from './Components/LuckyDraw/ParticipantSheet.jsx';
 
+import PaymentForm from './Components/Payments/PaymentForm.jsx';
+import PaymentSheet from './Components/Payments/PaymentSheet.jsx';
+import UpdatePaymentSheet from './Components/Payments/UpdatePaymentForm.jsx';
+
 // Levels
 import AddLevelForm from './Components/Levels/AddLevelForm.jsx';
 import LevelSheet from './Components/Levels/LevelSheet.jsx';
+import LevelRewardSheet from './Components/Levels/LevelRewardSheet.jsx';
+
+
+// Share Balance
+import ShareBalanceForm from './Components/ShareBalance/ShareBalanceForm.jsx';
+import ShareBalanceSheet from './Components/ShareBalance/ShareBalanceSheet.jsx';
 
 
 // Statistics
@@ -64,6 +74,7 @@ import HelpCenter from './Components/HelpCenter/HelpCenter.jsx';
 import HelpChatCenter from './Components/HelpCenter/HelpChatCenter.jsx';
 import LiveChat from './Components/HelpCenter/LiveChat.jsx';
 import LiveChatCenter from './Components/HelpCenter/LiveChatCenter.jsx';
+
 
 
 
@@ -102,15 +113,11 @@ function App() {
            <Sidebar/>
            <Routes>
            <Route path="/" element={<MemProfile/>}/>
-           <Route path="/RegMemForm" element={<RegMemForm/>}/>
-           <Route path="/MemberSheet" element={<MemberSheet/>}/>
-
-           
 
            <Route path="/UserSheet" element={<UserSheet/>}/>
 
-           
-           
+           <Route path="/RegMemForm" element={<RegMemForm/>}/>
+           <Route path="/MemberSheet" element={<MemberSheet/>}/>
 
            <Route path="/AddPackageForm" element={<AddPackageForm/>}/>
            <Route path="/PackageSheet" element={<PackageSheet/>}/>
@@ -136,20 +143,25 @@ function App() {
 
            <Route path="/AddLevelForm" element={<AddLevelForm/>}/>
            <Route path="/LevelSheet" element={<LevelSheet/>}/>
+           <Route path="/LevelRewardSheet" element={<LevelRewardSheet/>}/>    
+
+           <Route path="/ShareBalanceForm" element={<ShareBalanceForm/>}/>
+           <Route path="/ShareBalanceSheet" element={<ShareBalanceSheet/>}/>    
+
 
            <Route path="/TipsTricksForm" element={<TipsTricksForm/>}/>
            <Route path="/TipsTrickSheet" element={<TipsTrickSheet/>}/>
 
-
            
+           <Route path="/PaymentForm" element={<PaymentForm/>}/>
+           <Route path="/PaymentSheet" element={<PaymentSheet/>}/>
+           <Route path="/UpdatePaymentSheet" element={<UpdatePaymentSheet/>}/>
 
            <Route path="/HelpCenter" element={<HelpCenter/>}/>
            <Route path="/HelpChatCenter" element={<HelpChatCenter/>}/>
            
            <Route path="/LiveChat" element={<LiveChat/>}/>
            <Route path="/LiveChatCenter" element={<LiveChatCenter/>}/>
-
-           
 
            
            </Routes>

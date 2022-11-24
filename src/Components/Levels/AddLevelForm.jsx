@@ -29,11 +29,9 @@ const AddLevelForm = () => {
         if(Level && unlock && reward && investmentStart && investmentLimit){
         axios.post(`${process.env.REACT_APP_BASE_URL}post_level`,levelObj)
         .then((res)=>{
-            console.log(levelObj)
           toast.info("Levels Submitted!",{theme:"dark"});
           setInput(false);
           setLoading(false)
-            console.log(res)
           setTimeout(() => {
             setLevel('');
             setRewards('');
@@ -46,7 +44,6 @@ const AddLevelForm = () => {
         })
         .catch((error)=>{
           toast.warn("Something went wrong",{theme:"dark"});
-          console.log(error)
           setInput(false);
           setLoading(false)
   

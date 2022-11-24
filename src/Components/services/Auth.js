@@ -10,7 +10,7 @@ export const authPost = createApi({
         regPost: builder.mutation({
             query:(regUserObj)=>{    
              return{
-                url:`registercompany`,
+                url:`register`,
                 method:'POST',
                 body:regUserObj
                 }
@@ -20,7 +20,7 @@ export const authPost = createApi({
         loginPost: builder.mutation({
             query:(loginObj)=>{    
              return{
-                url:`companylogin`,
+                url:`login_admin`,
                 method:'POST',
                 body:loginObj
                 }

@@ -22,14 +22,13 @@ const LiveChatCenter = () => {
 
     const SetLocalLogin = async () => {
         try {
-          let mem_Name = await localStorage.getItem('mem_Name');
-          let admin_ID = await localStorage.getItem('id');
-          let admin_Email =await localStorage.getItem('email');
-      
-          if (memName !== null && admin_ID !== null && admin_Email !=null) {
-            setMemName(mem_Name);
-            setAdminID(admin_ID);
-            setAdminEmail(admin_Email);
+          let userObj = await localStorage.getItem('user');
+          let parseUserObj = JSON.parse(userObj)
+          
+          if (parseUserObj !== null) {
+              setAdminID(parseUserObj.id);
+            setMemName(parseUserObj.username);
+            setAdminEmail(parseUserObj.email);
           }
     
         } catch {

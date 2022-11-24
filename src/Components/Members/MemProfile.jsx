@@ -1,8 +1,61 @@
-import React from 'react';
+import React,{useState , useEffect} from 'react';
 import colorScheme from '../Colors/Styles.js';
-import Profile from '../Images/profile.jpg';
+import Profile from '../Images/avatar5.png';
+import axios from 'axios';
 
 const MemProfile = () => {
+
+  const[mem , setMem] = useState('');
+  const[amount , setAmount] = useState('');
+  const SetLocalLogin = async () => {
+    try {
+      let userObj = await localStorage.getItem('user');
+      let parseUserObj = JSON.parse(userObj)
+      
+      if (parseUserObj !== null) {
+        gettingMembers(parseUserObj.id);
+        gettingTotalAmount(parseUserObj.id)
+      
+      }
+
+    } catch {
+      return null;
+    }
+  }
+  function gettingMembers(id){
+    axios.post(`${process.env.REACT_APP_BASE_URL}fetchuserwithid/${id}`)
+    .then((res)=>{
+      setMem(res.data.data)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+  }
+
+  function gettingTotalAmount(id){
+    const memIdObj ={
+      user_id:id
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}fetch_totals`,memIdObj)
+    .then((res)=>{
+      setAmount(res.data.Total_balance)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+  }
+
+
+
+  useEffect(() => {
+    SetLocalLogin()
+  }, [])
+  
+
+  const logOut = ()=>{
+    localStorage.setItem('login',false);
+    window.location.reload(true)    
+  }
   return (
     <>
 <div className="content-wrapper" style={{background:colorScheme.body_bg_color}}>
@@ -15,7 +68,8 @@ const MemProfile = () => {
         <div className="col-sm-6">
           <ol className="breadcrumb float-sm-right">
             {/* <li className="breadcrumb-item"><a href="#">Home</a></li> */}
-            {/* <li className="breadcrumb-item active" style={{color:colorScheme.card_txt_color}}>User Profile</li> */}
+            <li className="breadcrumb-item" ><a href="#" style={{color:colorScheme.card_txt_color}} onClick={logOut}><i className="fa-solid fa-lock fa-2x"></i></a></li>
+
           </ol>
         </div>
       </div>
@@ -30,8 +84,8 @@ const MemProfile = () => {
             <div className="text-center">
                 <img className="img-fluid img-circle"src={Profile} alt="User_profile_picture" width={123} />
             </div>
-            <h3 className="profile-username text-center">Sarib Arshad Khan</h3>
-            <p className="text-muted text-center mt-4">React Native Developer</p>
+            <h3 className="profile-username text-center">{mem.username}</h3>
+            <p className="text-muted text-center mt-4">Trading Tube Co.</p>
             <p  className="text-muted text-center">Bay Area, San Francisco, CA</p>
             
             <div className="text-center">
@@ -50,7 +104,7 @@ const MemProfile = () => {
                     <i className="fa-solid fa-user fa-2x"></i>
                     </div>
                     <div className="col-sm-9 d-flex align-self-center">
-                    <h5 class=" mb-0">Sarib Arshad Khan</h5>
+                    <h5 class=" mb-0">{mem.username}</h5>
                     </div>
                 </div>
 
@@ -60,7 +114,7 @@ const MemProfile = () => {
                     <i className="fa-solid fa-envelope fa-2x"></i>
                     </div>
                     <div className="col-sm-9 d-flex align-self-center">
-                    <h5 class=" mb-0">Saribkhan84@gmail.com</h5>
+                    <h5 class=" mb-0">{mem.email}</h5>
                     </div>
                 </div>
 
@@ -71,17 +125,17 @@ const MemProfile = () => {
                     <i className="fa-solid fa-phone fa-2x"></i>
                     </div>
                     <div className="col-sm-9 d-flex align-self-center">
-                    <h5 class=" mb-0">+92 310 4455217</h5>
+                    <h5 class=" mb-0">{mem.phone}</h5>
                     </div>
                 </div>
 
                     <hr />
                 <div className="row">
                     <div className="col-sm-3">
-                    <i className="fa-solid fa-address-card fa-2x"></i>
+                    <i className="fa-solid fa-money-bill-wave fa-2x"></i>
                     </div>
                     <div className="col-sm-9 d-flex align-self-center">
-                    <h5 class=" mb-0">Bay Area, San Francisco, CA</h5>
+                    <h5 class=" mb-0">{amount}</h5>
                     </div>
                 </div>
                 <hr />

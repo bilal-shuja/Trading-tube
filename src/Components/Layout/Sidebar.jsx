@@ -1,10 +1,27 @@
-import React,{useEffect} from 'react'
+import React,{useState,useEffect} from 'react'
 import {Link} from 'react-router-dom';
 
 const Sidebar = () => {
+  const [memName , setMemName] = useState('')
+  const[roleID , setRoleID] = useState('')
+  const SetLocalLogin = async () => {
+    try {
+      let userObj = await localStorage.getItem('user');
+      let parseUserObj = JSON.parse(userObj)
+      
+      if (parseUserObj !== null) {
+        setMemName(parseUserObj.username);
+        setRoleID(parseUserObj.role_id)
+      }
+
+    } catch {
+      return null;
+    }
+  }
   useEffect(() => {
     const trees = window.$('[data-widget="treeview"]');
     trees.Treeview('init');
+    SetLocalLogin();
   }, [])
   
   return (
@@ -25,7 +42,7 @@ const Sidebar = () => {
         <img src="assets/dist/img/user2-160x160.jpg" className="img-circle elevation-2" alt="User Image" />
       </div>
       <div className="info">
-        <a href="#" className="d-block">Bilal Shuja</a>
+        <a href="#" className="d-block">{memName}</a>
       </div>
     </div>
 
@@ -35,37 +52,9 @@ const Sidebar = () => {
       <ul className="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="true">
         {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
-          <li className="nav-item menu treeview" >
-          <a href="#" className="nav-link">
-            <i className="nav-icon fas fa-people-group mr-2" />
-            <p>
-              Members
-              <i className="right fas fa-angle-left" />
-            </p>
-          </a>
-          <ul className="nav nav-treeview">
-            <li className="nav-item">
-              <Link to="/RegMemForm" className="nav-link ">
-                <i className="far fa-circle nav-icon" />
-                <p>Member Form</p>
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/MemberSheet" className="nav-link ">
-                <i className="far fa-circle nav-icon" />
-                <p>Member Sheet</p>
-              </Link>
-            </li>
-            <li className="nav-item">
-              <Link to="/" className="nav-link">
-                <i className="far fa-circle nav-icon" />
-                <p>Member Profile</p>
-              </Link>
-            </li>
-          </ul>
-        </li>
 
-        <li className="nav-item menu treeview" >
+
+<li className="nav-item menu treeview" >
           <a href="#" className="nav-link">
             <i className="nav-icon fas fa-user mr-2" />
             <p>
@@ -83,6 +72,43 @@ const Sidebar = () => {
           </ul>
         </li>
 
+          <li className="nav-item menu treeview" >
+          <a href="#" className="nav-link">
+            <i className="nav-icon fas fa-people-group mr-2" />
+            <p>
+              Members
+              <i className="right fas fa-angle-left" />
+            </p>
+          </a>
+          <ul className="nav nav-treeview">
+          <li className="nav-item">
+              <Link to="/" className="nav-link">
+                <i className="far fa-circle nav-icon" />
+                <p>Member Profile</p>
+              </Link>
+            </li>
+            {
+               roleID === "1"? 
+            <li className="nav-item">
+              <Link to="/RegMemForm" className="nav-link ">
+                <i className="far fa-circle nav-icon" />
+                <p>Member Form</p>
+              </Link>
+            </li>
+            :
+            null
+              }
+            <li className="nav-item">
+              <Link to="/MemberSheet" className="nav-link ">
+                <i className="far fa-circle nav-icon" />
+                <p>Member Sheet</p>
+              </Link>
+            </li>
+          </ul>
+        </li>
+
+          {
+               roleID === "3"? null:
         <li className="nav-item menu treeview" >
           <a href="#" className="nav-link">
             <i className="nav-icon fas fa-box mr-2" />
@@ -106,6 +132,7 @@ const Sidebar = () => {
             </li>
           </ul>
         </li>
+        }
 
           <li className="nav-item menu treeview">
             <a href="#" className="nav-link   ">
@@ -122,16 +149,16 @@ const Sidebar = () => {
                   <p>Deposit Sheet</p>
                 </Link>
               </li>
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link to="/BalanceSheet" className="nav-link">
                   <i className="far fa-circle nav-icon" />
                   <p>Balance Sheet</p>
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </li>
 
-          <li className="nav-item menu treeview">
+          {/* <li className="nav-item menu treeview">
             <a href="#" className="nav-link   ">
               <i className="nav-icon fas fa-money-bill-transfer" />
               <p>
@@ -147,7 +174,7 @@ const Sidebar = () => {
                 </Link>
               </li>
             </ul>
-          </li>
+          </li> */}
 
           
           <li className="nav-item menu treeview">
@@ -173,7 +200,7 @@ const Sidebar = () => {
             <a href="#" className="nav-link   ">
             <i className="nav-icon  fa-solid fa-bullhorn"></i>             
              <p>
-              Promotions
+              Promotion Rewards
                 <i className="right fas fa-angle-left" />
               </p>
             </a>
@@ -195,7 +222,9 @@ const Sidebar = () => {
 
           </li>
 
-
+        
+          {
+               roleID === "3"? null:
 
           <li className="nav-item menu treeview">
             <a href="#" className="nav-link   ">
@@ -230,7 +259,7 @@ const Sidebar = () => {
             </ul>
 
           </li>
-
+}
           <li className="nav-item menu treeview">
             <a href="#" className="nav-link   ">
             <i className="nav-icon  fa-solid fa-chart-column"></i>             
@@ -256,7 +285,8 @@ const Sidebar = () => {
             </ul>
 
           </li>
-
+          {
+                        roleID === "2"|| roleID === "3"|| roleID === "4"? null:
           <li className="nav-item menu treeview">
             <a href="#" className="nav-link   ">
             <i className="nav-icon  fa-solid fa-signal"></i>             
@@ -279,9 +309,76 @@ const Sidebar = () => {
                   <p>Levels Sheet</p>
                 </Link>
               </li>
+
+              <li className="nav-item">
+                <Link to="/LevelRewardSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Level Reward Sheet</p>
+                </Link>
+              </li>
             </ul>
 
           </li>
+          }
+
+      <li className="nav-item menu treeview">
+            <a href="#" className="nav-link   ">
+            <i className="nav-icon  fa-solid fa-money-bills"></i>             
+             <p>
+             Sharing Balance
+                <i className="right fas fa-angle-left" />
+              </p>
+            </a>
+            <ul className="nav nav-treeview">
+              <li className="nav-item">
+                <Link to="/ShareBalanceForm" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Share Balance</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to="/ShareBalanceSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Share Balance Sheet</p>
+                </Link>
+              </li>
+
+            </ul>
+
+          </li>
+
+            {
+                        roleID === "1"? 
+          <li className="nav-item menu treeview">
+            <a href="#" className="nav-link   ">
+            <i className="nav-icon  fa-solid fa-credit-card"></i>             
+             <p>
+             Payments
+                <i className="right fas fa-angle-left" />
+              </p>
+            </a>
+            <ul className="nav nav-treeview">
+              <li className="nav-item">
+                <Link to="/PaymentForm" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Payment Form</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to="/PaymentSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Payment Sheet</p>
+                </Link>
+              </li>
+            </ul>
+
+          </li>
+          :
+          null
+
+        }
 
           <li className="nav-item menu treeview">
             <a href="#" className="nav-link   ">

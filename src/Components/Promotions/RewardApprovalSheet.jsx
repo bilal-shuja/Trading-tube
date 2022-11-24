@@ -11,6 +11,7 @@ const RewardApprovalSheet = () => {
     const [memID , setMemID] = useState('');
     const[rewardAppStatus ,setRewardAppStatus] = useState('All')
     const [isOpen, setIsOpen] = useState(false)
+    const[roleID , setRoleID] = useState('');
     const PromotionSheetIdentifier = "PromotionSheet";
 
 
@@ -37,6 +38,10 @@ const RewardApprovalSheet = () => {
         }, 3000);
       })
       .catch((error)=>{
+        if(error.status === 401){
+        toast.warn(error.data.message,{theme:"dark"});
+
+        } 
         toast.warn("Something went wrong",{theme:"dark"});
       })
       
@@ -49,7 +54,23 @@ const RewardApprovalSheet = () => {
       setPromotionSheet(val)
     } 
 
+    const SetLocalLogin = async () => {
+      try {
+        let userObj = await localStorage.getItem('user');
+        let parseUserObj = JSON.parse(userObj)
+        
+        if (parseUserObj !== null) {
+          setRoleID(parseUserObj.role_id);
+        }
+    
+      } catch {
+        return null;
+      }
+    }
+    
+
     useEffect(() => {
+      SetLocalLogin()
       gettingRewards()
     }, [])
     
@@ -62,14 +83,8 @@ const RewardApprovalSheet = () => {
             <div className="row mb-2">
               <div className="col-sm-6">
                 <h1 style={{ color: colorScheme.card_txt_color }}>
-                Reward Approval Sheet
+                Reward Approvals
                 </h1>
-              </div>
-              <div className="col-sm-6">
-                <ol className="breadcrumb float-sm-right">
-                  {/* <li className="breadcrumb-item" ><a href="#" style={{color:colorScheme.card_txt_color}}>Home</a></li> */}
-                  {/* <li className="breadcrumb-item active">Add Package</li> */}
-                </ol>
               </div>
             </div>
           </div>
@@ -95,11 +110,17 @@ const RewardApprovalSheet = () => {
                         <tr>
                           <th>#</th>
                           <th>Member Name</th>
-                          <th>Review Image</th>
+                          <th>Review ScreenShot</th>
                           <th>Amount</th>
+                          <th>Review CNIC</th>
                           <th>Status</th>
                           <th>Date</th>
+                          
+                          
+                          {
+                        roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                           <th>Approval</th>
+                            }
                         </tr>
                       </thead>
                       <tbody className="text-center">
@@ -108,7 +129,7 @@ const RewardApprovalSheet = () => {
                             return(
                               <tr key={index} style={{ color: colorScheme.card_txt_color }}>
                               
-                              <td>{items.id}</td>
+                              <td>{items.member_id}</td>
                               <td>{items.member_name}</td>
                               <td>
                                 <img src={`${process.env.REACT_APP_IMG_URL}${items.image}`}  width={50}
@@ -118,6 +139,13 @@ const RewardApprovalSheet = () => {
                                 />
                               </td>
                               <td>{items.amount}</td>
+                              <td>
+                                <img src={`${process.env.REACT_APP_IMG_URL}${items.image_2}`}  width={50}
+                                  onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.image}` , "_blank")}
+                                  style={{cursor:"pointer"}}
+                                  alt=""
+                                />
+                              </td>
                               {
                                 items.status === "approved"?
                                 <td style={{color:"#64dd17"}}>{items.status}</td>
@@ -126,13 +154,20 @@ const RewardApprovalSheet = () => {
 
                               }
                               <td>{items.Idate}</td>
-                              <td>                               
-                                  <button onClick={() => {
-                                  setIsOpen(true) 
-                                  setMemID(items.member_id)}}  className="btn btn-outline-info btn-sm">
-                                    <i className="fa-solid fa-circle-check"></i>
-                                  </button>
-                              </td>
+                              {/* {
+                                 items.status === "approved"? null: */}
+                              {
+                                roleID === "2"|| roleID === "3"|| roleID === "4"? null:
+                                 <td>                               
+                                 <button onClick={() => {
+                                 setIsOpen(true) 
+                                 setMemID(items.member_id)}}  className="btn btn-outline-info btn-sm">
+                                   <i className="fa-solid fa-circle-check"></i>
+                                 </button>
+                                </td>
+                          }
+                              {/* } */}
+                          
                             </tr>
                             )
                           })

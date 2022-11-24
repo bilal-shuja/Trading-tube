@@ -45,7 +45,7 @@ const LiveChat = () => {
   <section className="content mt-4">
   <div className="container" style={{marginBottom:"4em"}}>
     <div className="row">
-      <div className="col-lg-10 col-sm-12 ml-4">
+      <div className="col-lg-8 col-sm-12 ml-4">
         {/* User Area */}
         {
             recentLiveChat.map((items)=>{
@@ -68,9 +68,10 @@ const LiveChat = () => {
                         {
                           items.message
                         }
+
                     </div>
-                    <div className="card-footer text-right">
-                        <Link to="/LiveChatCenter" 
+                  
+                    <Link  to="/LiveChatCenter" 
                          state={{
                           id:items.id,
                           userID: items.user_id,
@@ -79,8 +80,7 @@ const LiveChat = () => {
                           userDate:items.date
                         }}
                         
-                        className="btn btn-outline-info">Chat</Link>
-                    </div>
+                        className="btn btn-outline-info d-block col-2 m-3">Chat</Link>
                   </div>
                 )
             })

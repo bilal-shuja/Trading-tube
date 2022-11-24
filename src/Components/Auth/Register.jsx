@@ -24,7 +24,13 @@ const Register = () => {
       password_confirmation:password,
       email:email,
       phone:phone,
-      role_id:"admin"
+      role_id:1,
+      cnic:"3520211111115",
+      code:"ACCA",
+      firstname:"something",
+      lastname:"something",
+      question:"hey there",
+      answer:"goood"
     }
     
     

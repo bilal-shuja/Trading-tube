@@ -10,8 +10,10 @@ const AllDepositsTable = () => {
     const[getDepos , setDepos] = useState([]);
 
     const[depoChecks , setDepoChecks] = useState([]);
-    const[depoTemArr , depoTempArr] = useState([]);
+    const[depoSum , setDepoSum] = useState('');
+    const[depoTemArr , setTempArr] = useState([]);
     const [depoDate , setDepoDate] = useState('');
+    const[roleID , setRoleID] = useState('');
 
     const DepoSheetIdentifier = "DepositSheet";
 
@@ -19,7 +21,7 @@ const AllDepositsTable = () => {
         axios.post(`${process.env.REACT_APP_BASE_URL}getalldeposits`)
         .then((res)=>{
           setDepos(res.data.Data)
-          depoTempArr(res.data.Data)
+          setTempArr(res.data.Data)
         })
         .catch((error)=>{
           console.log(error)
@@ -43,32 +45,41 @@ const AllDepositsTable = () => {
     }
 
     function gettingDate(val){
-      depoTempArr(val)
+      setTempArr(val)
     }
   
     function gettingStatus(val){
-      depoTempArr(val)
+      setTempArr(val)
     }
   
     function gettingPrice(val){
-      depoTempArr(val)
+      setTempArr(val)
+    }
+
+    function gettingPhone(val){
+      setTempArr(val)
     }
 
 
     function approveSingleDepo(id){
       const depObj ={
         id:id,
-        status:"approved"
       }
       axios.post(`${process.env.REACT_APP_BASE_URL}show`,depObj)
-      .then((res)=>{
-      toast.info("Status Updated!",{theme:"dark"});
-      setTimeout(() => {
-        window.location.reload(true)
-      }, 2000);
+      .then((res)=>{   
+        toast.info(`Status ${res.data.message}`,{theme:"dark"});
+        setTimeout(() => {
+          window.location.reload(true)
+        }, 2000);
       })
       .catch((error)=>{
-        toast.info("Something went wrong",{theme:"dark"});
+        if(error.status === 401){
+        toast.info(error.data.message,{theme:"dark"});
+
+        }
+        else{
+          toast.info("Something went wrong",{theme:"dark"});
+        }
       })
     }
 
@@ -78,21 +89,47 @@ const AllDepositsTable = () => {
       }
       axios.post(`${process.env.REACT_APP_BASE_URL}approve_deposit_bydate`,dateDepObj)
       .then((res)=>{
-        toast.info("Status Updated!",{theme:"dark"});
-        setTimeout(() => {
-          window.location.reload(true)
-        }, 2000);
+          toast.info(`Status ${res.data.message}`,{theme:"dark"});
+          setTimeout(() => {
+            window.location.reload(true)
+          }, 2000);
+        
+     
       })
       .catch((error)=>{
-        toast.warn("Something went wrong",{theme:"dark"});
+        if(error.status === 401){
+          toast.warn(error.data.message,{theme:"dark"});
+        }
+        else{
+          toast.warn("Something went wrong",{theme:"dark"});
+        }
 
       })
     }
 
+    function gettingDepo(){
+
+      const getDepoSum = depoTemArr.reduce((acc, curr)=> acc+ +curr.amount,0)
+      setDepoSum(getDepoSum)
+    }
+
+    const SetLocalLogin = async () => {
+      try {
+        let userObj = await localStorage.getItem('user');
+        let parseUserObj = JSON.parse(userObj)
+        
+        if (parseUserObj !== null) {
+          setRoleID(parseUserObj.role_id);
+        }
   
+      } catch {
+        return null;
+      }
+    }
 
     useEffect(() => {
       gettingDeposits()
+      SetLocalLogin()
     }, [])
     
 
@@ -104,13 +141,7 @@ const AllDepositsTable = () => {
     <div className="container-fluid">
       <div className="row mb-2">
         <div className="col-sm-6">
-          <h1 style={{color:colorScheme.card_txt_color}}>Deposits Sheet</h1>
-        </div>
-        <div className="col-sm-6">
-          <ol className="breadcrumb float-sm-right">
-            {/* <li className="breadcrumb-item" ><a href="#" style={{color:colorScheme.card_txt_color}}>Home</a></li> */}
-            {/* <li className="breadcrumb-item active">Add Package</li> */}
-          </ol>
+          <h1 style={{color:colorScheme.card_txt_color}}>Deposits</h1>
         </div>
       </div>
     </div>{/* /.container-fluid */}
@@ -123,9 +154,20 @@ const AllDepositsTable = () => {
       <div className="card-header">
 
         <h3>Deposits Sheet</h3>
-      <button className="btn btn-outline-info mt-2 btn-sm" onClick={()=>{window.location.reload()}}>Reset Filters</button>
-      &nbsp;&nbsp;&nbsp;&nbsp; 
+      
+    <div className="row">
+      <div className="col-lg-3">
+      <div className="form-group">
+      <input type="text"  className="form-control form-control-sm" defaultValue={depoSum}  placeholder="total Amount" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+      </div>
+      </div>
+      <div className="col-lg-3">
+        <button className="btn btn-outline-info btn-sm" onClick={gettingDepo}> Total Amount</button>
+      </div>
+    </div>
 
+    <button className="btn btn-outline-info mt-2 btn-sm" onClick={()=>{window.location.reload()}}>Reset Filters</button>
+      &nbsp;&nbsp;&nbsp;&nbsp; 
           {/* <button className="btn btn-outline-info  btn-md mt-2" onClick={()=>setCheckBox(true)}>
               Check & Approve
           </button>
@@ -139,56 +181,79 @@ const AllDepositsTable = () => {
             null
           }
           &nbsp;&nbsp; */}
+        
+        {/* <div className="row float-right">
+          <div className="col-lg-3">
+            <div className="form-group">
+                    <input type="text"  className="form-control input-group-sm" id="exampleInputEmail1" placeholder="Enter Title" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} onChange={(e)=>setDepoDate(e.target.value)}/>
+            </div>
+            <div className="col-lg-3">
+            <button onClick={()=> approveDepoByDate()} className="btn btn-outline-info">
+           Check Total Amount
+            </button>
+            </div>
+     
+            </div>
+ 
+          </div> */}
 
+          {
+              roleID === "2"|| roleID === "3"|| roleID === "4"? null:
 
          <div className="row float-right deposit-date-row">
           <div className="col-8">
             <div className="form-group">
-                    <input type="date"  className="form-control input-group-sm" id="exampleInputEmail1" placeholder="Enter Title" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} onChange={(e)=>setDepoDate(e.target.value)}/>
+                    <input type="date"  className="form-control form-control-sm" id="exampleInputEmail1" placeholder="Enter Title" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} onChange={(e)=>setDepoDate(e.target.value)}/>
             </div>
-          
             </div>
             <div className="col-4">
-            <button onClick={()=> approveDepoByDate()} className="btn btn-outline-info">
+            <button onClick={()=> approveDepoByDate()} className="btn btn-outline-info btn-sm">
            Approve
             </button>
             </div>
           </div>
+        } 
       
       </div>
       <div className="row p-3">
-          <Filter DepositData={getDepos} DateFilter={gettingDate} StatusFilter={gettingStatus} PriceStatus={gettingPrice} DepoSheetIdentifier={DepoSheetIdentifier} />
+          <Filter DepositData={getDepos} DateFilter={gettingDate} StatusFilter={gettingStatus} PriceStatus={gettingPrice} PhoneFilter={gettingPhone} DepoSheetIdentifier={DepoSheetIdentifier} />
         </div>
       
       <div className="card-body table-responsive p-2">
 
-       
+       {
+        depoTemArr.length !==0 ?
+
         <table className="table  text-nowrap">
           <thead className="text-center">
             <tr>
-            <th>#</th>
-            <th>Deposit ID</th>
+            <th>Payer ID</th>
+            <th>Payer Name</th>
+            <th>Phone</th>
             <th>Account Title</th>
             <th>Account Type</th>
             <th>Account Sub-Type</th>
             <th>Account No</th>
             <th>Amount</th>
             <th>Deposit Slip</th>
-            <th>Verified Status</th>
+            {/* <th>Verified Status</th> */}
             <th>Status</th>
             <th>Date</th>
-            <th>Actions</th>
+            {
+              roleID === "2"|| roleID === "3"|| roleID === "4"? null: <th>Actions</th>
+            
+            }
 
             </tr>
           </thead>
           <tbody className="text-center">
             {
-              depoTemArr.length !==0 ?
                 depoTemArr.map((items)=>{
                     return(
                         <tr key={items.id} style={{ color: colorScheme.card_txt_color }}>
-                            <td>{items.id}</td>
                             <td>{items.payer_id}</td>
+                            <td>{items.username}</td>
+                            <td>{items.phone}</td>
                             <td>{items.account_title}</td>
                             <td>{items.account_type}</td>
                             <td>{items.account_subtype}</td>
@@ -200,12 +265,12 @@ const AllDepositsTable = () => {
                              onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.proof_image}`, "_blank")}
                             />
                             </td>
-                            {
+                            {/* {
                              items.verified === "true"?
                             <td style={{color:"#64dd17"}}>{items.verified}</td>
                             :
                             <td style={{color:"#ff1744"}}>{items.verified}</td>
-                            }
+                            } */}
 
                             {
                               items.status === "approved"?
@@ -215,11 +280,15 @@ const AllDepositsTable = () => {
 
                             }
                             <td>{items.Idate}</td>
+                            {
+              roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                         <td>
                         <div className="d-flex align-items-center">
-                          <button onClick={()=> approveSingleDepo(items.id)}  className="btn btn-outline-info btn-sm" >
-                            <i  className="fa fa-person-circle-check"></i>
-                          </button>
+                        
+                                  <button onClick={()=> approveSingleDepo(items.id)}  className="btn btn-outline-info btn-sm" >
+                                  <i  className="fa fa-person-circle-check"></i>
+                                </button>
+                          
                           &nbsp;&nbsp;&nbsp;&nbsp;
                       {
                         checkBox === true? 
@@ -234,20 +303,23 @@ const AllDepositsTable = () => {
 
                         </div>
                         </td>
+                }
                       </tr>
                     )
                 })
-                :
-                <div className="text-center">
-                <h2>No Record Found</h2>
-                </div>
-            }
+              
     
-
+              }
                   
           
           </tbody>
         </table>
+        :
+        <div className="text-center">
+        <h2>No Record Found</h2>
+        </div>
+    
+          }
       </div>
     </div>
   </div>

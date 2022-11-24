@@ -16,7 +16,8 @@ const PackagesTable = () => {
   const[tempPackageArr , setTempPackageArr] = useState([]);
   const [packageStatus , setPackageStatus] = useState('All');
   const [stateID , setStateID] = useState('');
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false);
+  const[roleID , setRoleID] = useState('');
 
 
   function gettingPackages(){
@@ -75,15 +76,29 @@ const PackagesTable = () => {
 
   function gettingPrice(val){
     setTempPackageArr(val)
-    
   }
+
+  const SetLocalLogin = async () => {
+    try {
+      let userObj = await localStorage.getItem('user');
+      let parseUserObj = JSON.parse(userObj)
+      
+      if (parseUserObj !== null) {
+        setRoleID(parseUserObj.role_id);
+      }
+
+    } catch {
+      return null;
+    }
+  }
+
 
 
 
 
 useEffect(() => {
   gettingPackages()
-
+  SetLocalLogin()
 }, [])
 
 
@@ -151,7 +166,11 @@ useEffect(() => {
                           <th>Total Days</th>
                           <th>Image</th>
                           <th>Date</th>
-                          <th>Actions</th>
+                          {
+
+                            roleID === "2"|| roleID === "3"|| roleID === "4"? null: <th>Actions</th>
+                          }
+                          
                         </tr>
                       </thead>
                      
@@ -605,6 +624,10 @@ useEffect(() => {
                               />
                             </td>
                             <td>{items.Idate}</td>
+                            {
+                              roleID === "2" || roleID === "3" || roleID === "4" ?
+                              null
+                              :
                             <td>
                               <div className="d-flex">
                                 {/* <Link
@@ -625,8 +648,11 @@ useEffect(() => {
                                 <button className="btn btn-outline-danger btn-sm" onClick={()=>deletePackage(items.id)}>
                                   <i className="fa fa-trash"></i>
                                 </button>
+
                               </div>
                             </td>
+                          }
+
                           </tr>
                  
                           )
