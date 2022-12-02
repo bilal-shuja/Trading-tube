@@ -2,11 +2,12 @@ import React, {useState,useEffect} from "react";
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
 import ReadMoreReact from "read-more-react";
-// import { Link } from "react-router-dom";
 import Filter from "../Filters/Filter";
 import {toast} from "react-toastify";
 import {Modal} from 'pretty-modal';
+import Moment from 'react-moment';
 import axios from 'axios';
+import 'moment-timezone';
 
 const PackagesTable = () => {
 
@@ -116,15 +117,10 @@ useEffect(() => {
             <div className="row mb-2">
               <div className="col-sm-6">
                 <h1 style={{ color: colorScheme.card_txt_color }}>
-                  Packages Sheet
+                  Packages
                 </h1>
               </div>
-              <div className="col-sm-6">
-                <ol className="breadcrumb float-sm-right">
-                  {/* <li className="breadcrumb-item" ><a href="#" style={{color:colorScheme.card_txt_color}}>Home</a></li> */}
-                  {/* <li className="breadcrumb-item active">Add Package</li> */}
-                </ol>
-              </div>
+
             </div>
           </div>
           {/* /.container-fluid */}
@@ -166,6 +162,7 @@ useEffect(() => {
                           <th>Total Days</th>
                           <th>Image</th>
                           <th>Date</th>
+                          <th>Time</th>
                           {
 
                             roleID === "2"|| roleID === "3"|| roleID === "4"? null: <th>Actions</th>
@@ -599,7 +596,6 @@ useEffect(() => {
                             <td>{items.single_payment}</td>
                             <td>
                               <ReadMoreReact
-                             
                                 text={
                                  items.description
                                 }
@@ -624,21 +620,13 @@ useEffect(() => {
                               />
                             </td>
                             <td>{items.Idate}</td>
+                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
                             {
                               roleID === "2" || roleID === "3" || roleID === "4" ?
                               null
                               :
                             <td>
                               <div className="d-flex">
-                                {/* <Link
-                                  to="/UpdatePackageForm"
-                                  state={{ID:items.id}}
-                                  className="btn btn-outline-info btn-sm"
-
-                                >
-                                  <i className="fa fa-pencil"></i>
-                                </Link>
-                                &nbsp;&nbsp; */}
                                 <button   onClick={() => {
                                   setIsOpen(true) 
                                   setStateID(items.id)}}  className="btn btn-outline-warning btn-sm">

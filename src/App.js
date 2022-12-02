@@ -19,7 +19,11 @@ import RegMemForm from './Components/Members/RegMemForm.jsx';
 
 // Users
 import UserSheet from './Components/Users/UserSheet.jsx';
+import UpdateUserForm from './Components/Users/UpdateUserForm.jsx';
+
+
 import MemberSheet from './Components/Members/MemberSheet.jsx';
+import UpdateMemberForm from './Components/Members/UpdateMemForm.jsx';
 
 // Packages 
 import AddPackageForm from './Components/Packages/AddPackagesForm.jsx';
@@ -57,6 +61,11 @@ import LevelRewardSheet from './Components/Levels/LevelRewardSheet.jsx';
 // Share Balance
 import ShareBalanceForm from './Components/ShareBalance/ShareBalanceForm.jsx';
 import ShareBalanceSheet from './Components/ShareBalance/ShareBalanceSheet.jsx';
+
+// Deduct Balance Sheet
+import DeductBalanceForm from './Components/DeductBalance/DeductBalanceForm.jsx';
+import DeductBalanceSheet from './Components/DeductBalance/DeductBalanceSheet.jsx';
+
 
 
 // Statistics
@@ -104,7 +113,7 @@ function App() {
             <Router>
             <Routes>
             <Route path="/" element={<Login/>}/>
-            <Route path="/Registeration" element={<Register/>}/>
+            {/* <Route path="/Registeration" element={<Register/>}/> */}
           </Routes>
       </Router>
         :
@@ -115,9 +124,15 @@ function App() {
            <Route path="/" element={<MemProfile/>}/>
 
            <Route path="/UserSheet" element={<UserSheet/>}/>
+           <Route path="/UpdateUserForm" element={<UpdateUserForm/>}/>
+
+           
+           
 
            <Route path="/RegMemForm" element={<RegMemForm/>}/>
            <Route path="/MemberSheet" element={<MemberSheet/>}/>
+           <Route path="/UpdateMemberForm" element={<UpdateMemberForm/>}/>
+
 
            <Route path="/AddPackageForm" element={<AddPackageForm/>}/>
            <Route path="/PackageSheet" element={<PackageSheet/>}/>
@@ -147,6 +162,12 @@ function App() {
 
            <Route path="/ShareBalanceForm" element={<ShareBalanceForm/>}/>
            <Route path="/ShareBalanceSheet" element={<ShareBalanceSheet/>}/>    
+
+           <Route path="/DeductBalanceForm" element={<DeductBalanceForm/>}/>
+           <Route path="/DeductBalanceSheet" element={<DeductBalanceSheet/>}/>    
+
+           
+
 
 
            <Route path="/TipsTricksForm" element={<TipsTricksForm/>}/>

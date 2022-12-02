@@ -1,13 +1,23 @@
 import React,{useState , useEffect} from 'react';
-import Filter from '../Filters/Filter';
 import colorScheme from "../Colors/Styles.js";
-import StopPromoData from '../Json/StopPromoData.js';
+import Filter from '../Filters/Filter';
+import axios from 'axios';
 
 const StopPromotionSheet = () => {
 
-    const [stopPromoData , setStopPromoData] = useState(StopPromoData)
+  const[stopPromoData , setStopPromoData] = useState([])
   const[roleID , setRoleID] = useState('');
-    const StopPromoSheetIdentifier = "StopPromoSheet";
+  const StopPromoSheetIdentifier = "StopPromoSheet";
+
+  function gettingRewards (){
+    axios.post(`${process.env.REACT_APP_BASE_URL}fetch_all_rewards`)
+    .then((res)=>{
+      setStopPromoData(res.data.Rewards)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+  }
 
     function gettingDate(val){
       setStopPromoData(val)
@@ -35,6 +45,7 @@ const StopPromotionSheet = () => {
 
   useEffect(() => {
     SetLocalLogin()
+    gettingRewards()
   }, [])
   
   return (
@@ -94,7 +105,7 @@ const StopPromotionSheet = () => {
                               <td>{items.Amount}</td>
                               <td>{items.date}</td>
                               {
-                        roleID === "2"|| roleID === "3"|| roleID === "4"? null:
+                             roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>   
                               <div className="d-flex justify-content-center">                            
                                   <button className="btn btn-outline-info btn-sm">

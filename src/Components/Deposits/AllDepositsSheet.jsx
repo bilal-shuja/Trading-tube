@@ -3,6 +3,8 @@ import "react-toastify/dist/ReactToastify.css";
 import colorScheme from '../Colors/Styles.js';
 import { toast } from "react-toastify";
 import Filter from '../Filters/Filter';
+import Moment from 'react-moment';
+import 'moment-timezone';
 import axios from 'axios';
 
 const AllDepositsTable = () => {
@@ -89,7 +91,7 @@ const AllDepositsTable = () => {
       }
       axios.post(`${process.env.REACT_APP_BASE_URL}approve_deposit_bydate`,dateDepObj)
       .then((res)=>{
-          toast.info(`Status ${res.data.message}`,{theme:"dark"});
+          toast.info(`${res.data.message}`,{theme:"dark"});
           setTimeout(() => {
             window.location.reload(true)
           }, 2000);
@@ -97,7 +99,7 @@ const AllDepositsTable = () => {
      
       })
       .catch((error)=>{
-        if(error.status === 401){
+        if(error.status === "401"){
           toast.warn(error.data.message,{theme:"dark"});
         }
         else{
@@ -239,6 +241,7 @@ const AllDepositsTable = () => {
             {/* <th>Verified Status</th> */}
             <th>Status</th>
             <th>Date</th>
+            <th>Time</th>
             {
               roleID === "2"|| roleID === "3"|| roleID === "4"? null: <th>Actions</th>
             
@@ -280,6 +283,8 @@ const AllDepositsTable = () => {
 
                             }
                             <td>{items.Idate}</td>
+                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+
                             {
               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                         <td>

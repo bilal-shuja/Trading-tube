@@ -2,7 +2,7 @@ import React from 'react';
 import colorScheme from "../Colors/Styles.js";
 
 
-const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,StopPromotionData,luckyDrawData,ParticipantData,DateFilter,StatusFilter,PhoneFilter , PriceStatus, PackageTableIdentifier, DepoSheetIdentifier,InvestmentSheetIdentifier,BalanceSheetIdentifier,PromotionSheetIdentifier,StopPromoSheetIdentifier,LuckyDrawSheetIdentifier,ParticipantSheetIdentifier}) => {
+const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,StopPromotionData,luckyDrawData,ParticipantData,MemeberData,DateFilter,StatusFilter,PhoneFilter , PriceStatus, PackageTableIdentifier, DepoSheetIdentifier,InvestmentSheetIdentifier,BalanceSheetIdentifier,PromotionSheetIdentifier,StopPromoSheetIdentifier,LuckyDrawSheetIdentifier,ParticipantSheetIdentifier,MemberSheetIdentifier}) => {
 
 
 
@@ -47,7 +47,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
     }
     else if(PromotionSheetIdentifier){
       if(e.target.value !== " "){
-        const dateFilter = PromotionData.filter((items)=> items.date === e.target.value)
+        const dateFilter = PromotionData.filter((items)=> items.Idate === e.target.value)
         DateFilter(dateFilter)      
       }
       else{
@@ -80,6 +80,16 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
       }
       else{
         DateFilter(ParticipantData)
+      }
+    }
+    else if(MemberSheetIdentifier){
+
+      if(e.target.value !== " "){
+        const dateFilter = MemeberData.filter((items)=> items.Idate === e.target.value)
+        DateFilter(dateFilter)      
+      }
+      else{
+        DateFilter(MemeberData)
       }
     }
       
@@ -257,7 +267,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
       if(e.target.value === "H-to-L"){
         PriceStatus(p => {
           const temparr = [...p]
-          temparr.sort((a,b) => b.Amount-a.Amount)
+          temparr.sort((a,b) => b.amount-a.amount)
           return temparr
           
          })
@@ -265,7 +275,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
       else if(e.target.value === "L-to-H"){
         PriceStatus(p => {
           const temparr = [...p]
-          temparr.sort((a,b) => a.Amount-b.Amount)
+          temparr.sort((a,b) => a.amount-b.amount)
           return temparr
           
          })
@@ -366,12 +376,30 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
     }
 
     function searchByPhone(e){
-      if(e.target.value !== " "){
-        const dateFilter = DepositData.filter((items)=> items.phone === e.target.value)
-        PhoneFilter(dateFilter)      
+      if(DepoSheetIdentifier){
+        if(e.target.value !== " "){
+          const phoneFilter = DepositData.filter((items)=> items.phone === e.target.value)
+          PhoneFilter(phoneFilter)      
+        }
+        else{
+          PhoneFilter(DepositData)
+        }
+  
+
+      }
+   
+      else if(MemberSheetIdentifier){
+        if(e.target.value !== " "){
+          const phoneFilter = MemeberData.filter((items)=> items.phone === e.target.value)
+          PhoneFilter(phoneFilter)      
+        }
+        else{
+          PhoneFilter(MemeberData)
+        }
+  
       }
       else{
-        PhoneFilter(DepositData)
+        return null;
       }
     }
 
@@ -380,6 +408,8 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
     
   return (
     <>
+    {
+      MemberSheetIdentifier ? null:
         <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier?"col-sm-5":"col-sm-4"}>
                     <label htmlFor="" className="form-label">Filter by {LuckyDrawSheetIdentifier || ParticipantSheetIdentifier ? "Fee":"Price"}:</label>
                         <div className="form-group">
@@ -398,8 +428,12 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
                         </div>
                     </div>
                     
+
+            }
+
+                    
                     {
-                      PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier? null:
+                      PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier || MemberSheetIdentifier? null:
                       <div className="col-sm-4">
                       <label htmlFor="" className="form-label"> Search with Status:</label>
                     <div className="form-group">
@@ -431,7 +465,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
                  </div>
             </div>
 {
-  DepoSheetIdentifier? 
+  DepoSheetIdentifier || MemberSheetIdentifier? 
   <div className="col-sm-4">
                 <label htmlFor="" className="form-label "> Search with Phone:</label>
                     <div className="form-group">

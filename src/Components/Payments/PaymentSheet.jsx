@@ -98,8 +98,8 @@ const PaymentSheet = () => {
                                   </button>
                                
                                 </div>   
-                                 
                               </td>
+                              
                             </tr>
                             )
                           })

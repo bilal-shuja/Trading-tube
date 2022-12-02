@@ -2,6 +2,8 @@ import React,{useState, useEffect} from 'react';
 import colorScheme from '../Colors/Styles.js';
 import "react-toastify/dist/ReactToastify.css";
 import { toast } from "react-toastify";
+import Moment from 'react-moment';
+import 'moment-timezone';
 import axios from 'axios';
 
 
@@ -76,7 +78,6 @@ function approveWithdrawalByDate(){
 function gettingWithdrawalSum(){
   if(withdrawalStatus ==='approved' || withdrawalStatus ==='unapproved' ){
     const getWithdrawalSum = withdrawalData.filter((items)=> items.status  === withdrawalStatus).reduce((acc, curr)=> acc+ +curr.requested_amount,0)
-    console.log(getWithdrawalSum)
     setWidthdrawalSum(getWithdrawalSum)
   }
   else if( (withdrawalAcc !== '' && withdrawalStatus === 'All') || ( withdrawalAcc !== '' && withdrawalDate === ' ')){
@@ -205,6 +206,7 @@ const SetLocalLogin = async () => {
                       />
                         </div>
                     </div>
+
                   <div className="col-sm-4">
                           <label htmlFor="" className="form-label "> Search with Date:</label>
                               <div className="form-group">
@@ -230,6 +232,7 @@ const SetLocalLogin = async () => {
                       />
                  </div>
             </div>
+
             </div>
                   <div className="card-body table-responsive p-2">
                     {
@@ -247,6 +250,7 @@ const SetLocalLogin = async () => {
                           <th>Req Amount</th>
                           <th>Status</th>
                           <th>Date</th>
+                          <th>Time</th>
                           {
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               
@@ -280,6 +284,8 @@ const SetLocalLogin = async () => {
                               }
   
                             <td>{items.Idate}</td>
+                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+
                             {
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>
@@ -319,6 +325,8 @@ const SetLocalLogin = async () => {
                               }
   
                             <td>{items.Idate}</td>
+                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+
                             {
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>
@@ -359,6 +367,8 @@ const SetLocalLogin = async () => {
                               }
   
                             <td>{items.Idate}</td>
+                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+
                             {
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>
@@ -398,6 +408,8 @@ const SetLocalLogin = async () => {
                             }
   
                             <td>{items.Idate}</td>
+                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+
                             {
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>
@@ -435,6 +447,8 @@ const SetLocalLogin = async () => {
                               }
     
                               <td>{items.Idate}</td>
+                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+
                               {
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>

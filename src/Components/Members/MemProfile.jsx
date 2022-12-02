@@ -142,30 +142,9 @@ const MemProfile = () => {
                 
                 <div className="row ">
                   <div className="col-sm-3">
-                <i className="fa-solid fa-globe fa-2x"></i>
+                <i className="fa-solid fa-file-signature fa-2x"></i>
                   </div>
-
-                   <div className="col-sm-9">
-                    <i className="fa-brands fa-facebook-f fa-2x"></i>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                     {/* </div>
-                    <div className="col-sm-2">  */}
-                    <i className="fa-brands fa-instagram fa-2x"></i>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                     {/* </div>
-
-                    <div className="col-sm-2"> */}
-                    <i className="fa-brands fa-github fa-2x"></i>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    {/* </div>
-
-                    <div className="col-sm-2">  */}
-                    <i className="fa-brands fa-twitter fa-2x"></i>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    {/* </div>
-                    <div className="col-sm-2">  */}
-                    <i className="fa-brands fa-linkedin fa-2x"></i>
-                    </div>
+                  <h4>{`Your referral code is "${mem.referal_code}"`}</h4>
                     
                 </div>
             </div>

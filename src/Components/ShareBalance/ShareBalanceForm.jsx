@@ -13,9 +13,12 @@ const ShareBalanceForm = () => {
 
     const[loading , setLoading] = useState(false);
     const [input , setInput] = useState(false);
+    const [btn , showBtn] = useState(false);
 
-    const [adminID , setAdminID] = useState('')
-    const[roleID , setRoleID] = useState('')
+    const[getNum , setNum] = useState('')
+
+    const [adminID , setAdminID] = useState('');
+    const[roleID , setRoleID] = useState('');
     const SetLocalLogin = async () => {
       try {
         let userObj = await localStorage.getItem('user');
@@ -34,8 +37,8 @@ const ShareBalanceForm = () => {
     function getEnterCodeForPhone(e){
 
       let keyCode = e.code;
-      if( keyCode ==="Enter" || keyCode  === "NumpadEnter"){
-        getUserByPhone(e);
+        if( keyCode ==="Enter" || keyCode  === "NumpadEnter"){
+        getUserByPhone(e,"key");
       }
       
       else{
@@ -44,49 +47,70 @@ const ShareBalanceForm = () => {
 
     }
 
-    function getUserByPhone(e){
-      axios.post(`${process.env.REACT_APP_BASE_URL}fetch_user_with_phone/${e.target.value}`,)
-      .then((res)=>{
-        setUserName(res.data.Data.username)
-        setUserID(res.data.Data.id)
-        setUserPhone(res.data.Data.phone)
-      })
-      .catch((error)=>{
-        console.log(error)
-      })
+    function getUserByPhone(e,val){
+
+        axios.post(`${process.env.REACT_APP_BASE_URL}fetch_user_with_phone/${val === "key"?e.target.value:e}`)
+        .then((res)=>{
+          setUserName(res.data.Data.username)
+          setUserID(res.data.Data.id)
+          setUserPhone(res.data.Data.phone)
+          showBtn(true)
+  
+        })
+        .catch((error)=>{
+          showBtn(false)
+          toast.warn(error.response.data.message, {theme:"dark"})
+        })
+
+  
       
     }
 
     function submitBalance(){
         setLoading(true)
-        const balanceObj ={
-            user_id:userID,
-            sender_id:adminID,
-            role_id:roleID,
-            phone:userPhone,
-            amount:amount
-        }
-  
-        axios.post(`${process.env.REACT_APP_BASE_URL}Send_balance`,balanceObj)
-        .then((res)=>{
-          toast.info("Balance Sended!",{theme:"dark"});
-          geneNotification()
-          setInput(false);
-          setLoading(false)
-          setTimeout(() => {
-            setUserPhone('')
-            setUserName('')
-            setAmount('')
-          }, 2000);
-       
-      
-        })
-        .catch((error)=>{
-          toast.warn("Something went wrong",{theme:"dark"});
-          setInput(false);
-          setLoading(false)
-  
-        })
+
+if(userName && userPhone && amount){
+  const balanceObj ={
+    user_id:userID,
+    sender_id:adminID,
+    role_id:roleID,
+    phone:userPhone,
+    amount:amount
+}
+
+axios.post(`${process.env.REACT_APP_BASE_URL}Send_balance`,balanceObj)
+.then((res)=>{
+  toast.info("Balance Sended!",{theme:"dark"});
+  geneNotification()
+  setInput(false);
+  setLoading(false)
+  setTimeout(() => {
+    setUserPhone('')
+    setUserName('')
+    setAmount('')
+  }, 2000);
+
+
+})
+.catch((error)=>{
+  if(error.response.data.response === '401'){
+    toast.warn(error.response.data.message,{theme:"dark"});
+    setLoading(false)
+  }
+else{
+  toast.warn("Something went wrong",{theme:"dark"});
+  setInput(true);
+  setLoading(false)
+}
+
+
+})
+}
+   else{
+    toast.warn("Fill the information !",{theme:"dark"})
+      setLoading(false)
+      setInput(true)
+   }
     
       }
 
@@ -145,33 +169,48 @@ const ShareBalanceForm = () => {
           <div className="row">
               <div className="col-lg-4 col-sm-12">
               <div className="form-group">
-                  <label htmlFor="exampleInputEmail1">User Phone*</label>
-                  <input type="number" name="userPhone"  className={userPhone === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputEmail1" onKeyPress={(e)=>getEnterCodeForPhone(e)} placeholder="Enter User Phone" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+                  <label htmlFor="exampleInputEmail1">User phone*</label>&nbsp;&nbsp;
+                <button className="btn btn-outline-info btn-sm" onClick={()=>getUserByPhone(getNum)}>Click</button>
+                  <input type="number" name="userPhone"  className={userPhone === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputEmail1" 
+                  
+                  onChange={(e)=>setNum(e.target.value)}
+                  onKeyPress={(e)=>getEnterCodeForPhone(e)} placeholder="Enter user phone" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
               </div>
               </div>
 
               <div className="col-lg-4 col-sm-12">
               <div className="form-group">
-                  <label htmlFor="exampleInputEmail1">User Name*</label>
-                  <input type="text" name="Username"  className="form-control" value={userName} id="exampleInputEmail1" onKeyPress={(e)=>getEnterCodeForPhone(e)} placeholder="User Name" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+                  <label htmlFor="exampleInputEmail1">User name*</label>
+                  <input type="text" name="Username"  className={userName === ''&& input === true?"form-control border border-danger":"form-control"} value={userName} id="exampleInputEmail1"  placeholder="Enter Username" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
               </div>
               </div>
 
                 <div className="col-lg-4 col-sm-12">
               <div className="form-group">
                 <label htmlFor="exampleInputPassword1">Amount*</label>
-                <input type="number" name="amount" value={amount} className={amount === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword1"  onChange={(e)=>setAmount(e.target.value)} placeholder="Enter Amount" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+                <input type="number" name="amount" value={amount} className={amount === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword1"  onChange={(e)=>setAmount(e.target.value)} placeholder="Enter amount" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
                 </div>
                 </div>
           </div>
 
         </div>
         {/* /.card-body */}
-        <div className="card-footer text-right">
-          <button type="submit" className="btn btn-outline-info" onClick={submitBalance}>
-            {loading === true?"loading...":"Submit"}
-            </button>
-        </div>
+
+
+        { 
+        btn === true ?
+
+            <div className="card-footer text-right">
+            <button type="submit" className="btn btn-outline-info" onClick={submitBalance}>
+              {loading === true?"loading...":"Submit"}
+              </button>
+            </div>
+          :
+          null
+        }
+   
+
+
     </div>
     {/* /.card */}
   </div>

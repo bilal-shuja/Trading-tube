@@ -98,12 +98,15 @@ const Sidebar = () => {
             :
             null
               }
-            <li className="nav-item">
-              <Link to="/MemberSheet" className="nav-link ">
-                <i className="far fa-circle nav-icon" />
-                <p>Member Sheet</p>
-              </Link>
-            </li>
+          
+                    <li className="nav-item">
+                    <Link to="/MemberSheet" className="nav-link ">
+                      <i className="far fa-circle nav-icon" />
+                      <p>Member Sheet</p>
+                    </Link>
+                  </li>
+              
+        
           </ul>
         </li>
 
@@ -212,12 +215,13 @@ const Sidebar = () => {
                 </Link>
               </li>
 
-              <li className="nav-item">
+              {/* <li className="nav-item">
                 <Link to="/StopPromotionSheet" className="nav-link ">
                   <i className="far fa-circle nav-icon" />
                   <p>Stop Promotions</p>
                 </Link>
-              </li>
+              </li> */}
+
             </ul>
 
           </li>
@@ -341,6 +345,33 @@ const Sidebar = () => {
                 <Link to="/ShareBalanceSheet" className="nav-link ">
                   <i className="far fa-circle nav-icon" />
                   <p>Share Balance Sheet</p>
+                </Link>
+              </li>
+
+            </ul>
+
+          </li>
+
+          <li className="nav-item menu treeview">
+            <a href="#" className="nav-link   ">
+            <i className="nav-icon  fa-solid fa-retweet"></i>             
+             <p>
+             Deduct Balance
+                <i className="right fas fa-angle-left" />
+              </p>
+            </a>
+            <ul className="nav nav-treeview">
+              <li className="nav-item">
+                <Link to="/DeductBalanceForm" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Deduct Balance</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to="/DeductBalanceSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Deduct Balance Sheet</p>
                 </Link>
               </li>
 

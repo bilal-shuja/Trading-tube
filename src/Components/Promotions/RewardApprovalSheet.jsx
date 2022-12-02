@@ -4,14 +4,17 @@ import colorScheme from "../Colors/Styles.js";
 import Filter from '../Filters/Filter';
 import { toast } from "react-toastify";
 import {Modal} from 'pretty-modal';
+import Moment from 'react-moment';
+import 'moment-timezone';
 import axios from 'axios';
 
 const RewardApprovalSheet = () => {
     const[promotionSheet , setPromotionSheet] = useState([]);
     const [memID , setMemID] = useState('');
-    const[rewardAppStatus ,setRewardAppStatus] = useState('All')
+    const[rewardRejMessage ,setRewardRejMessage] = useState('')
     const [isOpen, setIsOpen] = useState(false)
     const[roleID , setRoleID] = useState('');
+    const[getRewardStat , setRewardStat] = useState('')
     const PromotionSheetIdentifier = "PromotionSheet";
 
 
@@ -25,23 +28,140 @@ const RewardApprovalSheet = () => {
       })
     }
 
-    function changingRewardAppStatus(){
+    function changingRewardAppStatus(memID){
       const rewardObj = {
-        status:rewardAppStatus,
         member_id:memID
       }
       axios.post(`${process.env.REACT_APP_BASE_URL}update_reward_status_bymid`,rewardObj)
       .then((res)=>{
-        toast.info("Status Updated",{theme:"dark"});
-        setTimeout(() => {
-          window.location.reload(true)
-        }, 3000);
+        if(res.data.status === '200'){
+          toast.info(`Reward ${res.data.message}`,{theme:"dark"});
+          setTimeout(() => {
+            window.location.reload(true)
+          }, 3000);
+        }
+        else{
+          toast.info(`Reward${res.data.message}`,{theme:"dark"});
+
+        }
+     
       })
       .catch((error)=>{
-        if(error.status === 401){
+        if(error.status === "401"){
         toast.warn(error.data.message,{theme:"dark"});
 
         } 
+        toast.warn("Something went wrong",{theme:"dark"});
+      })
+      
+
+    }
+
+
+    
+    function RewardRejection(){
+      axios.post(`${process.env.REACT_APP_BASE_URL}delete_reward/${memID}`)
+      .then((res)=>{
+        if(res.data.status === '200'){
+          toast.info(`Reward Approval Rejected!`,{theme:"dark"});
+          setTimeout(() => {
+            window.location.reload(true)
+          }, 3000);
+        }
+        else{
+          toast.info(`${res.data.message}`,{theme:"dark"});
+
+        }
+
+     
+      })
+      .catch((error)=>{
+        if(error.status === "401"){
+        toast.warn(error.data.message,{theme:"dark"});
+
+        } 
+        toast.warn("Something went wrong",{theme:"dark"});
+      })
+      
+
+    }
+
+    function geneNotification(){
+      const notifiObj ={
+        receiver_id:memID,
+        body:rewardRejMessage,
+        title:"Reward Rejection"
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
+      .then((res)=>{
+        if(res.data.status === '200'){
+          toast.info("Notified to User",{theme:"dark"});
+        }
+        else{
+          toast.info(`${res.data.message}`,{theme:"dark"});
+
+        }
+      })
+      .catch((error)=>{
+        toast.warn("Something went wrong",{theme:"dark"});
+
+      })
+    }
+
+    function gettingPromoStatus(){
+      axios.get(`${process.env.REACT_APP_BASE_URL}getcheck`)
+      .then((res)=>{
+        setRewardStat(res.data.check)
+      })
+      .catch((error)=>{
+        return error
+      })
+    }
+
+    function startPromo(){
+      const startPromoObj = {
+        check :"0"
+      
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}updatecheck`,startPromoObj)
+      .then((res)=>{
+        gettingPromoStatus()
+
+        if(res.data.status === '200'){
+
+          toast.info("Promotion Active",{theme:"dark"});
+        }
+        else{
+          toast.error(res.data.message,{theme:"dark"});
+
+        }
+        console.log(res)
+      })
+      .catch((error)=>{
+        toast.warn("Something went wrong",{theme:"dark"});
+      })
+      
+
+    }
+
+    
+    function endPromo(){
+      const endPromoObj = {
+        check :"1"
+      
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}updatecheck`,endPromoObj)
+      .then((res)=>{
+        gettingPromoStatus()
+        if(res.data.status === '200'){
+          toast.info("Promotion Removed",{theme:"dark"});
+        }
+        else{
+          toast.error(res.data.message,{theme:"dark"});
+
+        }
+      })
+      .catch((error)=>{
         toast.warn("Something went wrong",{theme:"dark"});
       })
       
@@ -72,6 +192,7 @@ const RewardApprovalSheet = () => {
     useEffect(() => {
       SetLocalLogin()
       gettingRewards()
+      gettingPromoStatus()
     }, [])
     
   return (
@@ -99,6 +220,28 @@ const RewardApprovalSheet = () => {
                   <div className="card-header">
                     <h5>Reward Approval Sheet</h5>
                     <button className="btn btn-outline-info btn-sm" onClick={()=>{window.location.reload()}}>Reset Filters</button>
+
+                    {
+                    roleID === "2"|| roleID === "3"|| roleID === "4" ? null:
+
+                    <div className="float-right">
+                      {
+                        getRewardStat !=="0"?
+                        <>
+                        <button className="btn btn-outline-info btn-sm" onClick={()=>startPromo()}>
+                        Start Promotion
+                        </button>&nbsp;&nbsp;&nbsp;&nbsp;
+                        </>
+                        :
+                        <button className="btn btn-outline-danger btn-sm" onClick={()=>endPromo()}>
+                        Stop Promotion
+                      </button> 
+                      }
+                    
+                       
+                    </div>
+                    
+                    }
                   </div>
                   <div className="card-body table-responsive p-2">
                   <div className="row">
@@ -110,16 +253,17 @@ const RewardApprovalSheet = () => {
                         <tr>
                           <th>#</th>
                           <th>Member Name</th>
-                          <th>Review ScreenShot</th>
-                          <th>Amount</th>
                           <th>Review CNIC</th>
+                          <th>Amount</th>
+                          <th>Review ScreenShot</th>
                           <th>Status</th>
                           <th>Date</th>
+                          <th>Time</th>
                           
                           
                           {
                         roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                          <th>Approval</th>
+                          <th>Actions</th>
                             }
                         </tr>
                       </thead>
@@ -129,7 +273,7 @@ const RewardApprovalSheet = () => {
                             return(
                               <tr key={index} style={{ color: colorScheme.card_txt_color }}>
                               
-                              <td>{items.member_id}</td>
+                              <td>{items.id}</td>
                               <td>{items.member_name}</td>
                               <td>
                                 <img src={`${process.env.REACT_APP_IMG_URL}${items.image}`}  width={50}
@@ -141,7 +285,7 @@ const RewardApprovalSheet = () => {
                               <td>{items.amount}</td>
                               <td>
                                 <img src={`${process.env.REACT_APP_IMG_URL}${items.image_2}`}  width={50}
-                                  onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.image}` , "_blank")}
+                                  onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.image_2}` , "_blank")}
                                   style={{cursor:"pointer"}}
                                   alt=""
                                 />
@@ -154,19 +298,34 @@ const RewardApprovalSheet = () => {
 
                               }
                               <td>{items.Idate}</td>
-                              {/* {
-                                 items.status === "approved"? null: */}
+                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+
+                              {/*  items.status === "approved"? null: */}
                               {
                                 roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                                 <td>                               
-                                 <button onClick={() => {
-                                 setIsOpen(true) 
-                                 setMemID(items.member_id)}}  className="btn btn-outline-info btn-sm">
+                                 <td> 
+                                  <div className="d-flex">
+                                  <button onClick={() => {
+                                //  setIsOpen(true)
+                                //  setMemID(items.member_id)
+                                 changingRewardAppStatus(items.member_id)
+                                }} 
+                                 className="btn btn-outline-info btn-sm">
                                    <i className="fa-solid fa-circle-check"></i>
+                                 </button>&nbsp;&nbsp;
+                                 <button onClick={() => {
+                                 setIsOpen(true)
+                                 setMemID(items.member_id)
+                                }} 
+                                 className="btn btn-outline-danger btn-sm">
+                                   <i className="fa-solid fa-circle-xmark"></i>
                                  </button>
+
+                                 
+                                  </div>                   
+                              
                                 </td>
                           }
-                              {/* } */}
                           
                             </tr>
                             )
@@ -175,18 +334,20 @@ const RewardApprovalSheet = () => {
                        
                       </tbody>
                     </table>
-                    <Modal  onClose={() => {setIsOpen(false)}} open={isOpen}>
+                    <Modal 
+                    ariaLabelledby="modal1_label"
+                    ariaDescribedby="modal1_desc"
+                    onClose={() => {setIsOpen(false)}} open={isOpen}>
                            <div className="card-body ">
                            <div className="form-group">
-                           <p><b>Change Status</b></p>
-                           <select className="form-control-sm" aria-label="Default select example"style={{ background: colorScheme.login_card_bg,color: colorScheme.card_txt_color,paddingRight:"11em"}}
-                             onChange={(e) => setRewardAppStatus(e.target.value)}>
-                             <option value="All">All</option>
-                             <option value="approved">approved</option>
-                             <option value="unapproved">unapproved</option>
-                             </select>
+                           <label htmlFor="exampleInputEmail1">Rejection Reason*</label>
+                            <textarea
+                              type="text" className="form-control" id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setRewardRejMessage(e.target.value)} row={4} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
                            </div>
-                           <button onClick={()=>{changingRewardAppStatus()}} className="btn btn-outline-info btn-sm">Submit</button>
+                           <button onClick={()=>{
+                            RewardRejection()
+                            geneNotification()
+                          }} className="btn btn-outline-info btn-sm">Submit</button>
                            </div>
                            </Modal>
                   </div>

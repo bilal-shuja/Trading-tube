@@ -185,7 +185,7 @@ const AddPackagesForm = () => {
               <div className="row mb-2">
                 <div className="col-sm-6">
                   <h1 style={{ color: colorScheme.card_txt_color }}>
-                    Add Packages
+                    Packages Form
                   </h1>
                 </div>
                 <div className="col-sm-6">
@@ -611,8 +611,8 @@ const AddPackagesForm = () => {
                               onChange={(e) => setPackageStatus(e.target.value)}
                               
                               >
-                                <option value="Active">Active</option>
-                                <option value="In-Active">In-Active</option>
+                                <option value="active">Active</option>
+                                <option value="in-active">In-Active</option>
                               </select>
                             </div>
                           </div>

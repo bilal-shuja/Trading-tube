@@ -8,8 +8,12 @@ import axios from 'axios';
 const AddLuckyDraw = () => {
     const [drawTitle , setDrawTitle] = useState('');
     const [drawDescrip , setDrawDescrip] = useState('');
-    const [luckyDrawStatus ,setLuckyStatus] = useState('');
+    const [luckyDrawStatus ,setLuckyStatus] = useState('active');
     const [drawFee , setDrawFee] = useState('');
+    const[winnerNo , setWinnerNo] = useState(0);
+    const[multInputs, setMultInputs] = useState([]);
+    const[multInputArr, setMultInputArr] = useState([]);
+
     const[loading , setLoading] = useState(false);
     const [input , setInput] = useState('');
 
@@ -51,6 +55,47 @@ const AddLuckyDraw = () => {
     setInput(true);
   
     }
+
+
+    const onChangeNumberOfQuestions = (e) => {
+      const numberOfWinningPrice = e.target.value;
+      
+      setWinnerNo(numberOfWinningPrice);
+      if(numberOfWinningPrice > 0){
+        const generateArrays= Array.from(Array(Number(numberOfWinningPrice)).keys())
+        setMultInputs(generateArrays);
+      } else {
+        setMultInputs([])
+      }
+  }
+
+function onEnterPrizeName(e,index){
+const prizeInputs = e.target.value;
+
+let keyCode = e.code;
+if( keyCode ==="Enter" || keyCode  === "NumpadEnter"){
+  const prizeInputObj = {
+    id:index+1,
+    name:prizeInputs
+  }
+  setMultInputArr(p =>[...p , prizeInputObj])}
+
+
+}
+
+  function winnerInputs(){
+    return multInputs.map((items, index)=>(
+      //
+      <div key={items+1} className="col-lg-4 col-sm-12">
+      <div className="form-group">
+        <label htmlFor="exampleInputPassword1">Prize Name {items+1}*</label>
+        <input type="text" name="winnerInputs" className={winnerNo === ''&& input === true?"form-control border border-danger":"form-control"} id={`exampleInputPassword${items+1}`}  placeholder="Enter Winning Prize Name"  onKeyPress={(e)=>{onEnterPrizeName(e , index)}} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+        </div>
+      </div>
+
+      
+    ))
+  }
   
   return (
     <>
@@ -61,7 +106,7 @@ const AddLuckyDraw = () => {
   <div className="container-fluid">
     <div className="row mb-2">
       <div className="col-sm-6">
-        <h1 style={{color:colorScheme.card_txt_color}}>Add Lucky Draw</h1>
+        <h1 style={{color:colorScheme.card_txt_color}}>Lucky Draw</h1>
       </div>
       <div className="col-sm-6">
         <ol className="breadcrumb float-sm-right">
@@ -86,6 +131,24 @@ const AddLuckyDraw = () => {
           {/* form start */}
             <div className="card-body">
               <div className="row">
+
+              <div className="col-lg-4 col-sm-12">
+                      <label htmlFor="" className="form-label"> Search with Status:</label>
+                    <div className="form-group">
+                      <select type="text" className={luckyDrawStatus === ''&& input === true?"form-control border border-danger":"form-control"}
+                       style={{
+                        background: colorScheme.card_bg_color,
+                        color: colorScheme.card_txt_color,
+                        }}
+                        onChange={(e)=>setLuckyStatus(e.target.value)}
+                        >
+                            <option value="All">All</option>
+                            <option value="active">Active</option>
+                            <option value="in-active">In-Active</option>
+                         </select>
+                    </div>
+                    </div>
+
                   <div className="col-lg-4 col-sm-12">
                   <div className="form-group">
                       <label htmlFor="exampleInputEmail1">Title*</label>
@@ -100,23 +163,30 @@ const AddLuckyDraw = () => {
                   </div>
 
                   <div className="col-lg-4 col-sm-12">
-                      <label htmlFor="" className="form-label"> Search with Status:</label>
-                    <div className="form-group">
-                      <select type="text" className={luckyDrawStatus === ''&& input === true?"form-control border border-danger":"form-control"}
-                       style={{
-                        background: colorScheme.card_bg_color,
-                        color: colorScheme.card_txt_color,
-                        }}
-                        onChange={(e)=>setLuckyStatus(e.target.value)}
-                        >
-                            <option value="All">All</option>
-                            <option value="Active">Active</option>
-                            <option value="In-Active">In-Active</option>
-                         </select>
-                    </div>
-                    </div>
-
+                  <div className="form-group">
+                <label htmlFor="exampleInputPassword1">Winning Price*</label>
+                <input type="number" name="drawFee" value={drawFee} className={drawFee === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword1"  onChange={(e)=>setDrawFee(e.target.value)} placeholder="Enter Winning price" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
               </div>
+                  </div>
+
+                  <div className="col-lg-4 col-sm-12">
+                  <div className="form-group">
+                <label htmlFor="exampleInputPassword1">Total Winning*</label>
+                <input type="number" name="winnerNo" value={winnerNo} className={winnerNo === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword1"  onChange={onChangeNumberOfQuestions} placeholder="Enter No of Winners" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+                </div>
+                  </div>
+
+                  {
+                    multInputs.length ?(
+                      <>
+
+                        {winnerInputs()}
+                      </>
+                    )
+                    :
+                    null
+                  }
+           </div>
 
               
 
