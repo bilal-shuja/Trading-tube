@@ -16,9 +16,16 @@ const PaymentForm = () => {
     const[binanceAcc , setBinanceAcc] = useState('');
     const[okxAcc , setOkxAcc] = useState('');
 
+
+    const[jazzCashTitle , setJazzCashTitle] = useState('');
+    const[jazzCashNo , setJazzCashNo] = useState('');
+
+    const[easyPaisaTitle , setEasyPaisaTitle] = useState('')
+    const[easyPaisaNo , setEasyPaisaNo] = useState('');
+
     function submitPaymentInfo() {
           setLoading(true)
-          if(bankAccTitle && bankAccType && bankAccNo && binanceAcc && okxAcc){
+          if(bankAccTitle && bankAccType && bankAccNo && binanceAcc && okxAcc && jazzCashTitle && jazzCashNo && easyPaisaTitle && easyPaisaNo){
               const regUserObj ={
                 bank_account_title:bankAccTitle,
                 bank_account_type:bankAccType,
@@ -48,7 +55,6 @@ const PaymentForm = () => {
               else{
                 setLoading(false)
                 toast.warn("Something went wrong",{theme:"dark"})
-                console.log(error)
     
               }
              
@@ -123,8 +129,6 @@ const PaymentForm = () => {
                 </div>
 
                 <div className="row">
-
-
                 <div className="col-lg-6 col-sm-12">
                     <div className="form-group">
                   <label htmlFor="exampleInputPassword1">Binance Account*</label>
@@ -139,8 +143,42 @@ const PaymentForm = () => {
                   <input type="text" name="Quantity" value={okxAcc} className={okxAcc === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword6"  onChange={(e)=>setOkxAcc(e.target.value)} placeholder="Enter Okx Account" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} />
                 </div>
                 </div>
+                </div>
+
+                <div className="row">
+                <div className="col-lg-6 col-sm-12">
+                    <div className="form-group">
+                  <label htmlFor="exampleInputPassword1">Jazz Cash Title*</label>
+                  <input type="text" name="Quantity" value={jazzCashTitle} className={jazzCashNo === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword5"  onChange={(e)=>setJazzCashTitle(e.target.value)} placeholder="Enter Jazz Cash Title" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} />
+                </div>
+                </div>
+
+                
+                <div className="col-lg-6 col-sm-12">
+                    <div className="form-group">
+                  <label htmlFor="exampleInputPassword1">Jazz Cash No*</label>
+                  <input type="number" name="Quantity" value={jazzCashNo} className={jazzCashNo === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword6"  onChange={(e)=>setJazzCashNo(e.target.value)} placeholder="Enter Jazz Cash No" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} />
+                </div>
+                </div>
+                </div>
 
 
+                <div className="row">
+                
+                <div className="col-lg-6 col-sm-12">
+                    <div className="form-group">
+                  <label htmlFor="exampleInputPassword1">Easy Paisa Title*</label>
+                  <input type="text" name="Quantity" value={easyPaisaTitle} className={easyPaisaTitle === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword5"  onChange={(e)=>setEasyPaisaTitle(e.target.value)} placeholder="Enter Easy Paisa Title" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} />
+                </div>
+                </div>
+
+                
+                <div className="col-lg-6 col-sm-12">
+                    <div className="form-group">
+                  <label htmlFor="exampleInputPassword1">Easy Paisa No*</label>
+                  <input type="number" name="Quantity" value={easyPaisaNo} className={easyPaisaNo === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword6"  onChange={(e)=>setEasyPaisaNo(e.target.value)} placeholder="Enter Easy Paisa No" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} />
+                </div>
+                </div>
                 </div>
 
               </div>

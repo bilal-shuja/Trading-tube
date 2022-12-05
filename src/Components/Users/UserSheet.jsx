@@ -64,7 +64,7 @@ useEffect(() => {
             <div className="row mb-2">
               <div className="col-sm-6">
                 <h1 style={{ color: colorScheme.card_txt_color }}>
-                Users Sheet
+                Users
                 </h1>
               </div>
              
@@ -118,6 +118,7 @@ useEffect(() => {
                           <thead className="text-center">
                             <tr>
                               <th>#</th>
+                              <th>ID</th>
                               <th>Name</th>
                               <th>Last Name</th>
                               <th>Referal Code</th>
@@ -139,6 +140,7 @@ useEffect(() => {
                               users.filter((items)=> items.Idate === userDate).map((items,index)=>{
                                 return(
                                   <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                                    <td>{index+1}</td>
                                   <td>{items.id}</td>
                                   <td>{items.firstname}</td>
                                   <td >{items.lastname}</td>
@@ -177,6 +179,7 @@ useEffect(() => {
                               users.filter((items)=> items.phone === userPhone).map((items,index)=>{
                                 return(
                                   <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                                    <td>{index+1}</td>
                                   <td>{items.id}</td>
                                   <td>{items.firstname}</td>
                                   <td >{items.lastname}</td>
@@ -213,6 +216,7 @@ useEffect(() => {
                             users.filter((items)=> items.role_id === "5").map((items,index)=>{
                                 return(
                                   <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                                    <td>{index+1}</td>
                                   <td>{items.id}</td>
                                   <td>{items.firstname}</td>
                                   <td >{items.lastname}</td>

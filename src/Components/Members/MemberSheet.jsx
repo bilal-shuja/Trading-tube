@@ -138,6 +138,7 @@ useEffect(() => {
                       <thead className="text-center">
                         <tr>
                           <th>#</th>
+                          <th>ID</th>
                           <th>Username</th>
                           <th>First Name</th>
                           <th>Last Name</th>
@@ -162,6 +163,7 @@ useEffect(() => {
                            newSheet.filter((items)=> items.Idate === memDate).map((items,index)=>{
                             return(
                               <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                              <td>{index+1}</td>
                               <td>{items.id}</td>
                               <td>{items.username}</td>
                               <td>{items.firstname}</td>
@@ -213,6 +215,7 @@ useEffect(() => {
                           newSheet.filter((items)=> items.phone === memPhone).map((items,index)=>{
                             return(
                               <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                                <td>{index+1}</td>
                               <td>{items.id}</td>
                               <td>{items.username}</td>
                               <td>{items.firstname}</td>
@@ -263,6 +266,7 @@ useEffect(() => {
                        newSheet.map((items,index)=>{
                             return(
                               <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                                <td>{index+1}</td>
                               <td>{items.id}</td>
                               <td>{items.username}</td>
                               <td>{items.firstname}</td>

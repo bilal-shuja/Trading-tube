@@ -67,8 +67,7 @@ const MemProfile = () => {
         </div>
         <div className="col-sm-6">
           <ol className="breadcrumb float-sm-right">
-            {/* <li className="breadcrumb-item"><a href="#">Home</a></li> */}
-            <li className="breadcrumb-item" ><a href="#" style={{color:colorScheme.card_txt_color}} onClick={logOut}><i className="fa-solid fa-lock fa-2x"></i></a></li>
+            {/* <li className="breadcrumb-item" ><a href="#" style={{color:colorScheme.card_txt_color}} onClick={logOut}><i className="fa-solid fa-lock fa-2x"></i></a></li> */}
 
           </ol>
         </div>

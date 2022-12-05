@@ -2,10 +2,13 @@ import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from '../Colors/Styles.js';
 import { toast } from "react-toastify";
+import Moment from 'react-moment';
+import 'moment-timezone';
 import axios from "axios";
 
 const ShareBalanceSheet = () => {
   const [balanceSheet , setBalanceSheet] = useState([]);
+
 
   function gettingShareBalance(){
       axios.post( `${process.env.REACT_APP_BASE_URL}fetch_send_balance`)
@@ -13,9 +16,46 @@ const ShareBalanceSheet = () => {
         setBalanceSheet(res.data.data)
       })
       .catch((error)=>{
-          console.log(error)
+         return null
       })
   }
+
+
+
+  function retrieveBalance(ID,userID,roleID,senderID,retAmount){
+    const retBalanceObj = {
+      record_id:ID,
+      user_id:userID,
+      sender_id:senderID,
+      role_id:roleID,
+      amount:retAmount
+
+    }
+    axios.post( `${process.env.REACT_APP_BASE_URL}reterive`,retBalanceObj)
+      .then((res)=>{
+        if(res.status === 200){
+
+          toast.info(`${res.data.message}`,{theme:"dark"})
+               setInterval(() => {
+              window.location.reload(true)
+            }, 1500);
+        }
+        else{
+          toast.info(`${res.data.message}`,{theme:"dark"})
+
+        }
+     
+
+      })
+      .catch((error)=>{
+      return null
+      })
+  }
+
+
+
+
+
   useEffect(() => {
     gettingShareBalance()
 }, [])
@@ -57,7 +97,8 @@ const ShareBalanceSheet = () => {
                           <th>Received By</th>
                           <th>Receiver Phone</th>
                           <th>Shared Amount</th>
-                          <th>Date&Time</th>
+                          <th>Date</th>
+                          <th>Time</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -74,11 +115,21 @@ const ShareBalanceSheet = () => {
                                <td>{items.userphone}</td>
                                <td>{items.send_amount}</td>
                               <td>{items.date}</td>
+                              <td> <Moment date={items.updated_at} format="hh:mm:ss"/></td>
+                             
 
                               <td>
                                <div className="d-flex justify-content-center">
-                                <button className="btn btn-outline-danger btn-sm">
-                                    <i className="fa fa-trash"></i>
+                                <button className="btn btn-outline-info btn-sm" onClick={
+                                  ()=>retrieveBalance(
+                                    items.id,
+                                    items.user_id,
+                                    items.sender_role_id,
+                                    items.sender_id,
+                                    items.send_amount
+                                    )
+                                  }>
+                                    <i className="fa fa-rotate-left"></i>
                                   </button>
                                
                                 </div>   

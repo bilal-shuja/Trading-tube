@@ -352,6 +352,8 @@ const Sidebar = () => {
 
           </li>
 
+          {
+                        roleID === "2"|| roleID === "3"|| roleID === "4"? null:
           <li className="nav-item menu treeview">
             <a href="#" className="nav-link   ">
             <i className="nav-icon  fa-solid fa-retweet"></i>             
@@ -378,6 +380,8 @@ const Sidebar = () => {
             </ul>
 
           </li>
+          }
+          
 
             {
                         roleID === "1"? 

@@ -2,6 +2,8 @@ import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from '../Colors/Styles.js';
 import { toast } from "react-toastify";
+import Moment from 'react-moment';
+import 'moment-timezone';
 import axios from "axios";
 const DeductBalanceSheet = () => {
     const [deductSheet , setDeductSheet] = useState([]);
@@ -59,7 +61,8 @@ const DeductBalanceSheet = () => {
                           <th>Affected User</th>
                           <th>User Phone</th>
                           <th>Deducted Amount</th>
-                          <th>Date&Time</th>
+                          <th>Date</th>
+                          <th>Time</th>
                           <th>Actions</th>
                         </tr>
                       </thead>
@@ -76,6 +79,8 @@ const DeductBalanceSheet = () => {
                                <td>{items.userphone}</td>
                                <td>{items.deducted_amount}</td>
                               <td>{items.date}</td>
+                              <td> <Moment date={items.updated_at} format="hh:mm:ss"/></td>
+
 
                               <td>
                                <div className="d-flex justify-content-center">

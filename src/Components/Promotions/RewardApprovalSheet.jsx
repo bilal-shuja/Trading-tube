@@ -1,8 +1,8 @@
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
-import Filter from '../Filters/Filter';
 import { toast } from "react-toastify";
+import Filter from '../Filters/Filter';
 import {Modal} from 'pretty-modal';
 import Moment from 'react-moment';
 import 'moment-timezone';
@@ -36,6 +36,36 @@ const RewardApprovalSheet = () => {
       .then((res)=>{
         if(res.data.status === '200'){
           toast.info(`Reward ${res.data.message}`,{theme:"dark"});
+          setTimeout(() => {
+            window.location.reload(true)
+          }, 3000);
+        }
+        else{
+          toast.info(`Reward${res.data.message}`,{theme:"dark"});
+
+        }
+     
+      })
+      .catch((error)=>{
+        if(error.status === "401"){
+        toast.warn(error.data.message,{theme:"dark"});
+
+        } 
+        toast.warn("Something went wrong",{theme:"dark"});
+      })
+      
+
+    }
+
+    
+    function changingRewardRejStatus(memID){
+      const rewardObj = {
+        member_id:memID
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}update_reward_status_bymid`,rewardObj)
+      .then((res)=>{
+        if(res.data.status === '200'){
+          toast.warn(`Reward ${res.data.message}`,{theme:"dark"});
           setTimeout(() => {
             window.location.reload(true)
           }, 3000);
@@ -107,6 +137,29 @@ const RewardApprovalSheet = () => {
 
       })
     }
+
+    function geneRewardNotification(amount,memID){  
+      const notifiObj ={
+        receiver_id:memID,
+        body:`Congratulations! You have received amount ${amount} from trading tube`,
+        title:"Reward amount received"
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
+      .then((res)=>{
+        if(res.data.status === '200'){
+          toast.info("Notified to User",{theme:"dark"});
+        }
+        else{
+          toast.info(`${res.data.message}`,{theme:"dark"});
+
+        }
+      })
+      .catch((error)=>{
+        toast.warn("Something went wrong",{theme:"dark"});
+
+      })
+    }
+
 
     function gettingPromoStatus(){
       axios.get(`${process.env.REACT_APP_BASE_URL}getcheck`)
@@ -253,6 +306,8 @@ const RewardApprovalSheet = () => {
                         <tr>
                           <th>#</th>
                           <th>Member Name</th>
+                          <th>CNIC</th>
+                          <th>Phne</th>
                           <th>Review CNIC</th>
                           <th>Amount</th>
                           <th>Review ScreenShot</th>
@@ -275,6 +330,9 @@ const RewardApprovalSheet = () => {
                               
                               <td>{items.id}</td>
                               <td>{items.member_name}</td>
+                              <td>{items.cnic}</td>
+                              <td>{items.phone}</td>
+
                               <td>
                                 <img src={`${process.env.REACT_APP_IMG_URL}${items.image}`}  width={50}
                                   onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.image}` , "_blank")}
@@ -300,24 +358,56 @@ const RewardApprovalSheet = () => {
                               <td>{items.Idate}</td>
                             <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
 
-                              {/*  items.status === "approved"? null: */}
                               {
                                 roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                                  <td> 
                                   <div className="d-flex">
-                                  <button onClick={() => {
-                                //  setIsOpen(true)
-                                //  setMemID(items.member_id)
-                                 changingRewardAppStatus(items.member_id)
-                                }} 
-                                 className="btn btn-outline-info btn-sm">
-                                   <i className="fa-solid fa-circle-check"></i>
-                                 </button>&nbsp;&nbsp;
+                                    {
+                                   items.status === "unapproved"?
+                                   <button onClick={() => {
+                                    //  setIsOpen(true)
+                                      // setMemID(items.member_id)
+                                      geneRewardNotification(items.amount,items.member_id)
+                                     changingRewardAppStatus(items.member_id)
+                                    }} 
+                                    data-toggle="tooltip" 
+                                    data-placement="top" 
+                                    title="Approve Reward"
+                                     className="btn btn-outline-info btn-sm">
+                                       <i className="fa-solid fa-circle-check"></i>
+                                     </button>
+                                     :
+                                     null
+                                    }
+                                 &nbsp;&nbsp;
+                                    {
+                                   items.status === "approved"?
+                                   <>
+                                   <button onClick={() => {
+                                    changingRewardRejStatus(items.member_id)
+                                  }} 
+                                  data-toggle="tooltip" 
+                                  data-placement="top" 
+                                  title="Unapprove Reward"
+                                     className="btn btn-outline-warning btn-sm">
+                                      <i className="fa-solid fa-minus"></i>
+                                    </button> 
+                                    &nbsp;&nbsp;
+                                    </>
+                                    :
+                                    null   
+                                    }
+                                 {/* &nbsp;&nbsp; */}
+                              
                                  <button onClick={() => {
                                  setIsOpen(true)
                                  setMemID(items.member_id)
                                 }} 
-                                 className="btn btn-outline-danger btn-sm">
+                                 className="btn btn-outline-danger btn-sm"
+                                 data-toggle="tooltip" 
+                                 data-placement="top" 
+                                 title="Reward Rejection"
+                                 >
                                    <i className="fa-solid fa-circle-xmark"></i>
                                  </button>
 
@@ -338,16 +428,25 @@ const RewardApprovalSheet = () => {
                     ariaLabelledby="modal1_label"
                     ariaDescribedby="modal1_desc"
                     onClose={() => {setIsOpen(false)}} open={isOpen}>
-                           <div className="card-body ">
+                           <div className="card-body">
+                            <h5><b>Possible Notes*</b> </h5>
+                            <ul>
+                            <li>Information that you have provide is incorrect.</li>
+                            <li>Your CNIC is not correct.</li>
+                            <li>Your CNIC screen shot is not visible properly.</li>
+                            <li>Your Review screen shot is not visible properly.</li>
+                            </ul>
+
                            <div className="form-group">
                            <label htmlFor="exampleInputEmail1">Rejection Reason*</label>
                             <textarea
-                              type="text" className="form-control" id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setRewardRejMessage(e.target.value)} row={4} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}}/>
+                              type="text" className="form-control " id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setRewardRejMessage(e.target.value)} row={6} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color,marginRight:"15em"}}/>
                            </div>
                            <button onClick={()=>{
                             RewardRejection()
                             geneNotification()
-                          }} className="btn btn-outline-info btn-sm">Submit</button>
+                          }} className="btn btn-outline-info btn-sm"
+                          >Submit</button>
                            </div>
                            </Modal>
                   </div>

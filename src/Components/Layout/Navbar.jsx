@@ -1,7 +1,19 @@
 import React from 'react';
+import {useNavigate} from 'react-router-dom';
 import colorScheme from '../Colors/Styles.js';
 
 const Navbar = () => {
+ const navigate = useNavigate();
+  const logOut = async ()=>{
+    let login = await  localStorage.setItem('login',false);
+    if(login === false){
+      navigate('/')
+      setInterval(() => {
+        window.location.reload(true)
+    }, 1500);
+    } 
+
+  }
  
   return (
     <>
@@ -12,12 +24,12 @@ const Navbar = () => {
     <li className="nav-item"  >
       <a className="nav-link" data-widget="pushmenu" href="#" role="button"><i className="fas fa-bars" style={{color:colorScheme.card_txt_color}} /></a>
     </li>
-    <li className="nav-item d-none d-sm-inline-block">
-      <a href="index3.html" className="nav-link" style={{color:colorScheme.card_txt_color}}>Home</a>
+    {/* <li className="nav-item d-none d-sm-inline-block">
+      <a href="#" className="nav-link" style={{color:colorScheme.card_txt_color}}>Home</a>
     </li>
     <li className="nav-item d-none d-sm-inline-block">
       <a href="#" className="nav-link" style={{color:colorScheme.card_txt_color}}>Contact</a>
-    </li>
+    </li> */}
   </ul>
   <ul className="navbar-nav ml-auto">
 
@@ -41,7 +53,8 @@ const Navbar = () => {
         </form>
       </div>
     </li>
-
+ */}
+{/* 
     <li className="nav-item dropdown">
       <a className="nav-link" data-toggle="dropdown" href="#">
         <i className="far fa-comments" />
@@ -94,37 +107,25 @@ const Navbar = () => {
         <a href="#" className="dropdown-item dropdown-footer">See All Messages</a>
       </div>
     </li>
-    <li className="nav-item dropdown">
-      <a className="nav-link" data-toggle="dropdown" href="#">
-        <i className="far fa-bell" />
-        <span className="badge badge-warning navbar-badge">15</span>
+     */}
+    <li className="nav-item dropdown" >
+      <a className="nav-link" data-toggle="dropdown" href="#" style={{color:colorScheme.card_txt_color}}>
+        <i className="fa-solid fa-power-off "  style={{fontSize:"1.5em"}}/>
       </a>
       <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-        <span className="dropdown-header">15 Notifications</span>
-        <div className="dropdown-divider" />
-        <a href="#" className="dropdown-item">
-          <i className="fas fa-envelope mr-2" /> 4 new messages
-          <span className="float-right text-muted text-sm">3 mins</span>
-        </a>
-        <div className="dropdown-divider" />
-        <a href="#" className="dropdown-item">
-          <i className="fas fa-users mr-2" /> 8 friend requests
-          <span className="float-right text-muted text-sm">12 hours</span>
-        </a>
-        <div className="dropdown-divider" />
-        <a href="#" className="dropdown-item">
-          <i className="fas fa-file mr-2" /> 3 new reports
-          <span className="float-right text-muted text-sm">2 days</span>
-        </a>
-        <div className="dropdown-divider" />
-        <a href="#" className="dropdown-item dropdown-footer">See All Notifications</a>
+        <div className="dropdown-divider"style={{background: colorScheme.card_bg_color, }}  />
+        <a href="/"  className="dropdown-item" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color, cursor:"pointer"}}  onClick={logOut}>
+          <i className="fas fa-lock mr-2" />logout </a>
       </div>
     </li>
-    <li className="nav-item">
+
+    {/* <li className="nav-item">
       <a className="nav-link" data-widget="fullscreen" href="#" role="button">
         <i className="fas fa-expand-arrows-alt" />
       </a>
     </li> */}
+
+
     {/* <li className="nav-item">
       <a className="nav-link" data-widget="control-sidebar" href="/" data-slide="true"  role="button" onClick={logOut} style={{color:colorScheme.card_txt_color}}>
         <i className="fas fa-lock " style={{fontSize:"1.4em"}}  />

@@ -142,8 +142,9 @@ const Login = () => {
           <a href="forgot-password.html">I forgot my password</a>
         </p> */}
         <p className="text-center mb-0">
-          <a  onClick={()=>{displayMessage()}} style={{ color:colorScheme.card_txt_color, cursor:"pointer"}}>New on our platform? <span  className="text-info">Create an account</span> </a>
+          <a  onClick={()=>{displayMessage()}} style={{ color:colorScheme.card_txt_color, cursor:"pointer"}}>New on our platform? </a>
         </p>
+        {/* <span  className="text-info">Create an account</span> */}
       </div>
       {/* /.login-card-body */}
     </div>
