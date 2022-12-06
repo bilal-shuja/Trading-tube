@@ -32,6 +32,10 @@ const PaymentForm = () => {
                 bank_account_no:bankAccNo,
                 binance_address:binanceAcc,
                 okx_address:okxAcc,
+                jazzcash_title:jazzCashTitle,
+                jazzcash_no:jazzCashNo,
+                easypaisa_title:easyPaisaTitle,
+                easypaisa_no:easyPaisaNo
               
                 }
             axios.post(`${process.env.REACT_APP_BASE_URL}Add_payment`,regUserObj)
@@ -44,6 +48,10 @@ const PaymentForm = () => {
                setBankAccNo('')
                setBinanceAcc('')
                setOkxAcc('')
+               setJazzCashTitle('')
+               setJazzCashNo('')
+              setEasyPaisaTitle('')
+              setEasyPaisaNo('')
              
        
             })
@@ -55,6 +63,7 @@ const PaymentForm = () => {
               else{
                 setLoading(false)
                 toast.warn("Something went wrong",{theme:"dark"})
+                console.log(error)
     
               }
              

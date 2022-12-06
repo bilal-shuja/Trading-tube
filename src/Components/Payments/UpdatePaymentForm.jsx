@@ -20,6 +20,12 @@ const UpdatePaymentForm = () => {
     const[binanceAcc , setBinanceAcc] = useState('');
     const[okxAcc , setOkxAcc] = useState('');
 
+    
+    const[jazzCashTitle , setJazzCashTitle] = useState('');
+    const[jazzCashNo , setJazzCashNo] = useState('');
+
+    const[easyPaisaTitle , setEasyPaisaTitle] = useState('')
+    const[easyPaisaNo , setEasyPaisaNo] = useState('');
 
 
     function gettingPayment(){
@@ -35,6 +41,10 @@ const UpdatePaymentForm = () => {
             setBankAccNo(res.data.Data.bank_account_no) 
             setBinanceAcc(res.data.Data.binance_address)
             setOkxAcc(res.data.Data.okx_address)
+            setJazzCashTitle(res.data.Data.jazzcash_title)
+            setJazzCashNo(res.data.Data.jazzcash_no)
+            setEasyPaisaTitle(res.data.Data.easypaisa_title)
+            setEasyPaisaNo(res.data.Data.easypaisa_no)
         })
         .catch((error)=>{
             console.log(error)
@@ -43,7 +53,7 @@ const UpdatePaymentForm = () => {
 
     function updatePaymentInfo() {
           setLoading(true)
-          if(bankAccTitle && bankAccType && bankAccNo && binanceAcc && okxAcc){
+          if(bankAccTitle && bankAccType && bankAccNo && binanceAcc && okxAcc && jazzCashTitle && jazzCashNo && easyPaisaTitle && easyPaisaNo){
               const regUserObj ={
                 id:ID,
                 bank_account_title:bankAccTitle,
@@ -51,12 +61,17 @@ const UpdatePaymentForm = () => {
                 bank_account_no:bankAccNo,
                 binance_address:binanceAcc,
                 okx_address:okxAcc,
+                jazzcash_title:jazzCashTitle,
+                jazzcash_no:jazzCashNo,
+                easypaisa_title:easyPaisaTitle,
+                easypaisa_no:easyPaisaNo
+
               
                 }
             axios.post(`${process.env.REACT_APP_BASE_URL}update_payment`,regUserObj)
             .then((res)=>{
                 setLoading(false)
-                toast.info("Payment Info Submit!", {theme:"dark"})
+                toast.info("Payment Info Updated!", {theme:"dark"})
                 setTimeout(() => {
                     navigate('/PaymentSheet')
                   }, 3500);
@@ -66,6 +81,10 @@ const UpdatePaymentForm = () => {
                setBankAccNo('')
                setBinanceAcc('')
                setOkxAcc('')
+               setJazzCashTitle('')
+               setJazzCashNo('')
+               setEasyPaisaTitle('')
+               setEasyPaisaNo('')
              
        
             })
@@ -176,6 +195,43 @@ const UpdatePaymentForm = () => {
                 </div>
 
 
+                </div>
+
+                
+                <div className="row">
+                <div className="col-lg-6 col-sm-12">
+                    <div className="form-group">
+                  <label htmlFor="exampleInputPassword1">Jazz Cash Title*</label>
+                  <input type="text" name="Quantity" value={jazzCashTitle} className={jazzCashNo === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword5"  onChange={(e)=>setJazzCashTitle(e.target.value)} placeholder="Enter Jazz Cash Title" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} />
+                </div>
+                </div>
+
+                
+                <div className="col-lg-6 col-sm-12">
+                    <div className="form-group">
+                  <label htmlFor="exampleInputPassword1">Jazz Cash No*</label>
+                  <input type="number" name="Quantity" value={jazzCashNo} className={jazzCashNo === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword6"  onChange={(e)=>setJazzCashNo(e.target.value)} placeholder="Enter Jazz Cash No" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} />
+                </div>
+                </div>
+                </div>
+
+
+                <div className="row">
+                
+                <div className="col-lg-6 col-sm-12">
+                    <div className="form-group">
+                  <label htmlFor="exampleInputPassword1">Easy Paisa Title*</label>
+                  <input type="text" name="Quantity" value={easyPaisaTitle} className={easyPaisaTitle === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword5"  onChange={(e)=>setEasyPaisaTitle(e.target.value)} placeholder="Enter Easy Paisa Title" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} />
+                </div>
+                </div>
+
+                
+                <div className="col-lg-6 col-sm-12">
+                    <div className="form-group">
+                  <label htmlFor="exampleInputPassword1">Easy Paisa No*</label>
+                  <input type="text" name="Quantity" value={easyPaisaNo} className={easyPaisaNo === ''&& input === true?"form-control border border-danger":"form-control"} id="exampleInputPassword6"  onChange={(e)=>setEasyPaisaNo(e.target.value)} placeholder="Enter Easy Paisa No" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} />
+                </div>
+                </div>
                 </div>
 
               </div>

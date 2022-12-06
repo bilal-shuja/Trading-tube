@@ -110,7 +110,7 @@ const Navbar = () => {
      */}
     <li className="nav-item dropdown" >
       <a className="nav-link" data-toggle="dropdown" href="#" style={{color:colorScheme.card_txt_color}}>
-        <i className="fa-solid fa-power-off "  style={{fontSize:"1.5em"}}/>
+        <i className="fa-solid fa-power-off "  style={{fontSize:"1.3em"}}/>
       </a>
       <div className="dropdown-menu dropdown-menu-lg dropdown-menu-right">
         <div className="dropdown-divider"style={{background: colorScheme.card_bg_color, }}  />

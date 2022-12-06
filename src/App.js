@@ -16,14 +16,15 @@ import Register from './Components/Auth/Register.jsx';
 // Members
 import MemProfile from './Components/Members/MemProfile.jsx';
 import RegMemForm from './Components/Members/RegMemForm.jsx';
+import MemberSheet from './Components/Members/MemberSheet.jsx';
+import UpdateMemberForm from './Components/Members/UpdateMemForm.jsx';
+import StaffQuerySheet from './Components/Members/StaffQuerySheet.jsx';
+
 
 // Users
 import UserSheet from './Components/Users/UserSheet.jsx';
 import UpdateUserForm from './Components/Users/UpdateUserForm.jsx';
 
-
-import MemberSheet from './Components/Members/MemberSheet.jsx';
-import UpdateMemberForm from './Components/Members/UpdateMemForm.jsx';
 
 // Packages 
 import AddPackageForm from './Components/Packages/AddPackagesForm.jsx';
@@ -61,6 +62,7 @@ import LevelRewardSheet from './Components/Levels/LevelRewardSheet.jsx';
 // Share Balance
 import ShareBalanceForm from './Components/ShareBalance/ShareBalanceForm.jsx';
 import ShareBalanceSheet from './Components/ShareBalance/ShareBalanceSheet.jsx';
+import RetBalanceSheet from './Components/ShareBalance/RetBalance.jsx';
 
 // Deduct Balance Sheet
 import DeductBalanceForm from './Components/DeductBalance/DeductBalanceForm.jsx';
@@ -103,6 +105,8 @@ function App() {
     }
   }
 
+
+
   useEffect(() => {
     SetLocalLogin()
   }, [])
@@ -123,7 +127,7 @@ function App() {
            <Routes>
            <Route path="/" element={<MemProfile/>}/>
 
-           <Route path="/UserSheet" element={<UserSheet/>}/>
+           <Route path="/UserSheet" element={<UserSheet />}/>
            <Route path="/UpdateUserForm" element={<UpdateUserForm/>}/>
 
            
@@ -132,7 +136,7 @@ function App() {
            <Route path="/RegMemForm" element={<RegMemForm/>}/>
            <Route path="/MemberSheet" element={<MemberSheet/>}/>
            <Route path="/UpdateMemberForm" element={<UpdateMemberForm/>}/>
-
+           <Route path="/StaffQuerySheet" element={<StaffQuerySheet/>}/>
 
            <Route path="/AddPackageForm" element={<AddPackageForm/>}/>
            <Route path="/PackageSheet" element={<PackageSheet/>}/>
@@ -161,7 +165,10 @@ function App() {
            <Route path="/LevelRewardSheet" element={<LevelRewardSheet/>}/>    
 
            <Route path="/ShareBalanceForm" element={<ShareBalanceForm/>}/>
-           <Route path="/ShareBalanceSheet" element={<ShareBalanceSheet/>}/>    
+           <Route path="/ShareBalanceSheet" element={<ShareBalanceSheet/>}/> 
+           <Route path="/RetBalanceSheet" element={<RetBalanceSheet/>}/> 
+
+              
 
            <Route path="/DeductBalanceForm" element={<DeductBalanceForm/>}/>
            <Route path="/DeductBalanceSheet" element={<DeductBalanceSheet/>}/>    

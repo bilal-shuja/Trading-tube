@@ -18,6 +18,10 @@ const WithdrawalSheet = () => {
 
   const[appWithdrawalDate ,setAppWithdrawalDate] = useState('')
   const[roleID , setRoleID] = useState('');
+    
+  const[receID , setReceID] = useState('');
+  const[hostMessage , setHostMessage] = useState('');
+  const[senderID , setSenderID] = useState('');
 
 
   function gettingWithdrawal(){
@@ -107,12 +111,40 @@ const SetLocalLogin = async () => {
     
     if (parseUserObj !== null) {
       setRoleID(parseUserObj.role_id);
+      setSenderID(parseUserObj.id)
     }
 
   } catch {
     return null;
   }
 }
+
+
+
+function submitHostQuery(){
+  const hostQueryObj = {
+    sender_id:senderID,
+    user_id:receID,
+    message:hostMessage,
+    status:"pending"
+
+  }
+  axios.post(`${process.env.REACT_APP_BASE_URL}post_query`,hostQueryObj)
+  .then((res)=>{
+    if(res.data.status === "200")
+    {
+      toast.info("Query Submitted",{theme:"dark"})
+      setHostMessage('')
+    }
+    else{
+      toast.info(res.data.data[0].message,{theme:"dark"})
+    }
+  })
+  .catch((error)=>{
+    toast.warn("Something went wrong" , {theme:"dark"})
+  })
+}
+
 
   useEffect(() => {
     gettingWithdrawal()
@@ -289,12 +321,21 @@ const SetLocalLogin = async () => {
                             {
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>
-                                <div className="d-flex">
+                                <div className="d-flex justify-content-center">
                               
                                   <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
                                     <i className="fa fa-circle-check"></i>
                                   </button>
-                                
+                                  &nbsp;&nbsp;
+                                  {
+                                  roleID === "1"? null:
+                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+                                  onClick={()=>{setReceID(items.user_id)}}
+                                  >
+                                  Query
+                                </button>
+
+                                }
                                 </div>
                               </td>
                           }
@@ -330,12 +371,21 @@ const SetLocalLogin = async () => {
                             {
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>
-                                <div className="d-flex">
+                                <div className="d-flex justify-content-center">
                               
                                   <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
                                     <i className="fa fa-circle-check"></i>
                                   </button>
-                                
+                                  &nbsp;&nbsp;
+                                  {
+                                  roleID === "1"? null:
+                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+                                  onClick={()=>{setReceID(items.user_id)}}
+                                  >
+                                  Query
+                                </button>
+
+                                }
                                 </div>
                               </td>
                           }
@@ -377,7 +427,16 @@ const SetLocalLogin = async () => {
                                   <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
                                     <i className="fa fa-circle-check"></i>
                                   </button>
-                                
+                                  &nbsp;&nbsp;
+                                  {
+                                  roleID === "1"? null:
+                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+                                  onClick={()=>{setReceID(items.user_id)}}
+                                  >
+                                  Query
+                                </button>
+
+                                }
                                 </div>
                               </td>
                           }
@@ -418,7 +477,16 @@ const SetLocalLogin = async () => {
                                   <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
                                     <i className="fa fa-circle-check"></i>
                                   </button>
-                                
+                                  &nbsp;&nbsp;
+                                  {
+                                  roleID === "1"? null:
+                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+                                  onClick={()=>{setReceID(items.user_id)}}
+                                  >
+                                  Query
+                                </button>
+
+                                }
                                 </div>
                               </td>
                           }
@@ -457,7 +525,16 @@ const SetLocalLogin = async () => {
                                   <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
                                     <i className="fa fa-circle-check"></i>
                                   </button>
-                                
+                                  &nbsp;&nbsp;
+                                  {
+                                  // roleID === "1"? null:
+                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+                                  onClick={()=>{setReceID(items.user_id)}}
+                                  >
+                                  Query
+                                </button>
+
+                                }
                                 </div>
                               </td>
                           }
@@ -484,6 +561,30 @@ const SetLocalLogin = async () => {
                     }
                     </div>
                   </div>
+
+                  
+            {/*Query Modal Start  */}
+                
+            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+              <div className="modal-dialog" >
+                <div className="modal-content" style={{background:colorScheme.card_bg_color,color:colorScheme.card_txt_color}}>
+                  <div className="modal-header">
+                    <h5 className="modal-title" id="exampleModalLabel" style={{color:colorScheme.card_txt_color}}>Query Area</h5>
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true"  style={{color:colorScheme.card_txt_color}}>&times;</span>
+                    </button>
+                  </div>
+                  <div className="modal-body">
+                    <textarea type="text" className="form-control" value={hostMessage} placeholder="Writer your query here..." row={6} style={{background:colorScheme.card_bg_color,color:colorScheme.card_txt_color}} onChange={(e)=>setHostMessage(e.target.value)}/>
+                    
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-outline-info" onClick={submitHostQuery}>Submit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+                {/* Query Modal End */}
                 </div>
               </div>
             </div>

@@ -88,7 +88,7 @@ const Sidebar = () => {
               </Link>
             </li>
             {
-               roleID === "1"? 
+               roleID === "1" ||  roleID === "6"? 
             <li className="nav-item">
               <Link to="/RegMemForm" className="nav-link ">
                 <i className="far fa-circle nav-icon" />
@@ -105,13 +105,25 @@ const Sidebar = () => {
                       <p>Member Sheet</p>
                     </Link>
                   </li>
+
+                  {
+               roleID === "1" ||  roleID === "6"? 
+                  <li className="nav-item">
+                    <Link to="/StaffQuerySheet" className="nav-link ">
+                      <i className="far fa-circle nav-icon" />
+                      <p>Staff QuerySheet</p>
+                    </Link>
+                  </li>
+                    :
+                    null
+                }
               
         
           </ul>
         </li>
 
           {
-               roleID === "3"? null:
+               roleID === "3" && roleID === "4"? null:
         <li className="nav-item menu treeview" >
           <a href="#" className="nav-link">
             <i className="nav-icon fas fa-box mr-2" />
@@ -228,7 +240,7 @@ const Sidebar = () => {
 
         
           {
-               roleID === "3"? null:
+               roleID === "3" && roleID === "4"? null:
 
           <li className="nav-item menu treeview">
             <a href="#" className="nav-link   ">
@@ -345,6 +357,13 @@ const Sidebar = () => {
                 <Link to="/ShareBalanceSheet" className="nav-link ">
                   <i className="far fa-circle nav-icon" />
                   <p>Share Balance Sheet</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to="/RetBalanceSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Retrieve Balance Sheet</p>
                 </Link>
               </li>
 

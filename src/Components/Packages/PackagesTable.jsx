@@ -633,10 +633,14 @@ useEffect(() => {
                                 <i className="fa-solid fa-spinner"></i>
                                 </button>
                                 &nbsp;&nbsp;
+                                {
+                              roleID === "2" || roleID === "3" || roleID === "4" || roleID ==="6" ?
+                              null
+                              :
                                 <button className="btn btn-outline-danger btn-sm" onClick={()=>deletePackage(items.id)}>
                                   <i className="fa fa-trash"></i>
                                 </button>
-
+                                }
                               </div>
                             </td>
                           }

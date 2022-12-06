@@ -1,6 +1,7 @@
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
+import QuerySelect from './QuerySelection.js';
 import { toast } from "react-toastify";
 import Filter from '../Filters/Filter';
 import {Modal} from 'pretty-modal';
@@ -14,9 +15,15 @@ const RewardApprovalSheet = () => {
     const[rewardRejMessage ,setRewardRejMessage] = useState('')
     const [isOpen, setIsOpen] = useState(false)
     const[roleID , setRoleID] = useState('');
-    const[getRewardStat , setRewardStat] = useState('')
-    const PromotionSheetIdentifier = "PromotionSheet";
+    const[getRewardStat , setRewardStat] = useState('');
+    const[queryOne , setQueryOne] = useState('');
 
+    const[receID , setReceID] = useState('');
+    const[hostMessage , setHostMessage] = useState('');
+    const[senderID , setSenderID] = useState('');
+  
+
+    const PromotionSheetIdentifier = "PromotionSheet";
 
     function gettingRewards (){
       axios.post(`${process.env.REACT_APP_BASE_URL}fetch_all_rewards`)
@@ -234,12 +241,40 @@ const RewardApprovalSheet = () => {
         
         if (parseUserObj !== null) {
           setRoleID(parseUserObj.role_id);
+          setSenderID(parseUserObj.id)
+
         }
     
       } catch {
         return null;
       }
     }
+
+
+    
+function submitHostQuery(){
+  const hostQueryObj = {
+    sender_id:senderID,
+    user_id:receID,
+    message:hostMessage,
+    status:"pending"
+
+  }
+  axios.post(`${process.env.REACT_APP_BASE_URL}post_query`,hostQueryObj)
+  .then((res)=>{
+    if(res.data.status === "200")
+    {
+      toast.info("Query Submitted",{theme:"dark"})
+      setHostMessage('')
+    }
+    else{
+      toast.info(res.data.data[0].message,{theme:"dark"})
+    }
+  })
+  .catch((error)=>{
+    toast.warn("Something went wrong" , {theme:"dark"})
+  })
+}
     
 
     useEffect(() => {
@@ -307,7 +342,7 @@ const RewardApprovalSheet = () => {
                           <th>#</th>
                           <th>Member Name</th>
                           <th>CNIC</th>
-                          <th>Phne</th>
+                          <th>Phone</th>
                           <th>Review CNIC</th>
                           <th>Amount</th>
                           <th>Review ScreenShot</th>
@@ -365,8 +400,7 @@ const RewardApprovalSheet = () => {
                                     {
                                    items.status === "unapproved"?
                                    <button onClick={() => {
-                                    //  setIsOpen(true)
-                                      // setMemID(items.member_id)
+                                  
                                       geneRewardNotification(items.amount,items.member_id)
                                      changingRewardAppStatus(items.member_id)
                                     }} 
@@ -411,6 +445,17 @@ const RewardApprovalSheet = () => {
                                    <i className="fa-solid fa-circle-xmark"></i>
                                  </button>
 
+                                 &nbsp;&nbsp;
+                                  {
+                                  roleID === "1"? null:
+                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+                                  onClick={()=>{setReceID(items.member_id)}}
+                                  >
+                                  Query
+                                </button>
+
+                                }
+
                                  
                                   </div>                   
                               
@@ -431,16 +476,43 @@ const RewardApprovalSheet = () => {
                            <div className="card-body">
                             <h5><b>Possible Notes*</b> </h5>
                             <ul>
-                            <li>Information that you have provide is incorrect.</li>
-                            <li>Your CNIC is not correct.</li>
-                            <li>Your CNIC screen shot is not visible properly.</li>
-                            <li>Your Review screen shot is not visible properly.</li>
+                              {
+                                QuerySelect.map((items)=>{
+                                  return(
+                                    <div className="custom-control custom-checkbox">
+                                    <input 
+                                    className="custom-control-input custom-control-input-info"
+                                     
+                                    type="checkbox" 
+                                     
+              
+                                    id={`customCheckbox${items.id}`}  
+                                    
+                                    onChange={()=>{
+                                      if(queryOne.includes(items.message)){
+                                       var new_str = queryOne.replace(items.message,'')
+                                        setQueryOne(new_str)
+                                      }
+                                      else{
+
+                                        setQueryOne(queryOne+" "+items.message)
+                                      }
+                                    
+                                      }}/>
+                                    <label htmlFor={`customCheckbox${items.id}`} className="custom-control-label">{items.message}</label>
+                                    </div>
+                                  )
+                            
+                                })
+                              }
+                         
+
                             </ul>
 
                            <div className="form-group">
                            <label htmlFor="exampleInputEmail1">Rejection Reason*</label>
                             <textarea
-                              type="text" className="form-control " id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setRewardRejMessage(e.target.value)} row={6} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color,marginRight:"15em"}}/>
+                              type="text" className="form-control " defaultValue={queryOne} id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setRewardRejMessage(e.target.value)} row={6} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color,marginRight:"15em"}}/>
                            </div>
                            <button onClick={()=>{
                             RewardRejection()
@@ -451,6 +523,30 @@ const RewardApprovalSheet = () => {
                            </Modal>
                   </div>
                 </div>
+
+
+                  {/*Query Modal Start  */}
+                
+            <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+              <div className="modal-dialog" >
+                <div className="modal-content" style={{background:colorScheme.card_bg_color,color:colorScheme.card_txt_color}}>
+                  <div className="modal-header">
+                    <h5 className="modal-title" id="exampleModalLabel" style={{color:colorScheme.card_txt_color}}>Query Area</h5>
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true"  style={{color:colorScheme.card_txt_color}}>&times;</span>
+                    </button>
+                  </div>
+                  <div className="modal-body">
+                    <textarea type="text" className="form-control" value={hostMessage} placeholder="Writer your query here..." row={6} style={{background:colorScheme.card_bg_color,color:colorScheme.card_txt_color}} onChange={(e)=>setHostMessage(e.target.value)}/>
+                    
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-outline-info" onClick={submitHostQuery}>Submit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+                {/* Query Modal End */}
               </div>
             </div>
           </div>

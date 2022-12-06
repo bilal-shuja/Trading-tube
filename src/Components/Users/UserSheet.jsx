@@ -13,6 +13,11 @@ const UserSheet = () => {
     const[userDate , setUserDate] = useState('');
     const[userPhone , setUserPhone] = useState('');
     const[roleID , setRoleID] = useState('');
+
+    const[receID , setReceID] = useState('');
+    const[hostMessage , setHostMessage] = useState('');
+    const[senderID , setSenderID] = useState('');
+
     function gettingUsers(){
       axios.post(`${process.env.REACT_APP_BASE_URL}fetchallusers`)
       .then((res)=>{
@@ -36,6 +41,31 @@ const UserSheet = () => {
       })
     }
 
+
+    function submitHostQuery(){
+      const hostQueryObj = {
+        sender_id:senderID,
+        receiver_id:receID,
+        message:hostMessage,
+        status:"pending"
+
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}post_query`,hostQueryObj)
+      .then((res)=>{
+        if(res.data.status === "200")
+        {
+          toast.info("Query Submitted",{theme:"dark"})
+          setHostMessage('')
+        }
+        else{
+          toast.info(res.data.data[0].message,{theme:"dark"})
+        }
+      })
+      .catch((error)=>{
+        toast.warn("Something went wrong" , {theme:"dark"})
+      })
+    }
+
     const SetLocalLogin = async () => {
       try {
         let userObj = await localStorage.getItem('user');
@@ -43,6 +73,7 @@ const UserSheet = () => {
         
         if (parseUserObj !== null) {
           setRoleID(parseUserObj.role_id)
+          setSenderID(parseUserObj.id)
         }
   
       } catch {
@@ -82,7 +113,7 @@ useEffect(() => {
                     <h5>Users Sheet</h5>
                     <button className="btn btn-outline-info btn-sm" onClick={()=>{window.location.reload()}}>Reset Filters</button>
                         <div className="row p-2">
-                        <div className="col-sm-4">
+                        <div className="col-sm-5">
                           <label htmlFor="" className="form-label "> Search with Date:</label>
                               <div className="form-group">
                                 <input type="text" className="form-control" placeholder="Search by Date..."
@@ -95,7 +126,7 @@ useEffect(() => {
                           </div>
                       </div>
 
-                      <div className="col-sm-4">
+                      <div className="col-sm-5">
                         <label htmlFor="" className="form-label "> Search with Phone:</label>
                             <div className="form-group">
                               <input type="text" className="form-control" placeholder="Search by Phone..."
@@ -156,15 +187,26 @@ useEffect(() => {
                                   <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
                                   <td>
                                   {
-                                  roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                               <div className="d-flex justify-content-center">
-                               {/* <Link className="btn btn-outline-info btn-sm" to="/UpdatePaymentSheet" state={{ID:items.id}}>
-                                    <i className="fa fa-pen"></i>
-                                  </Link>&nbsp;&nbsp; */}
+                                roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
+                                <div className="d-flex justify-content-center">
+                                <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
+                                      <i className="fa fa-pen"></i>
+                                    </Link>&nbsp;&nbsp;
 
                                 <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                                     <i className="fa fa-trash"></i>
                                   </button>
+                                  &nbsp;&nbsp;
+                                
+                                {
+                                  roleID === "1"? null:
+                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+                                  onClick={()=>{setReceID(items.id)}}
+                                  >
+                                  Query
+                                </button>
+
+                                }
                                
                                 </div>
                               }
@@ -195,15 +237,26 @@ useEffect(() => {
                                   <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
                                   <td>
                                   {
-                                  roleID === "2"|| roleID === "3"|| roleID === "4"? null:
+                               roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
                                <div className="d-flex justify-content-center">
-                               {/* <Link className="btn btn-outline-info btn-sm" to="/UpdatePaymentSheet" state={{ID:items.id}}>
+                               <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
                                     <i className="fa fa-pen"></i>
-                                  </Link>&nbsp;&nbsp; */}
+                                  </Link>&nbsp;&nbsp;
 
                                 <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                                     <i className="fa fa-trash"></i>
                                   </button>
+                                  &nbsp;&nbsp;
+                                
+                                {
+                                  roleID === "1"? null:
+                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+                                  onClick={()=>{setReceID(items.id)}}
+                                  >
+                                  Query
+                                </button>
+
+                                }
                                
                                 </div>
                               }
@@ -233,7 +286,7 @@ useEffect(() => {
                                   
                               <td>
                               {
-                                  roleID === "2"|| roleID === "3"|| roleID === "4"? null:
+                                  roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
                                <div className="d-flex justify-content-center">
                                <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
                                     <i className="fa fa-pen"></i>
@@ -241,8 +294,18 @@ useEffect(() => {
 
                                 <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                                     <i className="fa fa-trash"></i>
-                                  </button>
-                               
+                                  </button>&nbsp;&nbsp;
+                                
+                                {
+                                  roleID === "1"? null:
+                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+                                  onClick={()=>{setReceID(items.id)}}
+                                  >
+                                  Query
+                                </button>
+
+                                }
+                                  
                                 </div>
                               }
                               </td>
@@ -266,6 +329,29 @@ useEffect(() => {
                   </div>
                 </div>
                 
+                {/*Query Modal Start  */}
+                
+              <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+              <div className="modal-dialog" >
+                <div className="modal-content" style={{background:colorScheme.card_bg_color,color:colorScheme.card_txt_color}}>
+                  <div className="modal-header">
+                    <h5 className="modal-title" id="exampleModalLabel" style={{color:colorScheme.card_txt_color}}>Query Area</h5>
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true"  style={{color:colorScheme.card_txt_color}}>&times;</span>
+                    </button>
+                  </div>
+                  <div className="modal-body">
+                    <textarea type="text" className="form-control" value={hostMessage} placeholder="Writer your query here..." row={6} style={{background:colorScheme.card_bg_color,color:colorScheme.card_txt_color}} onChange={(e)=>setHostMessage(e.target.value)}/>
+                    
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-outline-info" onClick={submitHostQuery}>Submit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+                {/* Query Modal End */}
+
               </div>
             </div>
           </div>
