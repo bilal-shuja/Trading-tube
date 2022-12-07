@@ -30,7 +30,7 @@ const StaffQuerySheet = () => {
 
     function gettingUsers(){
         const roleObj = {
-            role_id:1
+            role_id:1 ,roleID:6
         }
       axios.post(`${process.env.REACT_APP_BASE_URL}fetch_queries`,roleObj)
       .then((res)=>{
@@ -168,21 +168,21 @@ useEffect(() => {
                                   <td>{items.date}</td>
                                   <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
                                   <td>
-                                  {
-                                roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
+                                  
                                 <div className="d-flex justify-content-center">
                                 {/* <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
                                       <i className="fa fa-pen"></i>
                                     </Link>&nbsp;&nbsp; */}
-
+                              {
+                                roleID === "2"|| roleID === "3"|| roleID === "4" ?null:
                                 <button className="btn btn-outline-danger btn-sm" onClick={()=>updateIssueStatus(items.id)}>
                                     <i className="fa fa-trash"></i>
                                   </button>
                                 
+                              }
                         
                                
                                 </div>
-                              }
 
                               </td>
                                 </tr>
@@ -214,7 +214,7 @@ useEffect(() => {
                                   <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
                                   <td>
                                   {
-                               roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
+                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                                <div className="d-flex justify-content-center">
                                {/* <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
                                     <i className="fa fa-pen"></i>
@@ -259,7 +259,7 @@ useEffect(() => {
                                   
                               <td>
                               {
-                                  roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
+                                  roleID === "2"|| roleID === "3"|| roleID === "4" ? null:
                                <div className="d-flex justify-content-center">
                                {/* <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
                                     <i className="fa fa-pen"></i>

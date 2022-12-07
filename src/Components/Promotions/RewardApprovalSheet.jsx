@@ -349,12 +349,8 @@ function submitHostQuery(){
                           <th>Status</th>
                           <th>Date</th>
                           <th>Time</th>
-                          
-                          
-                          {
-                        roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                           <th>Actions</th>
-                            }
+                            
                         </tr>
                       </thead>
                       <tbody className="text-center">
@@ -446,8 +442,15 @@ function submitHostQuery(){
                                  </button>
 
                                  &nbsp;&nbsp;
-                                  {
-                                  roleID === "1"? null:
+                                 
+                                  </div>                   
+                              
+                                </td>
+
+                          }
+                          <td>
+                          {
+                                  roleID === "1" || roleID === "6"? null:
                                   <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
                                   onClick={()=>{setReceID(items.member_id)}}
                                   >
@@ -455,12 +458,7 @@ function submitHostQuery(){
                                 </button>
 
                                 }
-
-                                 
-                                  </div>                   
-                              
-                                </td>
-                          }
+                          </td>
                           
                             </tr>
                             )

@@ -283,11 +283,8 @@ function submitHostQuery(){
                           <th>Status</th>
                           <th>Date</th>
                           <th>Time</th>
-                          {
-                              roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                              
                           <th>Actions</th>
-                          }
+                          
                         </tr>
                       </thead>
                       <tbody className="text-center">
@@ -328,7 +325,7 @@ function submitHostQuery(){
                                   </button>
                                   &nbsp;&nbsp;
                                   {
-                                  roleID === "1"? null:
+                                  roleID === "1" || roleID === "6"? null:
                                   <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
                                   onClick={()=>{setReceID(items.user_id)}}
                                   >
@@ -378,7 +375,7 @@ function submitHostQuery(){
                                   </button>
                                   &nbsp;&nbsp;
                                   {
-                                  roleID === "1"? null:
+                                  roleID === "1" || roleID === "6"? null:
                                   <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
                                   onClick={()=>{setReceID(items.user_id)}}
                                   >
@@ -429,7 +426,7 @@ function submitHostQuery(){
                                   </button>
                                   &nbsp;&nbsp;
                                   {
-                                  roleID === "1"? null:
+                                  roleID === "1" || roleID === "6"? null:
                                   <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
                                   onClick={()=>{setReceID(items.user_id)}}
                                   >
@@ -479,7 +476,7 @@ function submitHostQuery(){
                                   </button>
                                   &nbsp;&nbsp;
                                   {
-                                  roleID === "1"? null:
+                                  roleID === "1" || roleID ==="6"? null:
                                   <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
                                   onClick={()=>{setReceID(items.user_id)}}
                                   >
@@ -517,27 +514,26 @@ function submitHostQuery(){
                               <td>{items.Idate}</td>
                             <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
 
-                              {
-                              roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                              <td>
+                                <td>
                                 <div className="d-flex">
                               
+                              {
+                                roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                                   <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
                                     <i className="fa fa-circle-check"></i>
                                   </button>
+                                }
                                   &nbsp;&nbsp;
                                   {
-                                  // roleID === "1"? null:
+                                  roleID === "1" || roleID === "6"? null:
                                   <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
                                   onClick={()=>{setReceID(items.user_id)}}
                                   >
                                   Query
                                 </button>
-
                                 }
                                 </div>
                               </td>
-                          }
 
                             </tr>
 

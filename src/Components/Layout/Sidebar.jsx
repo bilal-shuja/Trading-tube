@@ -337,39 +337,43 @@ const Sidebar = () => {
           </li>
           }
 
-      <li className="nav-item menu treeview">
-            <a href="#" className="nav-link   ">
-            <i className="nav-icon  fa-solid fa-money-bills"></i>             
-             <p>
-             Sharing Balance
-                <i className="right fas fa-angle-left" />
-              </p>
-            </a>
-            <ul className="nav nav-treeview">
-              <li className="nav-item">
-                <Link to="/ShareBalanceForm" className="nav-link ">
-                  <i className="far fa-circle nav-icon" />
-                  <p>Share Balance</p>
-                </Link>
-              </li>
+                      {
+                        roleID === "6"? null:
+                        <li className="nav-item menu treeview">
+                        <a href="#" className="nav-link   ">
+                        <i className="nav-icon  fa-solid fa-money-bills"></i>             
+                        <p>
+                        Sharing Balance
+                            <i className="right fas fa-angle-left" />
+                          </p>
+                        </a>
+                        <ul className="nav nav-treeview">
+                          <li className="nav-item">
+                            <Link to="/ShareBalanceForm" className="nav-link ">
+                              <i className="far fa-circle nav-icon" />
+                              <p>Share Balance</p>
+                            </Link>
+                          </li>
 
-              <li className="nav-item">
-                <Link to="/ShareBalanceSheet" className="nav-link ">
-                  <i className="far fa-circle nav-icon" />
-                  <p>Share Balance Sheet</p>
-                </Link>
-              </li>
+                          <li className="nav-item">
+                            <Link to="/ShareBalanceSheet" className="nav-link ">
+                              <i className="far fa-circle nav-icon" />
+                              <p>Share Balance Sheet</p>
+                            </Link>
+                          </li>
 
-              <li className="nav-item">
-                <Link to="/RetBalanceSheet" className="nav-link ">
-                  <i className="far fa-circle nav-icon" />
-                  <p>Retrieve Balance Sheet</p>
-                </Link>
-              </li>
+                          <li className="nav-item">
+                            <Link to="/RetBalanceSheet" className="nav-link ">
+                              <i className="far fa-circle nav-icon" />
+                              <p>Retrieve Balance Sheet</p>
+                            </Link>
+                          </li>
 
-            </ul>
+                        </ul>
 
-          </li>
+                      </li>
+                      }
+     
 
           {
                         roleID === "2"|| roleID === "3"|| roleID === "4"? null:

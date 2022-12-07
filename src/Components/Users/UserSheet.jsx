@@ -95,7 +95,7 @@ useEffect(() => {
             <div className="row mb-2">
               <div className="col-sm-6">
                 <h1 style={{ color: colorScheme.card_txt_color }}>
-                Users
+                Users Sheet
                 </h1>
               </div>
              
@@ -193,6 +193,12 @@ useEffect(() => {
                                       <i className="fa fa-pen"></i>
                                     </Link>&nbsp;&nbsp;
 
+                                    
+                                  <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
+                                    <i className="fa-solid fa-timeline"></i>
+                                  </Link>
+                                  &nbsp;&nbsp;
+
                                 <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                                     <i className="fa fa-trash"></i>
                                   </button>
@@ -243,6 +249,12 @@ useEffect(() => {
                                     <i className="fa fa-pen"></i>
                                   </Link>&nbsp;&nbsp;
 
+                                    
+                                  <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
+                                    <i className="fa-solid fa-timeline"></i>
+                                  </Link>
+                                  &nbsp;&nbsp;
+
                                 <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                                     <i className="fa fa-trash"></i>
                                   </button>
@@ -285,19 +297,29 @@ useEffect(() => {
                                   <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
                                   
                               <td>
-                              {
-                                  roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
+                              
                                <div className="d-flex justify-content-center">
+                               {
+                                  roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
+                                  <>
                                <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
                                     <i className="fa fa-pen"></i>
                                   </Link>&nbsp;&nbsp;
 
+                                  <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
+                                    <i className="fa-solid fa-timeline"></i>
+                                  </Link>
+                                  &nbsp;&nbsp;
+
                                 <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                                     <i className="fa fa-trash"></i>
-                                  </button>&nbsp;&nbsp;
+                                  </button>
+                                  </>
+                            }
                                 
+                            &nbsp;&nbsp;
                                 {
-                                  roleID === "1"? null:
+                                  roleID === "1" || roleID === "6"? null:
                                   <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
                                   onClick={()=>{setReceID(items.id)}}
                                   >
@@ -307,7 +329,7 @@ useEffect(() => {
                                 }
                                   
                                 </div>
-                              }
+                              
                               </td>
                                 </tr>
                                 )

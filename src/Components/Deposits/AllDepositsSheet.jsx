@@ -262,6 +262,7 @@ const AllDepositsTable = () => {
         <table className="table  text-nowrap">
           <thead className="text-center">
             <tr>
+            <th>#</th>
             <th>Payer ID</th>
             <th>Payer Name</th>
             <th>Phone</th>
@@ -271,22 +272,22 @@ const AllDepositsTable = () => {
             <th>Account No</th>
             <th>Amount</th>
             <th>Deposit Slip</th>
-            {/* <th>Verified Status</th> */}
             <th>Status</th>
             <th>Date</th>
             <th>Time</th>
-            {
-              roleID === "2"|| roleID === "3"|| roleID === "4"? null: <th>Actions</th>
             
-            }
+             <th>Actions</th>
+            
+            
 
             </tr>
           </thead>
           <tbody className="text-center">
             {
-                depoTemArr.map((items)=>{
+                depoTemArr.map((items,index)=>{
                     return(
                         <tr key={items.id} style={{ color: colorScheme.card_txt_color }}>
+                          <td>{index+1}</td>
                             <td>{items.payer_id}</td>
                             <td>{items.username}</td>
                             <td>{items.phone}</td>
@@ -318,14 +319,15 @@ const AllDepositsTable = () => {
                             <td>{items.Idate}</td>
                             <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
 
-                            {
-              roleID === "2"|| roleID === "3"|| roleID === "4"? null:
+                           
                         <td>
                         <div className="d-flex align-items-center">
-                        
-                                  <button onClick={()=> approveSingleDepo(items.id)}  className="btn btn-outline-info btn-sm" >
+                        {
+                              roleID === "2"|| roleID === "3"|| roleID === "4"? null:
+                                <button onClick={()=> approveSingleDepo(items.id)}  className="btn btn-outline-info btn-sm" >
                                   <i  className="fa fa-person-circle-check"></i>
                                 </button>
+                        }
                           
                           &nbsp;&nbsp;&nbsp;
                       {
@@ -338,8 +340,8 @@ const AllDepositsTable = () => {
                          null
                       }
 
-                              {
-                                  // roleID === "1"? null:
+                                {
+                                  roleID === "1" || roleID === "6"? null:
                                   <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
                                   onClick={()=>{setReceID(items.payer_id)}}
                                   >
@@ -352,7 +354,6 @@ const AllDepositsTable = () => {
 
                         </div>
                         </td>
-                }
                       </tr>
                     )
                 })

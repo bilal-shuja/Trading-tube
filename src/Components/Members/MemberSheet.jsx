@@ -289,20 +289,26 @@ useEffect(() => {
                               }
                               <td>{items.Idate}</td>
                               <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-                              {
-                        roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6" ? null:
+                              
                         <td>
                         <div className="d-flex justify-content-center">
+                        {
+                        roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6" ? null:
+                        <>
                           <Link className="btn btn-outline-info btn-sm" to="/UpdateMemberForm" state={{ID:items.id}}>
                                 <i className="fa fa-pen"></i>
-                              </Link>&nbsp;&nbsp;
+                          </Link>
+                          &nbsp;&nbsp;
+
                           <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                               <i className="fa fa-trash"></i>
                             </button>
-                            &nbsp;&nbsp;
+                            </>
+                       }
+
                                 
                                 {
-                                  roleID === "1"? null:
+                                  roleID === "1" || roleID === "2" ? null:
                                   <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
                                   onClick={()=>{setReceID(items.id)}}
                                   >
@@ -312,7 +318,6 @@ useEffect(() => {
                                 }
                         </div>
                        </td>
-                        }
                             </tr>
                             )
                           })
@@ -364,7 +369,7 @@ useEffect(() => {
                                 &nbsp;&nbsp;
                                 
                                 {
-                                  roleID === "1"? null:
+                                  roleID === "1" || roleID === "6"? null:
                                   <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
                                   onClick={()=>{setReceID(items.id)}}
                                   >
