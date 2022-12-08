@@ -44,7 +44,7 @@ const AddPackagesForm = () => {
       setPackageDays("")
 
     }
-      else if(val>=2000 && val<50000){
+      else if(val>=2000 && val<=50000){
       
 
         const result = Math.round((35/100)*val);
@@ -61,7 +61,7 @@ const AddPackagesForm = () => {
         setPackageIncome(cycle_Income)
 
       }
-      else if(val>=50000 && val<100000){
+      else if(val>=50000 && val<=100000){
         const result =  Math.round((40/100)*val);
         const singleRes =  Math.round((result/30));
         const cycle_Income =  Math.round((20/100)*val);
@@ -76,7 +76,7 @@ const AddPackagesForm = () => {
         setPackageIncome(cycle_Income)
 
       }
-      else if(val>=100000 && val<500000){
+      else if(val>=100000 && val<=500000){
         const result =  Math.round((45/100)*val);
         const singleRes =  Math.round((result/30));
         const cycle_Income =  Math.round((45/100)*val);

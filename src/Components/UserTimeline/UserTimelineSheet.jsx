@@ -120,12 +120,18 @@ const UserTimelineSheet = () => {
                 <h3 className="timeline-header text-white">Deposite Info</h3>
                 <div className="timeline-body">
                  <div className="row">
-
-                    <div className="col-lg-4">
+                {
+                    userDepo.map((items)=>{
+                        return(
+                            <div className="col-lg-4">
                     <li>Name:&nbsp;<b>{userInfo.firstname}</b> </li>
                     <li>Last Name:&nbsp;<b>{userInfo.lastname}</b> </li>
                     <li>Phone:&nbsp;<b>{userInfo.phone}</b> </li>
                     </div>
+                        )
+                    })
+                }
+                    
 
                     
 

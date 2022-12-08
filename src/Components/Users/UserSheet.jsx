@@ -193,11 +193,11 @@ useEffect(() => {
                                       <i className="fa fa-pen"></i>
                                     </Link>&nbsp;&nbsp;
 
-                                    
+{/*                                     
                                   <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
                                     <i className="fa-solid fa-timeline"></i>
                                   </Link>
-                                  &nbsp;&nbsp;
+                                  &nbsp;&nbsp; */}
 
                                 <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                                     <i className="fa fa-trash"></i>
@@ -248,12 +248,12 @@ useEffect(() => {
                                <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
                                     <i className="fa fa-pen"></i>
                                   </Link>&nbsp;&nbsp;
-
+{/* 
                                     
                                   <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
                                     <i className="fa-solid fa-timeline"></i>
                                   </Link>
-                                  &nbsp;&nbsp;
+                                  &nbsp;&nbsp; */}
 
                                 <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                                     <i className="fa fa-trash"></i>
@@ -305,11 +305,11 @@ useEffect(() => {
                                <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
                                     <i className="fa fa-pen"></i>
                                   </Link>&nbsp;&nbsp;
-
+{/* 
                                   <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
                                     <i className="fa-solid fa-timeline"></i>
                                   </Link>
-                                  &nbsp;&nbsp;
+                                  &nbsp;&nbsp; */}
 
                                 <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                                     <i className="fa fa-trash"></i>
