@@ -1,9 +1,11 @@
+import QuerySelect from '../Promotions/QuerySelection.js';
 import React,{useState,useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from '../Colors/Styles.js';
 import { toast } from "react-toastify";
 import Filter from '../Filters/Filter';
 import Moment from 'react-moment';
+import {Modal} from 'pretty-modal';
 import 'moment-timezone';
 import axios from 'axios';
 
@@ -23,7 +25,27 @@ const AllDepositsTable = () => {
   const[senderID , setSenderID] = useState('');
 
 
+  const[queryOne , setQueryOne] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [memID , setMemID] = useState('');
+  const[depoRej ,setDepoRej] = useState('')
+
     const DepoSheetIdentifier = "DepositSheet";
+
+    const SetLocalLogin = async () => {
+      try {
+        let userObj = await localStorage.getItem('user');
+        let parseUserObj = JSON.parse(userObj)
+        
+        if (parseUserObj !== null) {
+          setRoleID(parseUserObj.role_id);
+          setSenderID(parseUserObj.id)
+        }
+  
+      } catch {
+        return null;
+      }
+    }
 
       function gettingDeposits(){
         axios.post(`${process.env.REACT_APP_BASE_URL}getalldeposits`)
@@ -121,21 +143,28 @@ const AllDepositsTable = () => {
       setDepoSum(getDepoSum)
     }
 
-    const SetLocalLogin = async () => {
-      try {
-        let userObj = await localStorage.getItem('user');
-        let parseUserObj = JSON.parse(userObj)
-        
-        if (parseUserObj !== null) {
-          setRoleID(parseUserObj.role_id);
-          setSenderID(parseUserObj.id)
-        }
-  
-      } catch {
-        return null;
-      }
-    }
 
+    function geneNotification(){
+      const notifiObj ={
+        receiver_id:memID,
+        body:depoRej,
+        title:"Deposit Rejection"
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
+      .then((res)=>{
+        if(res.data.status === '200'){
+          toast.info("Notified to User",{theme:"dark"});
+        }
+        else{
+          toast.info(`${res.data.message}`,{theme:"dark"});
+    
+        }
+      })
+      .catch((error)=>{
+        toast.warn("Something went wrong",{theme:"dark"});
+    
+      })
+    }
 
     function submitHostQuery(){
       const hostQueryObj = {
@@ -324,12 +353,29 @@ const AllDepositsTable = () => {
                         <div className="d-flex align-items-center">
                         {
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
+                              <>
                                 <button onClick={()=> approveSingleDepo(items.id)}  className="btn btn-outline-info btn-sm" >
                                   <i  className="fa fa-person-circle-check"></i>
                                 </button>
+                                
+                                &nbsp;&nbsp;
+
+                                <button onClick={() => {
+                                 setIsOpen(true)
+                                 setMemID(items.payer_id)
+                                }} 
+                                 className="btn btn-outline-danger btn-sm"
+                                 data-toggle="tooltip" 
+                                 data-placement="top" 
+                                 title="Reward Rejection"
+                                 >
+                                   <i className="fa-solid fa-circle-xmark"></i>
+                                 </button>
+
+                                </>
                         }
                           
-                          &nbsp;&nbsp;&nbsp;
+                          &nbsp;&nbsp;
                       {
                         checkBox === true? 
                          <div className="custom-control custom-checkbox">
@@ -372,6 +418,62 @@ const AllDepositsTable = () => {
           }
       </div>
     </div>
+
+              {/* Rejection Modal */}
+              <Modal 
+                    ariaLabelledby="modal1_label"
+                    ariaDescribedby="modal1_desc"
+                    onClose={() => {setIsOpen(false)}} open={isOpen}>
+                           <div className="card-body">
+                            <h5><b>Possible Notes*</b> </h5>
+                            <ul>
+                              {
+                                QuerySelect.map((items)=>{
+                                  return(
+                                    <div className="custom-control custom-checkbox">
+                                    <input 
+                                    className="custom-control-input custom-control-input-info"
+                                     
+                                    type="checkbox" 
+                                     
+              
+                                    id={`customCheckbox${items.id}`}  
+                                    
+                                    onChange={()=>{
+                                      if(queryOne.includes(items.message)){
+                                       var new_str = queryOne.replace(items.message,'')
+                                        setQueryOne(new_str)
+                                      }
+                                      else{
+
+                                        setQueryOne(queryOne+" "+items.message)
+                                      }
+                                    
+                                      }}/>
+                                    <label htmlFor={`customCheckbox${items.id}`} className="custom-control-label">{items.message}</label>
+                                    </div>
+                                  )
+                            
+                                })
+                              }
+                         
+
+                            </ul>
+
+                           <div className="form-group">
+                           <label htmlFor="exampleInputEmail1">Rejection Reason*</label>
+                            <textarea
+                              type="text" className="form-control " defaultValue={queryOne} id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setDepoRej(e.target.value)} row={6} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color,marginRight:"15em"}}/>
+                           </div>
+                           <button onClick={()=>{
+                            geneNotification()
+                          }} className="btn btn-outline-info btn-sm"
+                          >Submit</button>
+                           </div>
+                           </Modal>
+
+                    {/* Rejection Modal */}
+
 
 
             {/*Query Modal Start  */}

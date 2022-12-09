@@ -17,13 +17,31 @@ const RewardApprovalSheet = () => {
     const[roleID , setRoleID] = useState('');
     const[getRewardStat , setRewardStat] = useState('');
     const[queryOne , setQueryOne] = useState('');
-
+    const[getImage , setImage] = useState('');
+    const[rotateImg , setRotateImg] = useState('')
     const[receID , setReceID] = useState('');
     const[hostMessage , setHostMessage] = useState('');
     const[senderID , setSenderID] = useState('');
   
 
     const PromotionSheetIdentifier = "PromotionSheet";
+
+    const SetLocalLogin = async () => {
+      try {
+        let userObj = await localStorage.getItem('user');
+        let parseUserObj = JSON.parse(userObj)
+        
+        if (parseUserObj !== null) {
+          setRoleID(parseUserObj.role_id);
+          setSenderID(parseUserObj.id)
+
+        }
+    
+      } catch {
+        return null;
+      }
+    }
+
 
     function gettingRewards (){
       axios.post(`${process.env.REACT_APP_BASE_URL}fetch_all_rewards`)
@@ -234,22 +252,7 @@ const RewardApprovalSheet = () => {
       setPromotionSheet(val)
     } 
 
-    const SetLocalLogin = async () => {
-      try {
-        let userObj = await localStorage.getItem('user');
-        let parseUserObj = JSON.parse(userObj)
-        
-        if (parseUserObj !== null) {
-          setRoleID(parseUserObj.role_id);
-          setSenderID(parseUserObj.id)
-
-        }
-    
-      } catch {
-        return null;
-      }
-    }
-
+  
 
     
 function submitHostQuery(){
@@ -363,20 +366,24 @@ function submitHostQuery(){
                               <td>{items.member_name}</td>
                               <td>{items.cnic}</td>
                               <td>{items.phone}</td>
-
                               <td>
+                         
                                 <img src={`${process.env.REACT_APP_IMG_URL}${items.image}`}  width={50}
-                                  onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.image}` , "_blank")}
+                                  // onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.image}` , "_blank")}
                                   style={{cursor:"pointer"}}
-                                  alt=""
-                                />
+                                  alt="cnic-img"
+                                  data-toggle="modal" data-target="#staticBackdrop"
+                                  onClick={()=> setImage(items.image)}
+                                  />
                               </td>
                               <td>{items.amount}</td>
                               <td>
+                                {/* onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.image_2}` , "_blank")} */}
                                 <img src={`${process.env.REACT_APP_IMG_URL}${items.image_2}`}  width={50}
-                                  onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.image_2}` , "_blank")}
                                   style={{cursor:"pointer"}}
-                                  alt=""
+                                  alt="review-img"
+                                  data-toggle="modal" data-target="#staticBackdrop"
+                                  onClick={()=> setImage(items.image_2)}
                                 />
                               </td>
                               {
@@ -444,12 +451,14 @@ function submitHostQuery(){
                                  &nbsp;&nbsp;
                                  
                                   </div>                   
-                              
+                                  {/* <button type="button" className="btn btn-outline-primary btn-sm " data-toggle="modal" data-target="#staticBackdrop">
+                                show
+                                </button> */}
                                 </td>
 
                           }
                           <td>
-                          {
+                                 {
                                   roleID === "1" || roleID === "6"? null:
                                   <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
                                   onClick={()=>{setReceID(items.member_id)}}
@@ -467,6 +476,38 @@ function submitHostQuery(){
                        
                       </tbody>
                     </table>
+
+                    {/* Image Modal */}
+                          <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                              <div class="modal-content" style={{background:colorScheme.card_bg_color,color:colorScheme.card_txt_color}}>
+                             
+                                <div class="modal-header">
+                                  <div>
+                                  {/* <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> */}
+                                  <button type="button" class="btn btn-outline-warning btn-sm" onClick={()=>{setRotateImg(180)}}>180 deg</button>
+                             
+                                  &nbsp;&nbsp;
+                                  <button type="button" class="btn btn-outline-danger btn-sm" onClick={()=>{setRotateImg(360)}}>360 deg</button>
+
+                                  </div>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true" style={{color:colorScheme.card_txt_color}}>&times;</span>
+                                  </button>
+                                </div>
+                                <div class="modal-body">
+                                  <img className="img-fluid  mx-auto d-block" src={`${process.env.REACT_APP_IMG_URL}${getImage}`} alt="" style={{background:colorScheme.card_bg_color,color:colorScheme.card_txt_color , transform:`rotateY(${rotateImg}deg)`}} />
+                                </div>
+                                <div class="modal-footer">
+                         
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                    {/* Image Modal */}
+
+
+                    {/* Rejection Modal */}
                     <Modal 
                     ariaLabelledby="modal1_label"
                     ariaDescribedby="modal1_desc"
@@ -519,6 +560,9 @@ function submitHostQuery(){
                           >Submit</button>
                            </div>
                            </Modal>
+
+                    {/* Rejection Modal */}
+
                   </div>
                 </div>
 

@@ -1,10 +1,12 @@
+import QuerySelect from '../Promotions/QuerySelection.js';
 import React,{useState, useEffect} from 'react';
-import colorScheme from '../Colors/Styles.js';
 import "react-toastify/dist/ReactToastify.css";
+import colorScheme from '../Colors/Styles.js';
 import { toast } from "react-toastify";
+import {Modal} from 'pretty-modal';
 import Moment from 'react-moment';
-import 'moment-timezone';
 import axios from 'axios';
+import 'moment-timezone';
 
 
 const WithdrawalSheet = () => {
@@ -22,6 +24,27 @@ const WithdrawalSheet = () => {
   const[receID , setReceID] = useState('');
   const[hostMessage , setHostMessage] = useState('');
   const[senderID , setSenderID] = useState('');
+
+  const[queryOne , setQueryOne] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [userID , setUserID] = useState('');
+  const[withdrawalRej ,setWithdrawalRej] = useState('')
+
+
+  const SetLocalLogin = async () => {
+    try {
+      let userObj = await localStorage.getItem('user');
+      let parseUserObj = JSON.parse(userObj)
+      
+      if (parseUserObj !== null) {
+        setRoleID(parseUserObj.role_id);
+        setSenderID(parseUserObj.id)
+      }
+  
+    } catch {
+      return null;
+    }
+  }
 
 
   function gettingWithdrawal(){
@@ -103,22 +126,59 @@ function gettingWithdrawalSum(){
  
 }
 
+   
+function withdrawalRejection(){
+  axios.post(`${process.env.REACT_APP_BASE_URL}reject_withdrawl/${userID}`)
+  .then((res)=>{
+    if(res.data.status === '200'){
+      toast.info(`Withdrawal Rejected!`,{theme:"dark"});
+      setTimeout(() => {
+        window.location.reload(true)
+      }, 3000);
+    }
+    else{
+      toast.info(`${res.data.message}`,{theme:"dark"});
 
-const SetLocalLogin = async () => {
-  try {
-    let userObj = await localStorage.getItem('user');
-    let parseUserObj = JSON.parse(userObj)
-    
-    if (parseUserObj !== null) {
-      setRoleID(parseUserObj.role_id);
-      setSenderID(parseUserObj.id)
     }
 
-  } catch {
-    return null;
-  }
+ 
+  })
+  .catch((error)=>{
+    if(error.status === "401"){
+    toast.warn(error.data.message,{theme:"dark"});
+
+    } 
+    toast.warn("Something went wrong",{theme:"dark"});
+  })
+  
+
 }
 
+
+
+
+
+function geneNotification(){
+  const notifiObj ={
+    receiver_id:userID,
+    body:withdrawalRej,
+    title:"Withdrawal Rejection"
+  }
+  axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
+  .then((res)=>{
+    if(res.data.status === '200'){
+      toast.info("Notified to User",{theme:"dark"});
+    }
+    else{
+      toast.info(`${res.data.message}`,{theme:"dark"});
+
+    }
+  })
+  .catch((error)=>{
+    toast.warn("Something went wrong",{theme:"dark"});
+
+  })
+}
 
 
 function submitHostQuery(){
@@ -197,12 +257,12 @@ function submitHostQuery(){
                   <div className="row float-right deposit-date-row">
                     <div className="col-8">
                       <div className="form-group">
-                              <input type="date"  className="form-control input-group-sm" id="exampleInputEmail1" placeholder="Enter Title" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} onChange={(e)=>setAppWithdrawalDate(e.target.value)}/>
+                              <input type="date"  className="form-control form-control-sm" id="exampleInputEmail1" placeholder="Enter Title" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} onChange={(e)=>setAppWithdrawalDate(e.target.value)}/>
                       </div>
                     
                       </div>
                       <div className="col-4">
-                      <button onClick={()=> approveWithdrawalByDate()} className="btn btn-outline-info">
+                      <button onClick={()=> approveWithdrawalByDate()} className="btn btn-outline-info btn-sm">
                     Approve
                       </button>
                       </div>
@@ -273,6 +333,7 @@ function submitHostQuery(){
                       <thead className="text-center">
                         <tr>
                           <th>#</th>
+                          <th>ID</th>
                           <th>Account Owner</th>
                           <th>Owner Phone</th>
                           <th>Account Title</th>
@@ -296,6 +357,7 @@ function submitHostQuery(){
                       withdrawalData.filter((items)=> items.status === withdrawalStatus).map((items,index)=>{
                           return(
                             <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                              <td>{index+1}</td>
                             <td>{items.user_id}</td>
                             <td>{items.username}</td>
                             <td>{items.phone}</td>
@@ -319,10 +381,23 @@ function submitHostQuery(){
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>
                                 <div className="d-flex justify-content-center">
-                              
+                                  <>
                                   <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
                                     <i className="fa fa-circle-check"></i>
                                   </button>
+                                  &nbsp;&nbsp;
+                                  <button onClick={() => {
+                                 setIsOpen(true)
+                                 setUserID(items.user_id)
+                                }} 
+                                 className="btn btn-outline-danger btn-sm"
+                                 data-toggle="tooltip" 
+                                 data-placement="top" 
+                                 title="Withdrawal Rejection"
+                                 >
+                                   <i className="fa-solid fa-circle-xmark"></i>
+                                 </button>
+                                  </>
                                   &nbsp;&nbsp;
                                   {
                                   roleID === "1" || roleID === "6"? null:
@@ -346,6 +421,7 @@ function submitHostQuery(){
                         withdrawalData.filter((items)=> items.account_number === withdrawalAcc).map((items,index)=>{
                           return(
                             <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                              <td>{index+1}</td>
                             <td>{items.user_id}</td>
                             <td>{items.username}</td>
                             <td>{items.phone}</td>
@@ -369,10 +445,23 @@ function submitHostQuery(){
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>
                                 <div className="d-flex justify-content-center">
-                              
+                                <>
                                   <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
                                     <i className="fa fa-circle-check"></i>
                                   </button>
+                                  &nbsp;&nbsp;
+                                  <button onClick={() => {
+                                 setIsOpen(true)
+                                 setUserID(items.user_id)
+                                }} 
+                                 className="btn btn-outline-danger btn-sm"
+                                 data-toggle="tooltip" 
+                                 data-placement="top" 
+                                 title="Withdrawal Rejection"
+                                 >
+                                   <i className="fa-solid fa-circle-xmark"></i>
+                                 </button>
+                                  </>
                                   &nbsp;&nbsp;
                                   {
                                   roleID === "1" || roleID === "6"? null:
@@ -397,6 +486,7 @@ function submitHostQuery(){
                         withdrawalData.filter((items)=> items.Idate === withdrawalDate).map((items,index)=>{
                           return(
                             <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                              <td>{index+1}</td>
                             <td>{items.user_id}</td>
                             <td>{items.username}</td>
                             <td>{items.phone}</td>
@@ -420,10 +510,23 @@ function submitHostQuery(){
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>
                                 <div className="d-flex">
-                              
+                                <>
                                   <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
                                     <i className="fa fa-circle-check"></i>
                                   </button>
+                                  &nbsp;&nbsp;
+                                  <button onClick={() => {
+                                 setIsOpen(true)
+                                 setUserID(items.user_id)
+                                }} 
+                                 className="btn btn-outline-danger btn-sm"
+                                 data-toggle="tooltip" 
+                                 data-placement="top" 
+                                 title="Withdrawal Rejection"
+                                 >
+                                   <i className="fa-solid fa-circle-xmark"></i>
+                                 </button>
+                                  </>
                                   &nbsp;&nbsp;
                                   {
                                   roleID === "1" || roleID === "6"? null:
@@ -447,6 +550,7 @@ function submitHostQuery(){
                         withdrawalData.filter((items)=> items.phone === withdrawalPhone).map((items,index)=>{
                           return(
                             <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                              <td>{index+1}</td>
                             <td>{items.user_id}</td>
                             <td>{items.username}</td>
                             <td>{items.phone}</td>
@@ -470,10 +574,23 @@ function submitHostQuery(){
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <td>
                                 <div className="d-flex">
-                              
-                                  <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
+                              <>
+                                  <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info btn-sm">
                                     <i className="fa fa-circle-check"></i>
                                   </button>
+                                  &nbsp;&nbsp;
+                                  <button onClick={() => {
+                                 setIsOpen(true)
+                                 setUserID(items.user_id)
+                                }} 
+                                 className="btn btn-outline-danger btn-sm"
+                                 data-toggle="tooltip" 
+                                 data-placement="top" 
+                                 title="Withdrawal Rejection"
+                                 >
+                                   <i className="fa-solid fa-circle-xmark"></i>
+                                 </button>
+                              </>
                                   &nbsp;&nbsp;
                                   {
                                   roleID === "1" || roleID ==="6"? null:
@@ -495,6 +612,7 @@ function submitHostQuery(){
                           withdrawalData.map((items,index)=>{
                             return(
                               <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                              <td>{index+1}</td>
                               <td>{items.user_id}</td>
                               <td>{items.username}</td>
                               <td>{items.phone}</td>
@@ -519,9 +637,23 @@ function submitHostQuery(){
                               
                               {
                                 roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                                  <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
+                                <>
+                                  <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info btn-sm">
                                     <i className="fa fa-circle-check"></i>
                                   </button>
+                                  &nbsp;&nbsp;
+                                  <button onClick={() => {
+                                 setIsOpen(true)
+                                 setUserID(items.user_id)
+                                }} 
+                                 className="btn btn-outline-danger btn-sm"
+                                 data-toggle="tooltip" 
+                                 data-placement="top" 
+                                 title="Withdrawal Rejection"
+                                 >
+                                   <i className="fa-solid fa-circle-xmark"></i>
+                                 </button>
+                                </>
                                 }
                                   &nbsp;&nbsp;
                                   {
@@ -557,6 +689,62 @@ function submitHostQuery(){
                     }
                     </div>
                   </div>
+
+                    {/* Rejection Modal */}
+                    <Modal 
+                    ariaLabelledby="modal1_label"
+                    ariaDescribedby="modal1_desc"
+                    onClose={() => {setIsOpen(false)}} open={isOpen}>
+                           <div className="card-body">
+                            <h5><b>Possible Notes*</b> </h5>
+                            <ul>
+                              {
+                                QuerySelect.map((items)=>{
+                                  return(
+                                    <div className="custom-control custom-checkbox">
+                                    <input 
+                                    className="custom-control-input custom-control-input-info"
+                                     
+                                    type="checkbox" 
+                                     
+              
+                                    id={`customCheckbox${items.id}`}  
+                                    
+                                    onChange={()=>{
+                                      if(queryOne.includes(items.message)){
+                                       var new_str = queryOne.replace(items.message,'')
+                                        setQueryOne(new_str)
+                                      }
+                                      else{
+
+                                        setQueryOne(queryOne+" "+items.message)
+                                      }
+                                    
+                                      }}/>
+                                    <label htmlFor={`customCheckbox${items.id}`} className="custom-control-label">{items.message}</label>
+                                    </div>
+                                  )
+                            
+                                })
+                              }
+                         
+
+                            </ul>
+
+                           <div className="form-group">
+                           <label htmlFor="exampleInputEmail1">Rejection Reason*</label>
+                            <textarea
+                              type="text" className="form-control " defaultValue={queryOne} id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setWithdrawalRej(e.target.value)} row={6} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color,marginRight:"15em"}}/>
+                           </div>
+                           <button onClick={()=>{
+                            withdrawalRejection()
+                            geneNotification()
+                          }} className="btn btn-outline-info btn-sm"
+                          >Submit</button>
+                           </div>
+                           </Modal>
+
+                    {/* Rejection Modal */}
 
                   
             {/*Query Modal Start  */}
