@@ -14,10 +14,34 @@ const UserTimelineSheet = () => {
     const location = useLocation();
     const ID = location.state.ID;
     const[userInfo , setUserInfo] = useState('');
-    const[userDepo , setUserDepo] = useState([])
+    const[userDepo , setUserDepo] = useState([]);
+    const[userWithdrawal , setUserWithdrawal] = useState([]);
+    const[userTeamOne , setUserTeamOne] = useState([]);
+    const[userTeamTwo , setUserTeamTwo] = useState([]);
+
+    const[userTotal , setUserTotal] = useState('');
+  const[roleID , setRoleID] = useState('');
+    
 
 
-    function getUserInfo(){
+    
+  const SetLocalLogin = async () => {
+    try {
+      let userObj = await localStorage.getItem('user');
+      let parseUserObj = JSON.parse(userObj)
+      
+      if (parseUserObj !== null) {
+        setRoleID(parseUserObj.role_id)
+      }
+
+    } catch {
+      return null;
+    }
+  }
+
+  console.log(roleID)
+
+    function  getUserInfo(){
         axios.post(`${process.env.REACT_APP_BASE_URL}fetchuserwithid/${ID}`)
         .then((res)=>{
             setUserInfo(res.data.data)
@@ -40,10 +64,62 @@ const UserTimelineSheet = () => {
         })
     }
 
+    function getWithdrawalInfo(){
+      const withdrawalObj = {
+        user_id:ID
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}fetch_withdrawl_request_by_userid`,withdrawalObj)
+    .then((res)=>{
+      setUserWithdrawal(res.data.data)
+    })
+    .catch((error)=>{
+       return null
+    })
+    }
+
+
+    
+    function getAllUsers(){
+      const withdrawalObj = {
+        user_id:ID
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}get_my_team`,withdrawalObj)
+    .then((res)=>{
+      setUserTeamOne(res.data.first_members)
+      setUserTeamTwo(res.data.second_members)
+    })
+    .catch((error)=>{
+       return null
+
+    })
+    }
+
+
+    function getUserTotals(){
+      
+
+      const userTotalObj = {
+        user_id:ID
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}fetch_totals`,userTotalObj)
+    .then((res)=>{
+      setUserTotal(res.data)
+    })
+    .catch((error)=>{
+       return null
+    })
+    }
+
+    
+
 
     useEffect(() => {
         getUserInfo()
         getDepositInfo()
+        getWithdrawalInfo()
+        getAllUsers()
+        getUserTotals()
+        SetLocalLogin()
     }, [])
     
   return (
@@ -54,13 +130,27 @@ const UserTimelineSheet = () => {
     <div className="container-fluid">
       <div className="row mb-2">
         <div className="col-sm-6">
-          <h1>Timeline</h1>
-          
+          <h1>
+            {
+              roleID === 1 || roleID === 6 ?
+            "Member Timeline"
+              :
+           "User Timeline"
+            
+            }
+            </h1>
         </div>
         <div className="col-sm-6">
           <ol className="breadcrumb float-sm-right">
-            <li className="breadcrumb-item"><a href="#">Home</a></li>
-            <li className="breadcrumb-item active">Timeline</li>
+            <li className="breadcrumb-item">
+            {
+              roleID === 1 || roleID === 2 || roleID === 3 || roleID === 4 || roleID === 6?
+              <a className="text-white" href="/MemberSheet">back</a>
+              :
+              <a className="text-white" href="/UserSheet">back</a>
+
+            }
+              </li>
           </ol>
         </div>
       </div>
@@ -104,10 +194,7 @@ const UserTimelineSheet = () => {
       
 
                 </div>
-                {/* <div className="timeline-footer">
-                  <a className="btn btn-primary btn-sm">Read more</a>
-                  <a className="btn btn-danger btn-sm">Delete</a>
-                </div> */}
+      
               </div>
             {/* UserInfo Card */}
 
@@ -115,83 +202,213 @@ const UserTimelineSheet = () => {
             
             <div>
               <i className="fas fa-briefcase bg-white" />
-              <div className="timeline-item" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,}}>
-                <span className="time"><i className="fas fa-clock" /> 5 mins ago</span>
+              <div className="timeline-item" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
                 <h3 className="timeline-header text-white">Deposite Info</h3>
                 <div className="timeline-body">
-                 <div className="row">
                 {
-                    userDepo.map((items)=>{
-                        return(
-                            <div className="col-lg-4">
-                    <li>Name:&nbsp;<b>{userInfo.firstname}</b> </li>
-                    <li>Last Name:&nbsp;<b>{userInfo.lastname}</b> </li>
-                    <li>Phone:&nbsp;<b>{userInfo.phone}</b> </li>
-                    </div>
-                        )
-                    })
-                }
-                    
+                  userDepo.length !== 0 ?
+                 <div className="row">
+                  {
+                   userDepo.map((items,index)=>{
+                    return(
+                      <div key={index+1} className="col-lg-4">
+                      <li className="mb-3" style={{listStyle:"none"}}>Deposit No:&nbsp;<b>{index+1}</b></li>
+                      <li>Account Title:&nbsp;<b>{items.account_title}</b> </li>
+                      <li>Account No:&nbsp;<b>{items.account_no}</b> </li>
+                      <li>Account Type:&nbsp;<b>{items.account_type}</b> </li>
+       
+                      <li>Account Sub-Type:&nbsp;<b>{items.account_subtype}</b> </li>
+                      <li>Amount:&nbsp;<b>{items.amount}</b> </li>
+                      <li>Status:&nbsp;<b>{items.status}</b> </li>
+                      <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;&nbsp;<b>{items.Idate}</b></li> 
 
-                    
 
+                      </div>
+                    )
+                })
+              }
                  </div>
-      
-
+                 :
+                 <h3 className="text-center">No Deposits!</h3>
+          
+               }
                 </div>
                
               </div>
             </div>
 
             <div>
-              <i className="fas fa-comments bg-yellow" />
-              <div className="timeline-item">
-                <span className="time"><i className="fas fa-clock" /> 27 mins ago</span>
-                <h3 className="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
+              <i className="fas fa-money-bill-wave bg-white" />
+              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+                <h3 className="timeline-header text-white">Withdrawal Info</h3>
                 <div className="timeline-body">
-                  Take me to your leader!
-                  Switzerland is small and neutral!
-                  We are more like Germany, ambitious and misunderstood!
-                </div>
-                <div className="timeline-footer">
-                  <a className="btn btn-warning btn-sm">View comment</a>
+                {
+                  userWithdrawal.length !== 0 ?
+                 <div className="row">
+                  {
+                   userWithdrawal.map((items,index)=>{
+                    return(
+                      <div key={index+1} className="col-lg-4">
+                      <li className="mb-3" style={{listStyle:"none"}}>Withdrawal No:&nbsp;<b>{index+1}</b></li>
+                      <li>Username:&nbsp;<b>{items.username}</b> </li>
+                      <li>Account Title:&nbsp;<b>{items.account_title}</b> </li>
+
+                      
+                      <li>Account No:&nbsp;<b>{items.account_number}</b> </li>
+                      <li>Account Type:&nbsp;<b>{items.account_type}</b> </li>
+       
+                      <li>Account Sub-Type:&nbsp;<b>{items.account_subtype}</b> </li>
+                      <li>Amount:&nbsp;<b>{items.requested_amount}</b> </li>
+                      <li>Status:&nbsp;<b>{items.status}</b> </li>
+                      <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.Idate}</b></li> 
+
+                      <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
+                      </div>
+                    )
+                })
+              }
+                 </div>
+                 :
+                 <h3 className="text-center">No Withdrawals!</h3>
+          
+               }
                 </div>
               </div>
             </div>
-            <div className="time-label">
-              <span className="bg-green">3 Jan. 2014</span>
-            </div>
+
             <div>
-              <i className="fa fa-camera bg-purple" />
-              <div className="timeline-item">
-                <span className="time"><i className="fas fa-clock" /> 2 days ago</span>
-                <h3 className="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
+              <i className="fas fa-people-group bg-white" />
+              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+                <h3 className="timeline-header text-white">Team </h3>
+                <di className="timeline-body">
+                  <h5 className="ml-2 text-center">"Team One"</h5>
+                {
+                  userTeamOne.length !== 0 ?
+                 <div className="row p-3">
+                  {
+                    userTeamOne.map((items,index)=>{
+                      return(
+                        <div key={index+1} className="col-lg-4">
+                      <li className="mb-2" style={{listStyle:"none"}}>User# <b>{index+1}</b> </li>
+                      <li>Username:&nbsp;<b>{items.username}</b> </li>
+                      <li>First Name:&nbsp;<b>{items.firstname}</b> </li>
+                      <li>Last Name:&nbsp;<b>{items.lastname}</b> </li>
+
+                      
+                      <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
+                      <li>Level:&nbsp;<b>{items.level}</b> </li>
+                      <li>Email:&nbsp;<b>{items.email}</b></li>
+                      <li>Phone:&nbsp;<b>{items.phone}</b></li>
+                      <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
+
+                      <li>Question:&nbsp;<b>{items.question}</b></li>
+                      <li>Answer:&nbsp;<b>{items.answer}</b> </li>
+
+                      <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.Idate}</b></li> 
+
+                      <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
+                      </div>
+                    )
+                })
+              }
+
+                 </div>
+                 :
+                 <h3 className="text-center">No Team Found!</h3>
+          
+               }
+
+        <h5 className="ml-2 text-center">"Team Two"</h5>
+
+               {
+             userTeamOne.length !==0?
+                 <div className="row p-3">
+                  
+                  {
+                   userTeamTwo.map((items,index)=>{
+                     return(
+                       <div key={index+1} className="col-lg-4">
+                      <li className="mb-2" style={{listStyle:"none"}}>User#<b>{index+1}</b></li>
+                      <li>Username:&nbsp;<b>{items.username}</b> </li>
+                      <li>First Name:&nbsp;<b>{items.firstname}</b> </li>
+                      <li>Last Name:&nbsp;<b>{items.lastname}</b> </li>
+
+                      
+                      <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
+                      <li>Level:&nbsp;<b>{items.level}</b> </li>
+                      <li>Email:&nbsp;<b>{items.email}</b></li>
+                      <li>Phone:&nbsp;<b>{items.phone}</b></li>
+                      <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
+
+                      <li>Question:&nbsp;<b>{items.question}</b></li>
+                      <li>Answer:&nbsp;<b>{items.answer}</b> </li>
+                      <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.Idate}</b></li> 
+
+                      <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
+                      </div>
+                    )
+                })
+              }
+                 </div>
+                 :
+                 <h3 className="text-center">No Team Found!</h3>
+          
+               }
+
+
+
+                </di>
+
+              </div>
+            </div>
+     
+            
+            <div>
+              <i className="fas fa-money-bill-transfer bg-white" />
+              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+                <h3 className="timeline-header text-white">Total Cash Flow</h3>
                 <div className="timeline-body">
-                  <img src="https://placehold.it/150x100" alt="..." />
-                  <img src="https://placehold.it/150x100" alt="..." />
-                  <img src="https://placehold.it/150x100" alt="..." />
-                  <img src="https://placehold.it/150x100" alt="..." />
-                  <img src="https://placehold.it/150x100" alt="..." />
+                 <div className="row">
+              
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}>Total Balance:&nbsp;<b>{userTotal.Total_balance}</b> </li>
+                      </div>
+
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}>Total Deposit:&nbsp;<b>{userTotal.Total_deposit}</b> </li>
+                      </div>
+
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}>Total Withdrawal:&nbsp;<b>{userTotal.Total_withdrawl}</b> </li>
+                      </div>
+                      
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}> Total Income:&nbsp;<b>{userTotal.Total_income}</b> </li>
+                      </div>
+
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}>Total Investment:&nbsp;<b>{userTotal.Total_investment}</b> </li>
+                      </div>
+                      
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}>Level:&nbsp;<b>{userTotal.my_level}</b> </li>
+                      </div>
+                      
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}>Referral Code:&nbsp;<b>{userTotal.my_code}</b> </li>
+                      </div>
+
+               
+                      </div>
+        
+          
                 </div>
               </div>
             </div>
+
+    
             <div>
-              <i className="fas fa-video bg-maroon" />
-              <div className="timeline-item">
-                <span className="time"><i className="fas fa-clock" /> 5 days ago</span>
-                <h3 className="timeline-header"><a href="#">Mr. Doe</a> shared a video</h3>
-                <div className="timeline-body">
-                  <div className="embed-responsive embed-responsive-16by9">
-                    <iframe className="embed-responsive-item" src="https://www.youtube.com/embed/tMWkeBIohBs" allowFullScreen />
-                  </div>
-                </div>
-                <div className="timeline-footer">
-                  <a href="#" className="btn btn-sm bg-maroon">See comments</a>
-                </div>
-              </div>
-            </div>
-            <div>
-              <i className="fas fa-clock bg-gray" />
+              <i className="fas fa-multiply bg-white" />
             </div>
           </div>
         </div>

@@ -16,6 +16,21 @@ const MemberSheet = () => {
   const[receID , setReceID] = useState('');
   const[hostMessage , setHostMessage] = useState('');
   const[senderID , setSenderID] = useState('');
+  
+  const SetLocalLogin = async () => {
+    try {
+      let userObj = await localStorage.getItem('user');
+      let parseUserObj = JSON.parse(userObj)
+      
+      if (parseUserObj !== null) {
+        setRoleID(parseUserObj.role_id)
+        setSenderID(parseUserObj.id)
+      }
+
+    } catch {
+      return null;
+    }
+  }
 
     function gettingMembers(){
       axios.post(`${process.env.REACT_APP_BASE_URL}fetchallusers`)
@@ -76,20 +91,6 @@ const MemberSheet = () => {
     }
 
 
-  const SetLocalLogin = async () => {
-    try {
-      let userObj = await localStorage.getItem('user');
-      let parseUserObj = JSON.parse(userObj)
-      
-      if (parseUserObj !== null) {
-        setRoleID(parseUserObj.role_id)
-        setSenderID(parseUserObj.id)
-      }
-
-    } catch {
-      return null;
-    }
-  }
 
 
 
@@ -236,6 +237,11 @@ useEffect(() => {
                                   <i className="fa fa-trash"></i>
                                 </button>
                                 &nbsp;&nbsp;
+                                     
+                                <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
+                                    <i className="fa-solid fa-timeline"></i>
+                                  </Link>
+                                  &nbsp;&nbsp;
                                 
                                 {
                                   roleID === "1"? null:
@@ -299,6 +305,11 @@ useEffect(() => {
                                 <i className="fa fa-pen"></i>
                           </Link>
                           &nbsp;&nbsp;
+                               
+                          <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
+                                    <i className="fa-solid fa-timeline"></i>
+                                  </Link>
+                                  &nbsp;&nbsp;
 
                           <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                               <i className="fa fa-trash"></i>
@@ -363,6 +374,12 @@ useEffect(() => {
                               <Link className="btn btn-outline-info btn-sm" to="/UpdateMemberForm" state={{ID:items.id}}>
                                     <i className="fa fa-pen"></i>
                                   </Link>&nbsp;&nbsp;
+                                       
+                                  <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
+                                    <i className="fa-solid fa-timeline"></i>
+                                  </Link>
+                                  &nbsp;&nbsp;
+
                               <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                                   <i className="fa fa-trash"></i>
                                 </button>
