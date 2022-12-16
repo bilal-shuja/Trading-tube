@@ -157,6 +157,7 @@ const UpdateMemForm = () => {
                             >
                                <option value="none">None</option>
                                 <option value="1">Super Admin</option>
+                                <option value="6">Assist Admin</option>
                                 <option value="2">Admin</option>
                                 <option value="3">Manager</option>
                                 <option value="4">Staff</option>

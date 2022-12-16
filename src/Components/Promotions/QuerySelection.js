@@ -6,22 +6,26 @@ const QuerySelection = [
     },
     {
         id:2,
-        message:"Your CNIC is not correct"
+        message:"Your CNIC is not correct."
 
 
     },
     {
         id:3,
-        message:"Your CNIC screen shot is not visible properly"
+        message:"Your CNIC screen shot is not visible properly."
    
 
     },
     {
         id:4,
-        message:"Your Review screen shot is not visible properly"
+        message:"Your Review screen shot is not visible properly."
 
     },
 
+    {
+        id:5,
+        message:"Kindly upload 5 start review screenshot instead of utility bill."
+    }
   
   
 

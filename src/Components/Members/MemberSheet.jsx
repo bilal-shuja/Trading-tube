@@ -44,9 +44,9 @@ const MemberSheet = () => {
 
     const newSheet = members.length > 0 && members.filter((items)=>                    
                         
-    Number(roleID) === 2 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id !== "5" :
-    Number(roleID) === 3 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id !== "5" && items.role_id !== "3" :
-    Number(roleID) === 4 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id !== "5" && items.role_id !== "3" && items.role_id !== "4" :
+    Number(roleID) === 2 ? items.role_id !== "1" && items.role_id !== "2"&& items.role_id === "6"  && items.role_id !== "5" :
+    Number(roleID) === 3 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id === "6" && items.role_id !== "5" && items.role_id !== "3" :
+    Number(roleID) === 4 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id === "6" &&  items.role_id !== "5" && items.role_id !== "3" && items.role_id !== "4" :
     items.role_id !=="5"
   
 )
@@ -92,7 +92,7 @@ const MemberSheet = () => {
 
 
 
-
+  
 
   
 
@@ -196,7 +196,7 @@ useEffect(() => {
                            newSheet.filter((items)=> items.Idate === memDate).map((items,index)=>{
                             return(
                               <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{index+1}</td>
+                              <td>{newSheet.length-index}</td>
                               <td>{items.id}</td>
                               <td>{items.username}</td>
                               <td>{items.firstname}</td>
@@ -238,7 +238,7 @@ useEffect(() => {
                                 </button>
                                 &nbsp;&nbsp;
                                      
-                                <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
+                                <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id,target:"/MemberSheet"}}>
                                     <i className="fa-solid fa-timeline"></i>
                                   </Link>
                                   &nbsp;&nbsp;
@@ -264,7 +264,7 @@ useEffect(() => {
                         
                           newSheet.filter((items)=> items.phone === memPhone).map((items,index)=>{
                             return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                              <tr key={newSheet.length-index} style={{ color: colorScheme.card_txt_color }}>
                                 <td>{index+1}</td>
                               <td>{items.id}</td>
                               <td>{items.username}</td>
@@ -306,7 +306,7 @@ useEffect(() => {
                           </Link>
                           &nbsp;&nbsp;
                                
-                          <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
+                          <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id,target:"/MemberSheet"}}>
                                     <i className="fa-solid fa-timeline"></i>
                                   </Link>
                                   &nbsp;&nbsp;
@@ -337,7 +337,7 @@ useEffect(() => {
                        newSheet.map((items,index)=>{
                             return(
                               <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                                <td>{index+1}</td>
+                                <td>{newSheet.length-index}</td>
                               <td>{items.id}</td>
                               <td>{items.username}</td>
                               <td>{items.firstname}</td>
@@ -375,7 +375,7 @@ useEffect(() => {
                                     <i className="fa fa-pen"></i>
                                   </Link>&nbsp;&nbsp;
                                        
-                                  <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
+                                  <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id, target:"/MemberSheet"}}>
                                     <i className="fa-solid fa-timeline"></i>
                                   </Link>
                                   &nbsp;&nbsp;

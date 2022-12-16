@@ -111,12 +111,27 @@ const Sidebar = () => {
                   <li className="nav-item">
                     <Link to="/StaffQuerySheet" className="nav-link ">
                       <i className="far fa-circle nav-icon" />
-                      <p>Staff QuerySheet</p>
+                      <p>Staff Query Sheet</p>
                     </Link>
                   </li>
                     :
                     null
                 }
+
+
+                {
+               roleID === "1" ||  roleID === "6"? 
+                  <li className="nav-item">
+                    <Link to="/StaffTicketSheet" className="nav-link ">
+                      <i className="far fa-circle nav-icon" />
+                      <p>Staff Tickets Sheet</p>
+                    </Link>
+                  </li>
+                    :
+                    null
+                }
+
+
               
         
           </ul>
@@ -164,6 +179,13 @@ const Sidebar = () => {
                   <p>Deposit Sheet</p>
                 </Link>
               </li>
+
+              <li className="nav-item">
+                <Link to="/RejectDepositSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Reject Deposit Sheet</p>
+                </Link>
+              </li>
               {/* <li className="nav-item">
                 <Link to="/BalanceSheet" className="nav-link">
                   <i className="far fa-circle nav-icon" />
@@ -205,6 +227,13 @@ const Sidebar = () => {
                 <Link to="/WithdrawalSheet" className="nav-link ">
                   <i className="far fa-circle nav-icon" />
                   <p>Withdrawal Sheet</p>
+                </Link>
+              </li>
+
+              <li className="nav-item">
+                <Link to="/WithdrawalRejectSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Reject Withdrawal Sheet</p>
                 </Link>
               </li>
             </ul>

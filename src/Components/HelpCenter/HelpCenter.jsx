@@ -38,10 +38,7 @@ const HelpCenter = () => {
     <>
 <div className="scroll-view-two scrollbar-secondary-two">
     
-      <div
-        className="content-wrapper"
-        style={{ background: colorScheme.body_bg_color }}
-      >
+      <div className="content-wrapper" style={{ background: colorScheme.body_bg_color }}>
         <section className="content-header">
           <div className="container-fluid ">
             <div className="row mb-2">

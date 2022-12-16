@@ -35,7 +35,6 @@ const StaffQuerySheet = () => {
       axios.post(`${process.env.REACT_APP_BASE_URL}fetch_queries`,roleObj)
       .then((res)=>{
         setUsers(res.data.data)
-        console.log(res.data.data)
       })
       .catch((error)=>{
         toast.warn("Something went wrong" , {theme:"dark"})
@@ -147,7 +146,7 @@ useEffect(() => {
                             {
                               userDate !=='' &&  userPhone === '' ?
 
-                              users.filter((items)=> items.date === userDate).map((items,index)=>{
+                              users.sort((a,b)=> b.id - a.id).filter((items)=> items.date === userDate).map((items,index)=>{
                                 return(
                                   <tr key={index} style={{ color: colorScheme.card_txt_color }}>
                                     <td>{index+1}</td>
@@ -191,7 +190,7 @@ useEffect(() => {
                               :
                               userDate ==='' &&  userPhone !== '' ?
 
-                              users.filter((items)=> items.userphone === userPhone).map((items,index)=>{
+                              users.sort((a,b)=> b.id - a.id).filter((items)=> items.userphone === userPhone).map((items,index)=>{
                                 return(
                                   <tr key={index} style={{ color: colorScheme.card_txt_color }}>
                                     <td>{index+1}</td>
@@ -235,10 +234,10 @@ useEffect(() => {
                               })
 
                               :
-                            users.map((items,index)=>{
+                            users.sort((a,b)=> b.id - a.id).map((items,index)=>{
                                 return(
                                   <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                                     <td>{index+1}</td>
+                                     <td>{items.id}</td>
                                   <td>{items.sender_id}</td>
                                   <td>{items.sender_name}</td>
                                   <td >{items.sender_phone}</td>

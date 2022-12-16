@@ -13,15 +13,26 @@ const UserTimelineSheet = () => {
 
     const location = useLocation();
     const ID = location.state.ID;
+    const targetSheet = location.state.target;
     const[userInfo , setUserInfo] = useState('');
     const[userDepo , setUserDepo] = useState([]);
     const[userWithdrawal , setUserWithdrawal] = useState([]);
     const[userTeamOne , setUserTeamOne] = useState([]);
     const[userTeamTwo , setUserTeamTwo] = useState([]);
-
+    const[getReferral, setReferral] = useState([])
     const[userTotal , setUserTotal] = useState('');
-  const[roleID , setRoleID] = useState('');
+    const[roleID , setRoleID] = useState('');
+
+    const[display , setDisplay] = useState(0);
     
+    function handleDisplay(val){
+
+          setTimeout(() => {
+            setDisplay(val)
+          }, 1000);
+        
+
+    }
 
 
     
@@ -39,7 +50,6 @@ const UserTimelineSheet = () => {
     }
   }
 
-  console.log(roleID)
 
     function  getUserInfo(){
         axios.post(`${process.env.REACT_APP_BASE_URL}fetchuserwithid/${ID}`)
@@ -95,6 +105,7 @@ const UserTimelineSheet = () => {
     }
 
 
+
     function getUserTotals(){
       
 
@@ -110,6 +121,21 @@ const UserTimelineSheet = () => {
     })
     }
 
+    function gettingReferralTotal(){
+      const userObj = {
+        user_id:ID
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}fetch_referral`,userObj)
+    .then((res)=>{
+      setReferral(res.data.data)
+    })
+    .catch((error)=>{
+       return null
+    })
+    }
+
+    
+console.log(getReferral);
     
 
 
@@ -119,6 +145,7 @@ const UserTimelineSheet = () => {
         getWithdrawalInfo()
         getAllUsers()
         getUserTotals()
+        gettingReferralTotal()
         SetLocalLogin()
     }, [])
     
@@ -130,26 +157,23 @@ const UserTimelineSheet = () => {
     <div className="container-fluid">
       <div className="row mb-2">
         <div className="col-sm-6">
-          <h1>
-            {
-              roleID === 1 || roleID === 6 ?
-            "Member Timeline"
-              :
-           "User Timeline"
-            
-            }
-            </h1>
-        </div>
+          <h1>Timeline</h1>
+          {
+            getReferral.map((items)=>{
+              return(
+                <div className="d-flex mt-3">
+                <h4 className="text-bold">Referred by:&nbsp;&nbsp;{items.username}
+                &nbsp;&nbsp;({items.referal_code})
+                </h4>
+                </div>
+              )
+            })
+          }
+        </div>  
         <div className="col-sm-6">
           <ol className="breadcrumb float-sm-right">
             <li className="breadcrumb-item">
-            {
-              roleID === 1 || roleID === 2 || roleID === 3 || roleID === 4 || roleID === 6?
-              <a className="text-white" href="/MemberSheet">back</a>
-              :
-              <a className="text-white" href="/UserSheet">back</a>
-
-            }
+              <a className="text-white" href={`${targetSheet}`}><i class="fas fa-circle-arrow-left fa-2x"></i></a>
               </li>
           </ol>
         </div>
@@ -166,45 +190,128 @@ const UserTimelineSheet = () => {
             </div> */}
             <div>
               <i className="fas fa-user bg-white" />
-            {/* UserInfo Card */}
-              <div className="timeline-item" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,}}>
-                <span className="time"><i className="fas fa-calendar-days" />&nbsp;&nbsp;{userInfo.Idate}</span>
-                <h3 className="timeline-header text-white">User Info</h3>
-                <div className="timeline-body">
-                 <div className="row">
-                    <div className="col-lg-4">
-                    <li>Name:&nbsp;<b>{userInfo.firstname}</b> </li>
-                    <li>Last Name:&nbsp;<b>{userInfo.lastname}</b> </li>
-                    <li>Phone:&nbsp;<b>{userInfo.phone}</b> </li>
-                    </div>
+              {/* UserInfo Card */}
+              
+              <div className="timeline-item" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+              <span className="time"><i className="fas fa-calendar-days" />&nbsp;&nbsp;{userInfo.Idate}</span>
+              {
+                  display !==1 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(1)}><i className="fa-solid fa-arrow-down fa-1x"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up fa-1x"></i></span>
 
-                    <div className="col-lg-4">
-                    <li>CNIC:&nbsp;<b>{userInfo.cnic}</b> </li>
-                    <li>Email:&nbsp;<b>{userInfo.email}</b> </li>
-                    <li>Referral Code:&nbsp;<b>{userInfo.referal_code}</b> </li>
-                    </div>
+              }
+              <h3 className="timeline-header text-white">Personal Info</h3>
+              {
+                display !== 1 ? null:
+              <div className="timeline-body">
+               <div className="row">
+                  <div className="col-lg-4">
+                  <li>Name:&nbsp;<b>{userInfo.firstname}</b> </li>
+                  <li>Last Name:&nbsp;<b>{userInfo.lastname}</b> </li>
+                  <li>Phone:&nbsp;<b>{userInfo.phone}</b> </li>
+                  </div>
 
-                    <div className="col-lg-4">
-                    <li>Username:&nbsp;<b>{userInfo.username}</b> </li>
-                    <li>Question:&nbsp;<b>{userInfo.question}</b> </li>
-                    <li>Answer:&nbsp;<b>{userInfo.answer}</b> </li>
-                    </div>
+                  <div className="col-lg-4">
+                  <li>CNIC:&nbsp;<b>{userInfo.cnic}</b> </li>
+                  <li>Email:&nbsp;<b>{userInfo.email}</b> </li>
+                  <li>Referral Code:&nbsp;<b>{userInfo.referal_code}</b> </li>
+                  </div>
 
-                 </div>
-      
+                  <div className="col-lg-4">
+                  <li>Username:&nbsp;<b>{userInfo.username}</b> </li>
+                  <li>Question:&nbsp;<b>{userInfo.question}</b> </li>
+                  <li>Answer:&nbsp;<b>{userInfo.answer}</b> </li>
+                  </div>
 
-                </div>
-      
+               </div>
+    
+
               </div>
-            {/* UserInfo Card */}
+    
+              }
+            </div>
+      
+              {/* UserInfo Card */}
 
             </div>
+
+
+                  
+            <div>
+              <i className="fas fa-money-bill-transfer bg-white" />
+              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+              {
+                  display !== 2 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(2)}><i className="fa-solid fa-arrow-down"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
+
+              }
+                <h3 className="timeline-header text-white">Total Cash Flow</h3>
+              {
+                 display !== 2 ? null:
+                <div className="timeline-body">
+                 <div className="row">
+              
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}>Total Balance:&nbsp;<b>{Number(userTotal.Total_balance).toFixed(2)}</b> </li>
+                      </div>
+
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}>Total Deposit:&nbsp;<b>{userTotal.Total_deposit}</b> </li>
+                      </div>
+
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}>Total Withdrawal:&nbsp;<b>{userTotal.Total_withdrawl}</b> </li>
+                      </div>
+                      
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}> Total Income:&nbsp;<b>{Number(userTotal.Total_income).toFixed(2)}</b> </li>
+                      </div>
+
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}>Total Investment:&nbsp;<b>{userTotal.Total_investment}</b> </li>
+                      </div>
+                      
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}>Level:&nbsp;<b>{userTotal.my_level}</b> </li>
+                      </div>
+                      
+                      <div className="col-lg-3 p-2">
+                      <li style={{listStyle:"none"}}>Referral Code:&nbsp;<b>{userTotal.my_code}</b> </li>
+                      </div>
+
+               
+                      </div>
+        
+          
+                </div>
+
+                }
+              </div>
+            </div>
             
+
+
+
+
+
             <div>
               <i className="fas fa-briefcase bg-white" />
               <div className="timeline-item" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+              {
+                  display !== 3 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(3)}><i className="fa-solid fa-arrow-down"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
+
+              }
                 <h3 className="timeline-header text-white">Deposite Info</h3>
+                {
+                display !== 3 ? null:
                 <div className="timeline-body">
+          
                 {
                   userDepo.length !== 0 ?
                  <div className="row">
@@ -230,9 +337,10 @@ const UserTimelineSheet = () => {
                  </div>
                  :
                  <h3 className="text-center">No Deposits!</h3>
-          
                }
+
                 </div>
+               }
                
               </div>
             </div>
@@ -240,7 +348,16 @@ const UserTimelineSheet = () => {
             <div>
               <i className="fas fa-money-bill-wave bg-white" />
               <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+              {
+                  display !== 4 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(4)}><i className="fa-solid fa-arrow-down"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
+
+              }
                 <h3 className="timeline-header text-white">Withdrawal Info</h3>
+                {
+                  display !== 4 ? null:
                 <div className="timeline-body">
                 {
                   userWithdrawal.length !== 0 ?
@@ -270,18 +387,29 @@ const UserTimelineSheet = () => {
                  </div>
                  :
                  <h3 className="text-center">No Withdrawals!</h3>
-          
                }
+
                 </div>
+                }
               </div>
             </div>
 
             <div>
               <i className="fas fa-people-group bg-white" />
               <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
-                <h3 className="timeline-header text-white">Team </h3>
-                <di className="timeline-body">
-                  <h5 className="ml-2 text-center">"Team One"</h5>
+              {
+                  display !== 5 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(5)}><i className="fa-solid fa-arrow-down"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
+
+              }
+                <h3 className="timeline-header text-white">Teams</h3>
+                {
+                    display !== 5 ? null:
+                <div className="timeline-body">
+
+                  <h3 className="ml-2 text-center text-danger"> <b>"Team One"</b></h3>
                 {
                   userTeamOne.length !== 0 ?
                  <div className="row p-3">
@@ -289,7 +417,7 @@ const UserTimelineSheet = () => {
                     userTeamOne.map((items,index)=>{
                       return(
                         <div key={index+1} className="col-lg-4">
-                      <li className="mb-2" style={{listStyle:"none"}}>User# <b>{index+1}</b> </li>
+                      <li className="m-3 text-warning" style={{listStyle:"none", fontSize:"1.5em"}}>User# <b>{index+1}</b> </li>
                       <li>Username:&nbsp;<b>{items.username}</b> </li>
                       <li>First Name:&nbsp;<b>{items.firstname}</b> </li>
                       <li>Last Name:&nbsp;<b>{items.lastname}</b> </li>
@@ -318,7 +446,7 @@ const UserTimelineSheet = () => {
           
                }
 
-        <h5 className="ml-2 text-center">"Team Two"</h5>
+        <h3 className="ml-2 text-center text-danger"> <b>"Team Two"</b> </h3>
 
                {
              userTeamOne.length !==0?
@@ -328,7 +456,7 @@ const UserTimelineSheet = () => {
                    userTeamTwo.map((items,index)=>{
                      return(
                        <div key={index+1} className="col-lg-4">
-                      <li className="mb-2" style={{listStyle:"none"}}>User#<b>{index+1}</b></li>
+                      <p className="m-3 text-warning" style={{listStyle:"none", fontSize:"1.5em"}}>User#<b>{index+1}</b></p>
                       <li>Username:&nbsp;<b>{items.username}</b> </li>
                       <li>First Name:&nbsp;<b>{items.firstname}</b> </li>
                       <li>Last Name:&nbsp;<b>{items.lastname}</b> </li>
@@ -357,54 +485,12 @@ const UserTimelineSheet = () => {
 
 
 
-                </di>
-
+                </div>
+                }
               </div>
             </div>
      
-            
-            <div>
-              <i className="fas fa-money-bill-transfer bg-white" />
-              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
-                <h3 className="timeline-header text-white">Total Cash Flow</h3>
-                <div className="timeline-body">
-                 <div className="row">
-              
-                      <div className="col-lg-3 p-2">
-                      <li style={{listStyle:"none"}}>Total Balance:&nbsp;<b>{userTotal.Total_balance}</b> </li>
-                      </div>
-
-                      <div className="col-lg-3 p-2">
-                      <li style={{listStyle:"none"}}>Total Deposit:&nbsp;<b>{userTotal.Total_deposit}</b> </li>
-                      </div>
-
-                      <div className="col-lg-3 p-2">
-                      <li style={{listStyle:"none"}}>Total Withdrawal:&nbsp;<b>{userTotal.Total_withdrawl}</b> </li>
-                      </div>
-                      
-                      <div className="col-lg-3 p-2">
-                      <li style={{listStyle:"none"}}> Total Income:&nbsp;<b>{userTotal.Total_income}</b> </li>
-                      </div>
-
-                      <div className="col-lg-3 p-2">
-                      <li style={{listStyle:"none"}}>Total Investment:&nbsp;<b>{userTotal.Total_investment}</b> </li>
-                      </div>
-                      
-                      <div className="col-lg-3 p-2">
-                      <li style={{listStyle:"none"}}>Level:&nbsp;<b>{userTotal.my_level}</b> </li>
-                      </div>
-                      
-                      <div className="col-lg-3 p-2">
-                      <li style={{listStyle:"none"}}>Referral Code:&nbsp;<b>{userTotal.my_code}</b> </li>
-                      </div>
-
-               
-                      </div>
-        
-          
-                </div>
-              </div>
-            </div>
+      
 
     
             <div>

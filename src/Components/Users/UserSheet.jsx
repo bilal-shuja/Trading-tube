@@ -18,6 +18,24 @@ const UserSheet = () => {
     const[hostMessage , setHostMessage] = useState('');
     const[senderID , setSenderID] = useState('');
 
+    
+    const SetLocalLogin = async () => {
+      try {
+        let userObj = await localStorage.getItem('user');
+        let parseUserObj = JSON.parse(userObj)
+        
+        if (parseUserObj !== null) {
+          setRoleID(parseUserObj.role_id)
+          setSenderID(parseUserObj.id)
+        }
+  
+      } catch {
+        return null;
+      }
+    }
+
+
+
     function gettingUsers(){
       axios.post(`${process.env.REACT_APP_BASE_URL}fetchallusers`)
       .then((res)=>{
@@ -66,25 +84,16 @@ const UserSheet = () => {
       })
     }
 
-    const SetLocalLogin = async () => {
-      try {
-        let userObj = await localStorage.getItem('user');
-        let parseUserObj = JSON.parse(userObj)
-        
-        if (parseUserObj !== null) {
-          setRoleID(parseUserObj.role_id)
-          setSenderID(parseUserObj.id)
-        }
-  
-      } catch {
-        return null;
-      }
-    }
 useEffect(() => {
   gettingUsers();
   SetLocalLogin()
 }, [])
+ 
 
+
+ const filteredData = users.length > 0 && userDate !=='' &&  userPhone === '' ?  users.filter((items)=> items.Idate === userDate) 
+ :     userDate ==='' &&  userPhone !== '' ? users.filter((items)=> items.phone === userPhone) 
+ : users.filter((items)=> items.role_id === "5")
 
   return (
     <>
@@ -165,186 +174,74 @@ useEffect(() => {
                             </tr>
                           </thead>
                           <tbody className="text-center">
-                            {
-                              userDate !=='' &&  userPhone === '' ?
+                
+                          {filteredData.map((items,index)=>{
 
-                              users.filter((items)=> items.Idate === userDate).map((items,index)=>{
-                                return(
-                                  <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                                    <td>{index+1}</td>
-                                  <td>{items.id}</td>
-                                  <td>{items.firstname}</td>
-                                  <td >{items.lastname}</td>
-                                  <td>{items.referal_code}</td>
-                                  <td>{items.email}</td>
-                                  <td>{items.username}</td>
-                                  <td>{items.question}</td>
-                                  <td>{items.answer}</td>
-                                  <td>{items.phone}</td>
-                                  <td>{items.cnic}</td>
-                                  
-                                  <td>{items.Idate}</td>
-                                  <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-                                  <td>
-                                  {
-                                roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
-                                <div className="d-flex justify-content-center">
-                                <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
-                                      <i className="fa fa-pen"></i>
-                                    </Link>&nbsp;&nbsp;
+                                    return(
+                                      <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                                      <td>{filteredData.length - index}</td>
+                                      <td>{items.id}</td>
+                                      <td>{items.firstname}</td>
+                                      <td >{items.lastname}</td>
+                                      <td>{items.referal_code}</td>
+                                      <td>{items.email}</td>
+                                      <td>{items.username}</td>
+                                      <td>{items.question}</td>
+                                      <td>{items.answer}</td>
+                                      <td>{items.phone}</td>
+                                      <td>{items.cnic}</td>
+                                      
+                                      <td>{items.Idate}</td>
+                                      <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+                                      
+                                    <td>
 
-                                    
-                                  <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
-                                    <i className="fa-solid fa-timeline"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
+                                    <div className="d-flex justify-content-center">
+                                    {
+                                      roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
+                                      <>
+                                    <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
+                                        <i className="fa fa-pen"></i>
+                                      </Link>&nbsp;&nbsp;
+                                      
+                                      
+                                      <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id, target:"/UserSheet"}}>
+                                        <i className="fa-solid fa-timeline"></i>
+                                      </Link>
+                                      &nbsp;&nbsp;
 
-                                <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
-                                    <i className="fa fa-trash"></i>
-                                  </button>
-                                  &nbsp;&nbsp;
-                                
-                                {
-                                  roleID === "1"? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.id)}}
-                                  >
-                                  Query
-                                </button>
+                                    <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
+                                        <i className="fa fa-trash"></i>
+                                      </button>
+                                      </>
+                                    }
 
-                                }
-                               
+                                    &nbsp;&nbsp;
+                                    {
+                                      roleID === "1" || roleID === "6"? null:
+                                      <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+                                      onClick={()=>{setReceID(items.id)}}
+                                      >
+                                      Query
+                                    </button>
+
+                                    }
+                                      
+                                    </div>
+
+                                    </td>
+                                    </tr>
+                                    )
+
+
+                                  })}
+                                  </tbody>
+                                  </table>
+                                  :
+
+                                <div className="text-center">
+                                    <h2>No Record Found</h2>
                                 </div>
-                              }
-
-                              </td>
-                                </tr>
-                                )
-                              })
-                              :
-                              userDate ==='' &&  userPhone !== '' ?
-
-                              users.sort((a,b)=> b.id - a.id ).filter((items)=> items.phone === userPhone).map((items,index)=>{
-                                return(
-                                  <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                                    <td>{index+1}</td>
-                                  <td>{items.id}</td>
-                                  <td>{items.firstname}</td>
-                                  <td >{items.lastname}</td>
-                                  <td>{items.referal_code}</td>
-                                  <td>{items.email}</td>
-                                  <td>{items.username}</td>
-                                  <td>{items.question}</td>
-                                  <td>{items.answer}</td>
-                                  <td>{items.phone}</td>
-                                  <td>{items.cnic}</td>
-                                  
-                                  <td>{items.Idate}</td>
-                                  <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-                                  <td>
-                                  {
-                               roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
-                               <div className="d-flex justify-content-center">
-                               <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
-                                    <i className="fa fa-pen"></i>
-                                  </Link>&nbsp;&nbsp;
-
-                                    
-                                  <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
-                                    <i className="fa-solid fa-timeline"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
-
-                                <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
-                                    <i className="fa fa-trash"></i>
-                                  </button>
-                                  &nbsp;&nbsp;
-                                
-                                {
-                                  roleID === "1"? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.id)}}
-                                  >
-                                  Query
-                                </button>
-
-                                }
-                               
-                                </div>
-                              }
-                              </td>
-                                </tr>
-                                )
-                              })
-
-                              :
-                            users.filter((items)=> items.role_id === "5").map((items,index)=>{
-                                return(
-                                  <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                                    <td>{index+1}</td>
-                                  <td>{items.id}</td>
-                                  <td>{items.firstname}</td>
-                                  <td >{items.lastname}</td>
-                                  <td>{items.referal_code}</td>
-                                  <td>{items.email}</td>
-                                  <td>{items.username}</td>
-                                  <td>{items.question}</td>
-                                  <td>{items.answer}</td>
-                                  <td>{items.phone}</td>
-                                  <td>{items.cnic}</td>
-                                  
-                                  <td>{items.Idate}</td>
-                                  <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-                                  
-                              <td>
-                              
-                               <div className="d-flex justify-content-center">
-                               {
-                                  roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
-                                  <>
-                               <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
-                                    <i className="fa fa-pen"></i>
-                                  </Link>&nbsp;&nbsp;
-                                  
-                                  
-                                  <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
-                                    <i className="fa-solid fa-timeline"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
-
-                                <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
-                                    <i className="fa fa-trash"></i>
-                                  </button>
-                                  </>
-                            }
-                                
-                            &nbsp;&nbsp;
-                                {
-                                  roleID === "1" || roleID === "6"? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.id)}}
-                                  >
-                                  Query
-                                </button>
-
-                                }
-                                  
-                                </div>
-                              
-                              </td>
-                                </tr>
-                                )
-                              })
-                            
-                            }
-
-                          </tbody>
-                        </table>
-                        :
-
-                        <div className="text-center">
-                        <h2>No Record Found</h2>
-                        </div>
 
                         }
                    
@@ -387,3 +284,223 @@ useEffect(() => {
 }
 
 export default UserSheet
+
+
+
+
+
+
+
+
+
+//////////////////old//////////////////////////
+
+
+
+
+
+// {
+//   users.length !== 0?
+
+//   <table className="table  text-nowrap">
+//   <thead className="text-center">
+//     <tr>
+//       <th>#</th>
+//       <th>ID</th>
+//       <th>Name</th>
+//       <th>Last Name</th>
+//       <th>Referal Code</th>
+//       <th>Email</th>
+//       <th>Username</th>
+//       <th>Question</th>
+//       <th>Answer</th>
+//       <th>Phone</th>
+//       <th>CNIC</th>
+//       <th>Date</th>
+//       <th>Time</th>
+//       <th>Action</th>
+//     </tr>
+//   </thead>
+//   <tbody className="text-center">
+//     {
+//       userDate !=='' &&  userPhone === '' ?
+
+//       users.filter((items)=> items.Idate === userDate).map((items,index)=>{
+//         return(
+//           <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+//             <td>{users.length-index}</td>
+//           <td>{items.id}</td>
+//           <td>{items.firstname}</td>
+//           <td >{items.lastname}</td>
+//           <td>{items.referal_code}</td>
+//           <td>{items.email}</td>
+//           <td>{items.username}</td>
+//           <td>{items.question}</td>
+//           <td>{items.answer}</td>
+//           <td>{items.phone}</td>
+//           <td>{items.cnic}</td>
+          
+//           <td>{items.Idate}</td>
+//           <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+//           <td>
+//           {
+//         roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
+//         <div className="d-flex justify-content-center">
+//         <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id, target:"/UserSheet"}}>
+//               <i className="fa fa-pen"></i>
+//             </Link>&nbsp;&nbsp;
+
+            
+//           <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id}}>
+//             <i className="fa-solid fa-timeline"></i>
+//           </Link>
+//           &nbsp;&nbsp;
+
+//         <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
+//             <i className="fa fa-trash"></i>
+//           </button>
+//           &nbsp;&nbsp;
+        
+//         {
+//           roleID === "1"? null:
+//           <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+//           onClick={()=>{setReceID(items.id)}}
+//           >
+//           Query
+//         </button>
+
+//         }
+       
+//         </div>
+//       }
+
+//       </td>
+//         </tr>
+//         )
+//       })
+//       :
+//       userDate ==='' &&  userPhone !== '' ?
+
+//       users.sort((a,b)=> b.id - a.id ).filter((items)=> items.phone === userPhone).map((items,index)=>{
+//         return(
+//           <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+//             <td>{index+1}</td>
+//           <td>{items.id}</td>
+//           <td>{items.firstname}</td>
+//           <td >{items.lastname}</td>
+//           <td>{items.referal_code}</td>
+//           <td>{items.email}</td>
+//           <td>{items.username}</td>
+//           <td>{items.question}</td>
+//           <td>{items.answer}</td>
+//           <td>{items.phone}</td>
+//           <td>{items.cnic}</td>
+          
+//           <td>{items.Idate}</td>
+//           <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+//           <td>
+//           {
+//        roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
+//        <div className="d-flex justify-content-center">
+//        <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
+//             <i className="fa fa-pen"></i>
+//           </Link>&nbsp;&nbsp;
+
+            
+//           <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id , target:"/UserSheet"}}>
+//             <i className="fa-solid fa-timeline"></i>
+//           </Link>
+//           &nbsp;&nbsp;
+
+//         <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
+//             <i className="fa fa-trash"></i>
+//           </button>
+//           &nbsp;&nbsp;
+        
+//         {
+//           roleID === "1"? null:
+//           <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+//           onClick={()=>{setReceID(items.id)}}
+//           >
+//           Query
+//         </button>
+
+//         }
+       
+//         </div>
+//       }
+//       </td>
+//         </tr>
+//         )
+//       })
+
+//       :
+//     users.filter((items)=> items.role_id === "5").map((items,index)=>{
+//         return(
+//           <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+//             <td>{index+1}</td>
+//           <td>{items.id}</td>
+//           <td>{items.firstname}</td>
+//           <td >{items.lastname}</td>
+//           <td>{items.referal_code}</td>
+//           <td>{items.email}</td>
+//           <td>{items.username}</td>
+//           <td>{items.question}</td>
+//           <td>{items.answer}</td>
+//           <td>{items.phone}</td>
+//           <td>{items.cnic}</td>
+          
+//           <td>{items.Idate}</td>
+//           <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+          
+//       <td>
+      
+//        <div className="d-flex justify-content-center">
+//        {
+//           roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
+//           <>
+//        <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
+//             <i className="fa fa-pen"></i>
+//           </Link>&nbsp;&nbsp;
+          
+          
+//           <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id, target:"/UserSheet"}}>
+//             <i className="fa-solid fa-timeline"></i>
+//           </Link>
+//           &nbsp;&nbsp;
+
+//         <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
+//             <i className="fa fa-trash"></i>
+//           </button>
+//           </>
+//     }
+        
+//     &nbsp;&nbsp;
+//         {
+//           roleID === "1" || roleID === "6"? null:
+//           <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+//           onClick={()=>{setReceID(items.id)}}
+//           >
+//           Query
+//         </button>
+
+//         }
+          
+//         </div>
+      
+//       </td>
+//         </tr>
+//         )
+//       })
+    
+//     }
+
+//   </tbody>
+// </table>
+// :
+
+// <div className="text-center">
+// <h2>No Record Found</h2>
+// </div>
+
+// }

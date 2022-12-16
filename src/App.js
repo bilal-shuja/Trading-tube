@@ -19,12 +19,13 @@ import RegMemForm from './Components/Members/RegMemForm.jsx';
 import MemberSheet from './Components/Members/MemberSheet.jsx';
 import UpdateMemberForm from './Components/Members/UpdateMemForm.jsx';
 import StaffQuerySheet from './Components/Members/StaffQuerySheet.jsx';
+import StaffTicketSheet from './Components/Members/StaffTicketSheet.jsx';
+
 
 
 // Users
 import UserSheet from './Components/Users/UserSheet.jsx';
 import UpdateUserForm from './Components/Users/UpdateUserForm.jsx';
-
 import TimeLine from './Components/UserTimeline/UserTimelineSheet.jsx';
 
 
@@ -36,17 +37,18 @@ import UpdatePackageForm from './Components/Packages/UpdatePackageForm.jsx';
 // Deposits
 import AllDepositsSheet from './Components/Deposits/AllDepositsSheet.jsx';
 import BalanceSheet from './Components/Deposits/BalanceSheet.jsx';
+import RejectDepositSheet from './Components/Deposits/RejectDepositSheet.jsx';
 
 // Investments & Withdrawals
 import InvestmentSheet from './Components/Investments/InvestmentSheet.jsx';
-import WithdrawalSheet from './Components/Investments/WithdrawalSheet.jsx';
+import WithdrawalSheet from './Components/Withdrawals/WithdrawalSheet.jsx';
+import WithdrawalRejectSheet from './Components/Withdrawals/WithdrawalRejectionSheet.jsx';
 
 // Promotions
 import RewardApprovalSheet from './Components/Promotions/RewardApprovalSheet.jsx';
 import StopPromoSheet from './Components/Promotions/StopPromotionSheet.jsx';
 
 // Lucky Draw
-
 import AddLuckyDrawForm from './Components/LuckyDraw/AddLuckyDraw.jsx';
 import LuckyDrawSheet from './Components/LuckyDraw/LuckyDrawSheet.jsx';
 import ParticipantSheet from './Components/LuckyDraw/ParticipantSheet.jsx';
@@ -73,7 +75,6 @@ import DeductBalanceSheet from './Components/DeductBalance/DeductBalanceSheet.js
 
 
 // Statistics
-
 import DailyChart from './Components/Statistics/DailyChart.jsx';
 import RevenueChart from './Components/Statistics/RevenueChart.jsx';
 
@@ -137,6 +138,7 @@ function App() {
            <Route path="/MemberSheet" element={<MemberSheet/>}/>
            <Route path="/UpdateMemberForm" element={<UpdateMemberForm/>}/>
            <Route path="/StaffQuerySheet" element={<StaffQuerySheet/>}/>
+           <Route path="/StaffTicketSheet" element={<StaffTicketSheet/>}/>
 
            <Route path="/AddPackageForm" element={<AddPackageForm/>}/>
            <Route path="/PackageSheet" element={<PackageSheet/>}/>
@@ -145,9 +147,15 @@ function App() {
            
            <Route path="/AllDepositsSheet" element={<AllDepositsSheet/>}/>
            <Route path="/BalanceSheet" element={<BalanceSheet/>}/>
+           <Route path="/RejectDepositSheet" element={<RejectDepositSheet/>}/>
+
+           
 
            <Route path="/InvestmentSheet" element={<InvestmentSheet/>}/>
            <Route path="/WithdrawalSheet" element={<WithdrawalSheet/>}/>
+           <Route path="/WithdrawalRejectSheet" element={<WithdrawalRejectSheet/>}/>
+
+           
 
 
            <Route path="/RewardApprovalSheet" element={<RewardApprovalSheet/>}/>

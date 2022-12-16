@@ -12,7 +12,7 @@ const TipsTrickSheet = () => {
       setTipsTricks(res.data.Data)
     })
     .catch((error)=>{
-      return null
+      return null;
     })
   }
 

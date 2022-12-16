@@ -12,7 +12,7 @@ import axios from 'axios';
 const RewardApprovalSheet = () => {
     const[promotionSheet , setPromotionSheet] = useState([]);
     const [memID , setMemID] = useState('');
-    const[rewardRejMessage ,setRewardRejMessage] = useState('')
+    // const[rewardRejMessage ,setRewardRejMessage] = useState('')
     const [isOpen, setIsOpen] = useState(false)
     const[roleID , setRoleID] = useState('');
     const[getRewardStat , setRewardStat] = useState('');
@@ -69,6 +69,7 @@ const RewardApprovalSheet = () => {
           toast.info(`Reward${res.data.message}`,{theme:"dark"});
 
         }
+
      
       })
       .catch((error)=>{
@@ -99,16 +100,15 @@ const RewardApprovalSheet = () => {
           toast.info(`Reward${res.data.message}`,{theme:"dark"});
 
         }
-     
+
       })
       .catch((error)=>{
-        if(error.status === "401"){
+        if(error.data.status === "401"){
         toast.warn(error.data.message,{theme:"dark"});
 
         } 
         toast.warn("Something went wrong",{theme:"dark"});
       })
-      
 
     }
 
@@ -122,13 +122,14 @@ const RewardApprovalSheet = () => {
           setTimeout(() => {
             window.location.reload(true)
           }, 3000);
+          console.log(res.data.message)
+
         }
         else{
           toast.info(`${res.data.message}`,{theme:"dark"});
 
         }
 
-     
       })
       .catch((error)=>{
         if(error.status === "401"){
@@ -144,20 +145,21 @@ const RewardApprovalSheet = () => {
     function geneNotification(){
       const notifiObj ={
         receiver_id:memID,
-        body:rewardRejMessage,
+        body:queryOne,
         title:"Reward Rejection"
       }
       axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
       .then((res)=>{
         if(res.data.status === '200'){
           toast.info("Notified to User",{theme:"dark"});
+          setQueryOne('');
         }
         else{
           toast.info(`${res.data.message}`,{theme:"dark"});
 
         }
       })
-      .catch((error)=>{
+      .catch((res)=>{
         toast.warn("Something went wrong",{theme:"dark"});
 
       })
@@ -213,7 +215,6 @@ const RewardApprovalSheet = () => {
           toast.error(res.data.message,{theme:"dark"});
 
         }
-        console.log(res)
       })
       .catch((error)=>{
         toast.warn("Something went wrong",{theme:"dark"});
@@ -360,7 +361,7 @@ function submitHostQuery(){
                         {
                           promotionSheet.map((items, index)=>{
                             return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+                              <tr key={index+1} style={{ color: colorScheme.card_txt_color }}>
                               
                               <td>{items.id}</td>
                               <td>{items.member_name}</td>
@@ -478,27 +479,27 @@ function submitHostQuery(){
                     </table>
 
                     {/* Image Modal */}
-                          <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                              <div class="modal-content" style={{background:colorScheme.card_bg_color,color:colorScheme.card_txt_color}}>
+                          <div className="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div className="modal-dialog">
+                              <div className="modal-content" style={{background:colorScheme.card_bg_color,color:colorScheme.card_txt_color}}>
                              
-                                <div class="modal-header">
+                                <div className="modal-header">
                                   <div>
                                   {/* <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> */}
-                                  <button type="button" class="btn btn-outline-warning btn-sm" onClick={()=>{setRotateImg(180)}}>180 deg</button>
+                                  <button type="button" className="btn btn-outline-warning btn-sm" onClick={()=>{setRotateImg(180)}}>180 deg</button>
                              
                                   &nbsp;&nbsp;
-                                  <button type="button" class="btn btn-outline-danger btn-sm" onClick={()=>{setRotateImg(360)}}>360 deg</button>
+                                  <button type="button" className="btn btn-outline-danger btn-sm" onClick={()=>{setRotateImg(360)}}>360 deg</button>
 
                                   </div>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true" style={{color:colorScheme.card_txt_color}}>&times;</span>
                                   </button>
                                 </div>
-                                <div class="modal-body">
+                                <div className="modal-body">
                                   <img className="img-fluid  mx-auto d-block" src={`${process.env.REACT_APP_IMG_URL}${getImage}`} alt="" style={{background:colorScheme.card_bg_color,color:colorScheme.card_txt_color , transform:`rotateY(${rotateImg}deg)`}} />
                                 </div>
-                                <div class="modal-footer">
+                                <div classname="modal-footer">
                          
                                 </div>
                               </div>
@@ -551,7 +552,7 @@ function submitHostQuery(){
                            <div className="form-group">
                            <label htmlFor="exampleInputEmail1">Rejection Reason*</label>
                             <textarea
-                              type="text" className="form-control " defaultValue={queryOne} id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setRewardRejMessage(e.target.value)} row={6} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color,marginRight:"15em"}}/>
+                              type="text" className="form-control " defaultValue={queryOne} id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setQueryOne(e.target.value)} row={6} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color,marginRight:"15em"}}/>
                            </div>
                            <button onClick={()=>{
                             RewardRejection()

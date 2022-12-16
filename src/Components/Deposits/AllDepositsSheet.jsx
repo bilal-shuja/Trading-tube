@@ -1,4 +1,4 @@
-import QuerySelect from '../Promotions/QuerySelection.js';
+import QuerySelect from './DepositSelection.js';
 import React,{useState,useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from '../Colors/Styles.js';
@@ -28,7 +28,7 @@ const AllDepositsTable = () => {
   const[queryOne , setQueryOne] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [memID , setMemID] = useState('');
-  const[depoRej ,setDepoRej] = useState('')
+  const[depoID , setDepoID] = useState('')
 
     const DepoSheetIdentifier = "DepositSheet";
 
@@ -147,8 +147,8 @@ const AllDepositsTable = () => {
     function geneNotification(){
       const notifiObj ={
         receiver_id:memID,
-        body:depoRej,
-        title:"Deposit Rejection"
+        body:queryOne,
+        title:"Deposit_Rejections"
       }
       axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
       .then((res)=>{
@@ -165,6 +165,31 @@ const AllDepositsTable = () => {
     
       })
     }
+
+  function rejectDeposit(){
+    const rejDepObj = {
+      status:"rejected"
+    }
+
+    axios.post(`${process.env.REACT_APP_BASE_URL}reject_deposit_byid/${depoID}`,rejDepObj)
+    .then((res)=>{
+      if(res.data.status === '200'){
+        toast.info("Deposit Rejected!",{theme:"dark"});
+        setTimeout(() => {
+          window.location.reload(true)
+        }, 3000);
+      }
+      else{
+        toast.warn(res.data.message,{theme:"dark"});
+
+      }
+      
+    })
+    .catch((error)=>{
+     return null
+    })
+
+  }
 
     function submitHostQuery(){
       const hostQueryObj = {
@@ -313,10 +338,10 @@ const AllDepositsTable = () => {
           </thead>
           <tbody className="text-center">
             {
-                depoTemArr.map((items,index)=>{
+                depoTemArr.filter((item)=> item.status === "approved" || item.status === "unapproved" || item.status === "All").map((items,index)=>{
                     return(
                         <tr key={items.id} style={{ color: colorScheme.card_txt_color }}>
-                          <td>{index+1}</td>
+                          <td>{depoTemArr.length-index}</td>
                             <td>{items.payer_id}</td>
                             <td>{items.username}</td>
                             <td>{items.phone}</td>
@@ -354,24 +379,33 @@ const AllDepositsTable = () => {
                         {
                               roleID === "2"|| roleID === "3"|| roleID === "4"? null:
                               <>
-                                <button onClick={()=> approveSingleDepo(items.id)}  className="btn btn-outline-info btn-sm" >
+
+                                <button onClick={()=> approveSingleDepo(items.id)}  className="btn btn-outline-info btn-sm" 
+                                data-toggle="tooltip" 
+                                data-placement="top" 
+                                title="approved/unapproved deposit"
+                                >
                                   <i  className="fa fa-person-circle-check"></i>
                                 </button>
                                 
-                                &nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;
 
-                                <button onClick={() => {
-                                 setIsOpen(true)
-                                 setMemID(items.payer_id)
-                                }} 
-                                 className="btn btn-outline-danger btn-sm"
-                                 data-toggle="tooltip" 
-                                 data-placement="top" 
-                                 title="Reward Rejection"
-                                 >
-                                   <i className="fa-solid fa-circle-xmark"></i>
-                                 </button>
-
+                          {
+                            items.status === "approved"? null:
+                          
+                            <button onClick={() => {
+                              setIsOpen(true)
+                              setMemID(items.payer_id)
+                              setDepoID(items.id)
+                             }} 
+                              className="btn btn-outline-danger btn-sm"
+                              data-toggle="tooltip" 
+                              data-placement="top" 
+                              title="Deposit Rejection"
+                              >
+                                <i className="fa-solid fa-circle-xmark"></i>
+                              </button>  
+                              }
                                 </>
                         }
                           
@@ -385,16 +419,16 @@ const AllDepositsTable = () => {
                          :
                          null
                       }
+                      
 
-                                {
-                                  roleID === "1" || roleID === "6"? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.payer_id)}}
-                                  >
-                                  Query
-                                </button>
+                      {
+                        roleID === "1" || roleID === "6"? null:
+                        <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+                          onClick={()=>{setReceID(items.payer_id)}}>
+                          Query
+                        </button>
 
-                                }
+                       }
                                   
                        
 
@@ -463,10 +497,11 @@ const AllDepositsTable = () => {
                            <div className="form-group">
                            <label htmlFor="exampleInputEmail1">Rejection Reason*</label>
                             <textarea
-                              type="text" className="form-control " defaultValue={queryOne} id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setDepoRej(e.target.value)} row={6} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color,marginRight:"15em"}}/>
+                              type="text" className="form-control " defaultValue={queryOne} id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setQueryOne(e.target.value)} row={6} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color,marginRight:"15em"}}/>
                            </div>
                            <button onClick={()=>{
                             geneNotification()
+                            rejectDeposit()
                           }} className="btn btn-outline-info btn-sm"
                           >Submit</button>
                            </div>

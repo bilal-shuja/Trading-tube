@@ -1,4 +1,4 @@
-import QuerySelect from '../Promotions/QuerySelection.js';
+import QuerySelect from './WithdrawalSelection.js';
 import React,{useState, useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from '../Colors/Styles.js';
@@ -27,8 +27,8 @@ const WithdrawalSheet = () => {
 
   const[queryOne , setQueryOne] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const [userID , setUserID] = useState('');
-  const[withdrawalRej ,setWithdrawalRej] = useState('')
+  const [ID , setID] = useState('');
+  const[userID , setUserID] = useState('')
 
 
   const SetLocalLogin = async () => {
@@ -128,7 +128,10 @@ function gettingWithdrawalSum(){
 
    
 function withdrawalRejection(){
-  axios.post(`${process.env.REACT_APP_BASE_URL}reject_withdrawl/${userID}`)
+const withdrawalObj = {
+  status:"rejected"
+}
+  axios.post(`${process.env.REACT_APP_BASE_URL}reject_withdrawl_status_byid/${ID}`,withdrawalObj)
   .then((res)=>{
     if(res.data.status === '200'){
       toast.info(`Withdrawal Rejected!`,{theme:"dark"});
@@ -141,7 +144,6 @@ function withdrawalRejection(){
 
     }
 
- 
   })
   .catch((error)=>{
     if(error.status === "401"){
@@ -161,7 +163,7 @@ function withdrawalRejection(){
 function geneNotification(){
   const notifiObj ={
     receiver_id:userID,
-    body:withdrawalRej,
+    body:queryOne,
     title:"Withdrawal Rejection"
   }
   axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
@@ -357,7 +359,7 @@ function submitHostQuery(){
                       withdrawalData.filter((items)=> items.status === withdrawalStatus).map((items,index)=>{
                           return(
                             <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{index+1}</td>
+                              <td>{withdrawalData.length-index}</td>
                             <td>{items.user_id}</td>
                             <td>{items.username}</td>
                             <td>{items.phone}</td>
@@ -388,6 +390,7 @@ function submitHostQuery(){
                                   &nbsp;&nbsp;
                                   <button onClick={() => {
                                  setIsOpen(true)
+                                 setID(items.id)
                                  setUserID(items.user_id)
                                 }} 
                                  className="btn btn-outline-danger btn-sm"
@@ -421,7 +424,7 @@ function submitHostQuery(){
                         withdrawalData.filter((items)=> items.account_number === withdrawalAcc).map((items,index)=>{
                           return(
                             <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{index+1}</td>
+                              <td>{withdrawalData.length-index}</td>
                             <td>{items.user_id}</td>
                             <td>{items.username}</td>
                             <td>{items.phone}</td>
@@ -452,7 +455,9 @@ function submitHostQuery(){
                                   &nbsp;&nbsp;
                                   <button onClick={() => {
                                  setIsOpen(true)
+                                 setID(items.id)
                                  setUserID(items.user_id)
+
                                 }} 
                                  className="btn btn-outline-danger btn-sm"
                                  data-toggle="tooltip" 
@@ -486,7 +491,7 @@ function submitHostQuery(){
                         withdrawalData.filter((items)=> items.Idate === withdrawalDate).map((items,index)=>{
                           return(
                             <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{index+1}</td>
+                              <td>{withdrawalData.length-index}</td>
                             <td>{items.user_id}</td>
                             <td>{items.username}</td>
                             <td>{items.phone}</td>
@@ -517,7 +522,9 @@ function submitHostQuery(){
                                   &nbsp;&nbsp;
                                   <button onClick={() => {
                                  setIsOpen(true)
+                                 setID(items.id)
                                  setUserID(items.user_id)
+
                                 }} 
                                  className="btn btn-outline-danger btn-sm"
                                  data-toggle="tooltip" 
@@ -550,7 +557,7 @@ function submitHostQuery(){
                         withdrawalData.filter((items)=> items.phone === withdrawalPhone).map((items,index)=>{
                           return(
                             <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{index+1}</td>
+                              <td>{withdrawalData.length-index}</td>
                             <td>{items.user_id}</td>
                             <td>{items.username}</td>
                             <td>{items.phone}</td>
@@ -581,7 +588,9 @@ function submitHostQuery(){
                                   &nbsp;&nbsp;
                                   <button onClick={() => {
                                  setIsOpen(true)
+                                 setID(items.id)
                                  setUserID(items.user_id)
+
                                 }} 
                                  className="btn btn-outline-danger btn-sm"
                                  data-toggle="tooltip" 
@@ -609,10 +618,10 @@ function submitHostQuery(){
                           )
                         })
                         :
-                          withdrawalData.map((items,index)=>{
+                          withdrawalData.filter((items)=> items.status ==="approved" || items.status === "unapproved").map((items,index)=>{
                             return(
                               <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{index+1}</td>
+                              <td>{withdrawalData.length-index}</td>
                               <td>{items.user_id}</td>
                               <td>{items.username}</td>
                               <td>{items.phone}</td>
@@ -642,17 +651,25 @@ function submitHostQuery(){
                                     <i className="fa fa-circle-check"></i>
                                   </button>
                                   &nbsp;&nbsp;
+                                {
+                                  items.status === "approved"? null:
                                   <button onClick={() => {
-                                 setIsOpen(true)
-                                 setUserID(items.user_id)
-                                }} 
-                                 className="btn btn-outline-danger btn-sm"
-                                 data-toggle="tooltip" 
-                                 data-placement="top" 
-                                 title="Withdrawal Rejection"
-                                 >
-                                   <i className="fa-solid fa-circle-xmark"></i>
-                                 </button>
+                                    setIsOpen(true)
+                                    setID(items.id)
+                                    setUserID(items.user_id)
+
+                                   }} 
+                                    className="btn btn-outline-danger btn-sm"
+                                    data-toggle="tooltip" 
+                                    data-placement="top" 
+                                    title="Withdrawal Rejection"
+                                    >
+                                      <i className="fa-solid fa-circle-xmark"></i>
+                                    </button>
+                                }
+                                  
+
+
                                 </>
                                 }
                                   &nbsp;&nbsp;
@@ -734,7 +751,7 @@ function submitHostQuery(){
                            <div className="form-group">
                            <label htmlFor="exampleInputEmail1">Rejection Reason*</label>
                             <textarea
-                              type="text" className="form-control " defaultValue={queryOne} id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setWithdrawalRej(e.target.value)} row={6} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color,marginRight:"15em"}}/>
+                              type="text" className="form-control " defaultValue={queryOne} id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setQueryOne(e.target.value)} row={6} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color,marginRight:"15em"}}/>
                            </div>
                            <button onClick={()=>{
                             withdrawalRejection()
