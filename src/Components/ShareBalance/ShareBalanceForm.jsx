@@ -1,7 +1,8 @@
+import SendNotification from '../Notifications/SendNotifications';
+import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from '../Colors/Styles.js';
 import { toast } from "react-toastify";
-import React,{useState , useEffect} from 'react';
 import axios from 'axios';
 
 const ShareBalanceForm = () => {
@@ -69,48 +70,48 @@ const ShareBalanceForm = () => {
     function submitBalance(){
         setLoading(true)
 
-if(userName && userPhone && amount){
-  const balanceObj ={
-    user_id:userID,
-    sender_id:adminID,
-    role_id:roleID,
-    phone:userPhone,
-    amount:amount
-}
+        if(userName && userPhone && amount){
+          const balanceObj ={
+            user_id:userID,
+            sender_id:adminID,
+            role_id:roleID,
+            phone:userPhone,
+            amount:amount
+        }
 
-axios.post(`${process.env.REACT_APP_BASE_URL}Send_balance`,balanceObj)
-.then((res)=>{
-  toast.info("Balance Sended!",{theme:"dark"});
-  geneNotification()
-  setInput(false);
-  setLoading(false)
-  setTimeout(() => {
-    setUserPhone('')
-    setUserName('')
-    setAmount('')
-  }, 2000);
-
-
-})
-.catch((error)=>{
-  if(error.response.data.response === '401'){
-    toast.warn(error.response.data.message,{theme:"dark"});
-    setLoading(false)
-  }
-else{
-  toast.warn("Something went wrong",{theme:"dark"});
-  setInput(true);
-  setLoading(false)
-}
+        axios.post(`${process.env.REACT_APP_BASE_URL}Send_balance`,balanceObj)
+        .then((res)=>{
+          toast.info("Balance Sended!",{theme:"dark"});
+          geneNotification()
+          setInput(false);
+          setLoading(false)
+          setTimeout(() => {
+            setUserPhone('')
+            setUserName('')
+            setAmount('')
+          }, 2000);
 
 
-})
-}
-   else{
-    toast.warn("Fill the information !",{theme:"dark"})
-      setLoading(false)
-      setInput(true)
-   }
+        })
+        .catch((error)=>{
+          if(error.response.data.response === '401'){
+            toast.warn(error.response.data.message,{theme:"dark"});
+            setLoading(false)
+          }
+        else{
+          toast.warn("Something went wrong",{theme:"dark"});
+          setInput(true);
+          setLoading(false)
+        }
+
+
+        })
+        }
+          else{
+            toast.warn("Fill the information !",{theme:"dark"})
+              setLoading(false)
+              setInput(true)
+          }
     
       }
 
@@ -123,6 +124,8 @@ else{
         axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
         .then((res)=>{
           toast.info("Notified to User",{theme:"dark"});
+          // SendNotification(userID,"Balance Received!", `Congratulations! You have received amount ${amount} from trading tube`)
+          
         })
         .catch((error)=>{
           toast.warn("Something went wrong",{theme:"dark"});

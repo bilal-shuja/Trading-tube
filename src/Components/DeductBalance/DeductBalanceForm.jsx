@@ -1,7 +1,8 @@
+import SendNotification from '../Notifications/SendNotifications';
+import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from '../Colors/Styles.js';
 import { toast } from "react-toastify";
-import React,{useState , useEffect} from 'react';
 import axios from 'axios';
 
 const DeductBalanceForm = () => {
@@ -121,6 +122,8 @@ else{
         axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
         .then((res)=>{
           toast.info("Notified to User",{theme:"dark"});
+          // SendNotification(userID,"Balance Received!", `Congratulations! You have received amount ${amount} from trading tube`)
+
         })
         .catch((error)=>{
           toast.warn("Something went wrong",{theme:"dark"});

@@ -27,6 +27,7 @@ import StaffTicketSheet from './Components/Members/StaffTicketSheet.jsx';
 import UserSheet from './Components/Users/UserSheet.jsx';
 import UpdateUserForm from './Components/Users/UpdateUserForm.jsx';
 import TimeLine from './Components/UserTimeline/UserTimelineSheet.jsx';
+import SuspendedUsers from './Components/Users/SuspendedUserSheet.jsx';
 
 
 // Packages 
@@ -133,6 +134,7 @@ function App() {
            <Route path="/UserSheet" element={<UserSheet />}/>
            <Route path="/UpdateUserForm" element={<UpdateUserForm/>}/>
            <Route path="/TimeLine" element={<TimeLine/>}/>
+           <Route path="/SuspendedUsers" element={<SuspendedUsers/>}/>
 
            <Route path="/RegMemForm" element={<RegMemForm/>}/>
            <Route path="/MemberSheet" element={<MemberSheet/>}/>

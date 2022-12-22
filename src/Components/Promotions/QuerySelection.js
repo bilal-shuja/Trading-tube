@@ -24,7 +24,7 @@ const QuerySelection = [
 
     {
         id:5,
-        message:"Kindly upload 5 start review screenshot instead of utility bill."
+        message:"Kindly upload 5 star review screenshot instead of utility bill."
     }
   
   

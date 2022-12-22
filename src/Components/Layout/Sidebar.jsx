@@ -53,7 +53,8 @@ const Sidebar = () => {
         {/* Add icons to the links using the .nav-icon class
          with font-awesome or any other icon font library */}
 
-
+{
+               roleID === "1" ||  roleID === "6"? 
 <li className="nav-item menu treeview" >
           <a href="#" className="nav-link">
             <i className="nav-icon fas fa-user mr-2" />
@@ -69,8 +70,19 @@ const Sidebar = () => {
                 <p>Users Sheet</p>
               </Link>
             </li>
+
+            <li className="nav-item">
+              <Link to="/SuspendedUsers" className="nav-link ">
+                <i className="far fa-circle nav-icon" />
+                <p>Suspended Users</p>
+              </Link>
+            </li>
           </ul>
         </li>
+        :
+        null
+
+}
 
           <li className="nav-item menu treeview" >
           <a href="#" className="nav-link">

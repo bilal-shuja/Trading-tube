@@ -60,6 +60,30 @@ const UserSheet = () => {
     }
 
 
+    function suspendUser(id){
+      const suspendUserObj = {
+        user_id:id,
+        status:1
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}post_blocked_user`,suspendUserObj)
+      .then((res)=>{
+        if(res.data.status === "200"){
+             toast.error("User Suspended!" , {theme:"dark"})
+          setTimeout(() => {
+            window.location.reload(true)
+          }, 3000);
+        }
+        else{
+          toast.warn(res.data.message , {theme:"dark"})
+        }
+        })
+      .catch((res)=>{
+        toast.warn("Something went wrong" , {theme:"dark"})
+      })
+
+    }
+
+
     function submitHostQuery(){
       const hostQueryObj = {
         sender_id:senderID,
@@ -122,7 +146,7 @@ useEffect(() => {
                     <h5>Users Sheet</h5>
                     <button className="btn btn-outline-info btn-sm" onClick={()=>{window.location.reload()}}>Reset Filters</button>
                         <div className="row p-2">
-                        <div className="col-sm-5">
+                        <div className="col-sm-4">
                           <label htmlFor="" className="form-label "> Search with Date:</label>
                               <div className="form-group">
                                 <input type="text" className="form-control" placeholder="Search by Date..."
@@ -135,7 +159,7 @@ useEffect(() => {
                           </div>
                       </div>
 
-                      <div className="col-sm-5">
+                      <div className="col-sm-4">
                         <label htmlFor="" className="form-label "> Search with Phone:</label>
                             <div className="form-group">
                               <input type="text" className="form-control" placeholder="Search by Phone..."
@@ -208,11 +232,17 @@ useEffect(() => {
                                       <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id, target:"/UserSheet"}}>
                                         <i className="fa-solid fa-timeline"></i>
                                       </Link>
+
                                       &nbsp;&nbsp;
+
+                                      <button className="btn btn-outline-danger btn-sm" onClick={()=>suspendUser(items.id)}>
+                                        <i className="fa fa-user-minus"></i>
+                                      </button> 
+                                      {/* &nbsp;&nbsp;
 
                                     <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
                                         <i className="fa fa-trash"></i>
-                                      </button>
+                                      </button> */}
                                       </>
                                     }
 

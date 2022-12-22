@@ -47,7 +47,7 @@ const HelpChatCenter = () => {
     const sendingTicketObj={
       ticket_id:ID,
       sender_id:adminID,
-      sender_type:memName,
+      sender_type:"Admin",
       body:ticketReply
     }
     setTicketReplys(p =>[...p , sendingTicketObj])

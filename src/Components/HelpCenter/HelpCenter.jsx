@@ -24,7 +24,8 @@ const HelpCenter = () => {
       setHelpCenter(res.data.data)
     })
     .catch((error)=>{
-      console.log(error)
+
+      return null;
     })
     
   }

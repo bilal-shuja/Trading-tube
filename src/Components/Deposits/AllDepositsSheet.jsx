@@ -1,3 +1,4 @@
+import SendNotification from "../Notifications/SendNotifications";
 import QuerySelect from './DepositSelection.js';
 import React,{useState,useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
@@ -20,15 +21,15 @@ const AllDepositsTable = () => {
     const[roleID , setRoleID] = useState('');
 
     
-  const[receID , setReceID] = useState('');
-  const[hostMessage , setHostMessage] = useState('');
-  const[senderID , setSenderID] = useState('');
+    const[receID , setReceID] = useState('');
+    const[hostMessage , setHostMessage] = useState('');
+    const[senderID , setSenderID] = useState('');
 
 
-  const[queryOne , setQueryOne] = useState('');
-  const [isOpen, setIsOpen] = useState(false);
-  const [memID , setMemID] = useState('');
-  const[depoID , setDepoID] = useState('')
+    const[queryOne , setQueryOne] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
+    const [memID , setMemID] = useState('');
+    const[depoID , setDepoID] = useState('')
 
     const DepoSheetIdentifier = "DepositSheet";
 
@@ -54,7 +55,7 @@ const AllDepositsTable = () => {
           setTempArr(res.data.Data)
         })
         .catch((error)=>{
-          console.log(error)
+          return error;
         })
 
       }
@@ -144,6 +145,8 @@ const AllDepositsTable = () => {
     }
 
 
+
+  
     function geneNotification(){
       const notifiObj ={
         receiver_id:memID,
@@ -154,6 +157,7 @@ const AllDepositsTable = () => {
       .then((res)=>{
         if(res.data.status === '200'){
           toast.info("Notified to User",{theme:"dark"});
+          // SendNotification(memID , "Deposit_Rejections",queryOne)
         }
         else{
           toast.info(`${res.data.message}`,{theme:"dark"});

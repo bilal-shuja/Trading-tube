@@ -94,7 +94,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
     }
       
       else{
-        console.log("")
+        return null;
       }
     }
 
@@ -148,7 +148,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
 
       }
       else{
-        console.log("")
+        return null;
       }
      
 
@@ -398,6 +398,16 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
         }
   
       }
+      else if(PromotionSheetIdentifier){
+        if(e.target.value !== " "){
+          const phoneFilter = PromotionData.filter((items)=> items.phone === e.target.value)
+          PhoneFilter(phoneFilter)      
+        }
+        else{
+          PhoneFilter(PromotionData)
+        }
+  
+      }
       else{
         return null;
       }
@@ -410,7 +420,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
     <>
     {
       MemberSheetIdentifier ? null:
-        <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier?"col-sm-5":"col-sm-4"}>
+        <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier?"col-sm-4":"col-sm-4"}>
                     <label htmlFor="" className="form-label">Filter by {LuckyDrawSheetIdentifier || ParticipantSheetIdentifier ? "Fee":"Price"}:</label>
                         <div className="form-group">
                           <select  className="form-control" 
@@ -452,7 +462,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
                     </div>
                     }
       
-         <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier?"col-sm-5":"col-sm-4"}>
+         <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier?"col-sm-4":"col-sm-4"}>
                 <label htmlFor="" className="form-label "> Search with Date:</label>
                     <div className="form-group">
                       <input type="text" className="form-control" placeholder="Search by Date..."
@@ -465,7 +475,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
                  </div>
             </div>
 {
-  DepoSheetIdentifier || MemberSheetIdentifier? 
+  DepoSheetIdentifier || MemberSheetIdentifier || PromotionSheetIdentifier? 
   <div className="col-sm-4">
                 <label htmlFor="" className="form-label "> Search with Phone:</label>
                     <div className="form-group">

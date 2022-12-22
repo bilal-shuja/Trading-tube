@@ -1,3 +1,4 @@
+import SendNotification from '../Notifications/SendNotifications';
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
@@ -12,7 +13,6 @@ import axios from 'axios';
 const RewardApprovalSheet = () => {
     const[promotionSheet , setPromotionSheet] = useState([]);
     const [memID , setMemID] = useState('');
-    // const[rewardRejMessage ,setRewardRejMessage] = useState('')
     const [isOpen, setIsOpen] = useState(false)
     const[roleID , setRoleID] = useState('');
     const[getRewardStat , setRewardStat] = useState('');
@@ -49,7 +49,7 @@ const RewardApprovalSheet = () => {
         setPromotionSheet(res.data.Rewards)
       })
       .catch((error)=>{
-        console.log(error)
+        return error;
       })
     }
 
@@ -61,6 +61,7 @@ const RewardApprovalSheet = () => {
       .then((res)=>{
         if(res.data.status === '200'){
           toast.info(`Reward ${res.data.message}`,{theme:"dark"});
+          geneRewardNotification(memID)
           setTimeout(() => {
             window.location.reload(true)
           }, 3000);
@@ -119,10 +120,10 @@ const RewardApprovalSheet = () => {
       .then((res)=>{
         if(res.data.status === '200'){
           toast.info(`Reward Approval Rejected!`,{theme:"dark"});
+          geneNotification()
           setTimeout(() => {
             window.location.reload(true)
           }, 3000);
-          console.log(res.data.message)
 
         }
         else{
@@ -152,6 +153,7 @@ const RewardApprovalSheet = () => {
       .then((res)=>{
         if(res.data.status === '200'){
           toast.info("Notified to User",{theme:"dark"});
+          // SendNotification(memID,"Reward Rejection", queryOne)
           setQueryOne('');
         }
         else{
@@ -159,16 +161,16 @@ const RewardApprovalSheet = () => {
 
         }
       })
-      .catch((res)=>{
+      .catch((error)=>{
         toast.warn("Something went wrong",{theme:"dark"});
 
       })
     }
 
-    function geneRewardNotification(amount,memID){  
+    function geneRewardNotification(memID){  
       const notifiObj ={
         receiver_id:memID,
-        body:`Congratulations! You have received amount ${amount} from trading tube`,
+        body:`Congratulations! You have received amount of 500 from trading tube`,
         title:"Reward amount received"
       }
       axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
@@ -189,7 +191,10 @@ const RewardApprovalSheet = () => {
 
 
     function gettingPromoStatus(){
-      axios.get(`${process.env.REACT_APP_BASE_URL}getcheck`)
+      const getPromoObj = {
+        user_id:senderID
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}getcheck`,getPromoObj)
       .then((res)=>{
         setRewardStat(res.data.check)
       })
@@ -253,9 +258,11 @@ const RewardApprovalSheet = () => {
       setPromotionSheet(val)
     } 
 
-  
+    function gettingPhone(val){
+      setPromotionSheet(val)
+    }
 
-    
+  
 function submitHostQuery(){
   const hostQueryObj = {
     sender_id:senderID,
@@ -284,7 +291,7 @@ function submitHostQuery(){
     useEffect(() => {
       SetLocalLogin()
       gettingRewards()
-      gettingPromoStatus()
+      // gettingPromoStatus()
     }, [])
     
   return (
@@ -311,7 +318,10 @@ function submitHostQuery(){
                   className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one}}>
                   <div className="card-header">
                     <h5>Reward Approval Sheet</h5>
-                    <button className="btn btn-outline-info btn-sm" onClick={()=>{window.location.reload()}}>Reset Filters</button>
+                    <button className="btn btn-outline-info btn-sm" onClick={()=>{
+                      window.location.reload(true)
+
+                    }}>Reset Filters</button>
 
                     {
                     roleID === "2"|| roleID === "3"|| roleID === "4" ? null:
@@ -337,13 +347,14 @@ function submitHostQuery(){
                   </div>
                   <div className="card-body table-responsive p-2">
                   <div className="row">
-                  <Filter PromotionData={promotionSheet} DateFilter={gettingDate}  PriceStatus={gettingPrice} PromotionSheetIdentifier={PromotionSheetIdentifier}/>
+                  <Filter PromotionData={promotionSheet} DateFilter={gettingDate}  PriceStatus={gettingPrice} PhoneFilter={gettingPhone} PromotionSheetIdentifier={PromotionSheetIdentifier}/>
                     
                   </div>
                     <table className="table  text-nowrap">
                       <thead className="text-center">
                         <tr>
                           <th>#</th>
+                          <th>ID</th>
                           <th>Member Name</th>
                           <th>CNIC</th>
                           <th>Phone</th>
@@ -362,7 +373,7 @@ function submitHostQuery(){
                           promotionSheet.map((items, index)=>{
                             return(
                               <tr key={index+1} style={{ color: colorScheme.card_txt_color }}>
-                              
+                              <td>{promotionSheet.length-index}</td>
                               <td>{items.id}</td>
                               <td>{items.member_name}</td>
                               <td>{items.cnic}</td>
@@ -405,7 +416,6 @@ function submitHostQuery(){
                                    items.status === "unapproved"?
                                    <button onClick={() => {
                                   
-                                      geneRewardNotification(items.amount,items.member_id)
                                      changingRewardAppStatus(items.member_id)
                                     }} 
                                     data-toggle="tooltip" 
@@ -556,7 +566,6 @@ function submitHostQuery(){
                            </div>
                            <button onClick={()=>{
                             RewardRejection()
-                            geneNotification()
                           }} className="btn btn-outline-info btn-sm"
                           >Submit</button>
                            </div>

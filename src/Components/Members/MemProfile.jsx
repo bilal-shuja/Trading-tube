@@ -1,3 +1,4 @@
+import SendNotification from '../Notifications/SendNotifications';
 import React,{useState , useEffect} from 'react';
 import colorScheme from '../Colors/Styles.js';
 import Profile from '../Images/avatar5.png';
@@ -22,6 +23,7 @@ const MemProfile = () => {
       return null;
     }
   }
+
   function gettingMembers(id){
     axios.post(`${process.env.REACT_APP_BASE_URL}fetchuserwithid/${id}`)
     .then((res)=>{
@@ -31,6 +33,7 @@ const MemProfile = () => {
       console.log(error)
     })
   }
+
 
   function gettingTotalAmount(id){
     const memIdObj ={
@@ -52,10 +55,6 @@ const MemProfile = () => {
   }, [])
   
 
-  const logOut = ()=>{
-    localStorage.setItem('login',false);
-    window.location.reload(true)    
-  }
   return (
     <>
 <div className="content-wrapper" style={{background:colorScheme.body_bg_color}}>
@@ -88,7 +87,10 @@ const MemProfile = () => {
             <p  className="text-muted text-center">Bay Area, San Francisco, CA</p>
             
             <div className="text-center">
-            <button className="btn btn-info col-4">Follow</button>&nbsp;&nbsp;
+            <button className="btn btn-info col-4" onClick={()=>{
+              SendNotification("userID","Withdrawal Rejection", "queryOne")
+              
+            }}>Follow</button>&nbsp;&nbsp;
             <button className="btn btn-outline-info col-4">Message</button>
             </div>
        

@@ -1,3 +1,4 @@
+import SendNotification from '../Notifications/SendNotifications';
 import QuerySelect from './WithdrawalSelection.js';
 import React,{useState, useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
@@ -53,7 +54,7 @@ const WithdrawalSheet = () => {
       setWithdrawalData(res.data.data)
     })
     .catch((error)=>{
-      console.log(error)
+      return error
     })
   }
 
@@ -170,6 +171,8 @@ function geneNotification(){
   .then((res)=>{
     if(res.data.status === '200'){
       toast.info("Notified to User",{theme:"dark"});
+      // SendNotification(userID,"Withdrawal Rejection", queryOne)
+
     }
     else{
       toast.info(`${res.data.message}`,{theme:"dark"});

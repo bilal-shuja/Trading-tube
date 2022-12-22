@@ -1,7 +1,6 @@
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from '../Colors/Styles.js';
-import { toast } from "react-toastify";
 import Moment from 'react-moment';
 import 'moment-timezone';
 import axios from "axios";
