@@ -1,3 +1,4 @@
+import ConfirmQuery from '../ConfirmQuery/ConfirmQueryModal';
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
@@ -6,10 +7,13 @@ import {toast} from "react-toastify";
 import Moment from 'react-moment';
 import 'moment-timezone';
 import axios from 'axios';
+
+
 const MemberSheet = () => {
   const[members , setMembers] = useState([]);
   const[memDate , setMemDate] = useState('');
   const[memPhone , setMemPhone] = useState('');
+  
 
   const[roleID , setRoleID] = useState('');
 
@@ -52,30 +56,8 @@ const MemberSheet = () => {
 )
 
 
-function suspendUser(id){
-  alert(id)
-  const suspendUserObj = {
-    user_id:id,
-    status:1
-  }
-  axios.post(`${process.env.REACT_APP_BASE_URL}post_blocked_user`,suspendUserObj)
-  .then((res)=>{
-    if(res.data.status === "200"){
-         toast.error("Member Suspended!" , {theme:"dark"})
-      setTimeout(() => {
-        window.location.reload(true)
-      }, 3000);
-    }
-    else{
-      toast.warn(res.data.message , {theme:"dark"})
-    }
-    console.log(res)
-    })
-  .catch((error)=>{
-    toast.warn("Something went wrong" , {theme:"dark"})
-  })
 
-}
+
 
     function deleteMembers(id){
    
@@ -116,7 +98,125 @@ function suspendUser(id){
     }
 
 
+function MemberList ({items , index}){
+  const[isShow,setShow] = useState(false);
 
+  function onActionBack (val){
+    setShow(false)
+    if(val === "Yes"){
+  
+      suspendUser()
+   }
+    else{
+      
+     return null;
+    }
+  
+   }
+
+
+
+   function suspendUser(){
+    const suspendUserObj = {
+      user_id:items.id,
+      status:1
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}post_blocked_user`,suspendUserObj)
+    .then((res)=>{
+      if(res.data.status === "200"){
+           toast.error("Member Suspended!" , {theme:"dark"})
+        setTimeout(() => {
+          window.location.reload(true)
+        }, 3000);
+      }
+      else{
+        toast.warn(res.data.message , {theme:"dark"})
+      }
+      })
+    .catch((error)=>{
+      toast.warn("Something went wrong" , {theme:"dark"})
+    })
+  
+  }
+
+  return(
+    <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+      <td>{newSheet.length-index}</td>
+    <td>{items.id}</td>
+    <td>{items.username}</td>
+    <td>{items.firstname}</td>
+    <td>{items.lastname}</td>
+    <td >{items.email}</td>
+    <td>{items.referal_code}</td>
+    <td>{items.question}</td>
+    <td>{items.answer}</td>
+    <td>{items.phone}</td>
+    {
+      items.role_id === "1"?
+      <td>Super Admin</td>
+      :
+      items.role_id === "2"?
+      <td>Admin</td>
+      :
+      items.role_id === "3"?
+      <td>Manager</td>
+      :
+      items.role_id === "4"?
+      <td>Staff</td>
+      :
+      items.role_id !== null || undefined || " "?
+      <td>User</td>
+      :
+      null
+    }
+    <td>{items.Idate}</td>
+    <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+    {
+roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6" ? null:
+    <td>
+   <div className="d-flex justify-content-center">
+    <Link className="btn btn-outline-info btn-sm" to="/UpdateMemberForm" state={{ID:items.id}}>
+          <i className="fa fa-pen"></i>
+        </Link>&nbsp;&nbsp;
+             
+        <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id, target:"/MemberSheet"}}>
+          <i className="fa-solid fa-timeline"></i>
+        </Link>
+        &nbsp;&nbsp;
+
+    <button className="btn btn-outline-danger btn-sm" onClick={()=>{
+      setShow(true)
+      
+      }}>
+        <i className="fa fa-user-minus"></i>
+    </button> 
+
+  <ConfirmQuery
+  isShow={isShow}
+  body={`Are you sure you want to suspend ${items.username}`}
+  action={onActionBack}
+  />
+
+    {/* <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
+        <i className="fa fa-trash"></i>
+      </button>
+      &nbsp;&nbsp; */}
+      
+      {
+        roleID === "1" || roleID === "6"? null:
+        <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+        onClick={()=>{setReceID(items.id)}}
+        >
+        Query
+      </button>
+
+      }
+     </div>
+    </td>
+}
+  </tr>
+  )
+}
   
 
   
@@ -209,9 +309,9 @@ useEffect(() => {
                           <th>Date</th>
                           <th>Time</th>
                           {
-                        roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6" ?  null:
+                          roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6" ?  null:
                           <th>Actions</th>
-}
+                        }
                         </tr>
                       </thead>
                       <tbody className="text-center">
@@ -220,75 +320,8 @@ useEffect(() => {
 
                            newSheet.filter((items)=> items.Idate === memDate).map((items,index)=>{
                             return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{newSheet.length-index}</td>
-                              <td>{items.id}</td>
-                              <td>{items.username}</td>
-                              <td>{items.firstname}</td>
-                              <td>{items.lastname}</td>
-                              <td >{items.email}</td>
-                              <td>{items.referal_code}</td>
-                              <td>{items.question}</td>
-                              <td>{items.answer}</td>
-                              <td>{items.phone}</td>
-                              {
-                                items.role_id === "1"?
-                                <td>Super Admin</td>
-                                :
-                                items.role_id === "2"?
-                                <td>Admin</td>
-                                :
-                                items.role_id === "3"?
-                                <td>Manager</td>
-                                :
-                                items.role_id === "4"?
-                                <td>Staff</td>
-                                :
-                                items.role_id !== null || undefined || " "?
-                                <td>User</td>
-                                :
-                                null
-                              }
-                              <td>{items.Idate}</td>
-                              <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-                              {
-                        roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6" ? null:
-                              <td>
-                                          <div className="d-flex justify-content-center">
-                               <Link className="btn btn-outline-info btn-sm" to="/UpdateMemberForm" state={{ID:items.id}}>
-                                    <i className="fa fa-pen"></i>
-                                  </Link>
-                                  
-                                  {/* &nbsp;&nbsp;
-                              <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
-                                  <i className="fa fa-trash"></i>
-                                </button> */}
-
-                                &nbsp;&nbsp;
-                                     
-                                <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id,target:"/MemberSheet"}}>
-                                    <i className="fa-solid fa-timeline"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
-
-                                      <button className="btn btn-outline-danger btn-sm" onClick={()=>suspendUser(items.id)}>
-                                        <i className="fa fa-user-minus"></i>
-                                      </button> 
-                                
-                                {
-                                  roleID === "1"? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.id)}}
-                                  >
-                                  Query
-                                </button>
-
-                                }
-                                  
-                                </div>
-                              </td>
-                        }
-                            </tr>
+                              <MemberList items={items} index={index}/>
+                          
                             )
                           })
                           :
@@ -296,150 +329,15 @@ useEffect(() => {
                         
                           newSheet.filter((items)=> items.phone === memPhone).map((items,index)=>{
                             return(
-                              <tr key={newSheet.length-index} style={{ color: colorScheme.card_txt_color }}>
-                                <td>{index+1}</td>
-                              <td>{items.id}</td>
-                              <td>{items.username}</td>
-                              <td>{items.firstname}</td>
-                              <td>{items.lastname}</td>
-                              <td >{items.email}</td>
-                              <td>{items.referal_code}</td>
-                              <td>{items.question}</td>
-                              <td>{items.answer}</td>
-                              <td>{items.phone}</td>
-                              {
-                                items.role_id === "1"?
-                                <td>Super Admin</td>
-                                :
-                                items.role_id === "2"?
-                                <td>Admin</td>
-                                :
-                                items.role_id === "3"?
-                                <td>Manager</td>
-                                :
-                                items.role_id === "4"?
-                                <td>Staff</td>
-                                :
-                                items.role_id !== null || undefined || " "?
-                                <td>User</td>
-                                :
-                                null
-                              }
-                              <td>{items.Idate}</td>
-                              <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-                              
-                        <td>
-                        <div className="d-flex justify-content-center">
-                        {
-                        roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6" ? null:
-                        <>
-                          <Link className="btn btn-outline-info btn-sm" to="/UpdateMemberForm" state={{ID:items.id}}>
-                                <i className="fa fa-pen"></i>
-                          </Link>
-                          &nbsp;&nbsp;
-                               
-                          <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id,target:"/MemberSheet"}}>
-                                <i className="fa-solid fa-timeline"></i>
-                          </Link>
-
-                          &nbsp;&nbsp;
-                          
-                          <button className="btn btn-outline-danger btn-sm" onClick={()=>suspendUser(items.id)}>
-                              <i className="fa fa-user-minus"></i>
-                          </button> 
-                                  {/* &nbsp;&nbsp;
-
-                          <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
-                              <i className="fa fa-trash"></i>
-                            </button> */}
-                            </>
-                       }
-
-                                
-                                {
-                                  roleID === "1" || roleID === "2" ? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.id)}}
-                                  >
-                                  Query
-                                </button>
-
-                                }
-                        </div>
-                       </td>
-                            </tr>
+                              <MemberList items={items} index={index}/>
                             )
-                          })
+                            })
                           :
 
                        newSheet.map((items,index)=>{
-                            return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                                <td>{newSheet.length-index}</td>
-                              <td>{items.id}</td>
-                              <td>{items.username}</td>
-                              <td>{items.firstname}</td>
-                              <td>{items.lastname}</td>
-                              <td >{items.email}</td>
-                              <td>{items.referal_code}</td>
-                              <td>{items.question}</td>
-                              <td>{items.answer}</td>
-                              <td>{items.phone}</td>
-                              {
-                                items.role_id === "1"?
-                                <td>Super Admin</td>
-                                :
-                                items.role_id === "2"?
-                                <td>Admin</td>
-                                :
-                                items.role_id === "3"?
-                                <td>Manager</td>
-                                :
-                                items.role_id === "4"?
-                                <td>Staff</td>
-                                :
-                                items.role_id !== null || undefined || " "?
-                                <td>User</td>
-                                :
-                                null
-                              }
-                              <td>{items.Idate}</td>
-                              <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-                              {
-                        roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6" ? null:
-                              <td>
-                             <div className="d-flex justify-content-center">
-                              <Link className="btn btn-outline-info btn-sm" to="/UpdateMemberForm" state={{ID:items.id}}>
-                                    <i className="fa fa-pen"></i>
-                                  </Link>&nbsp;&nbsp;
-                                       
-                                  <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id, target:"/MemberSheet"}}>
-                                    <i className="fa-solid fa-timeline"></i>
-                                  </Link>
-                                  &nbsp;&nbsp;
-                          
-                          <button className="btn btn-outline-danger btn-sm" onClick={()=>suspendUser(items.id)}>
-                              <i className="fa fa-user-minus"></i>
-                          </button> 
-                              {/* <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
-                                  <i className="fa fa-trash"></i>
-                                </button>
-                                &nbsp;&nbsp; */}
-                                
-                                {
-                                  roleID === "1" || roleID === "6"? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.id)}}
-                                  >
-                                  Query
-                                </button>
-
-                                }
-                               </div>
-                              </td>
-                        }
-                            </tr>
-                            )
+                          return(
+                            <MemberList items={items} index={index}/>
+                          )
                           })
                         
                         }

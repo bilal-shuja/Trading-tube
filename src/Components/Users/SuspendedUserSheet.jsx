@@ -38,7 +38,6 @@ const SuspendedUserSheet = () => {
         axios.post(`${process.env.REACT_APP_BASE_URL}fetch_blockeduser_bystatus`,suspendUserObj)
         .then((res)=>{
           setUsers(res.data.Data)
-          console.log(res.data)
         })
         .catch((error)=>{
           toast.warn("Something went wrong" , {theme:"dark"})

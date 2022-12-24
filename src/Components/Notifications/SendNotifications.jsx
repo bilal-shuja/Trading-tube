@@ -1,26 +1,39 @@
 const SendNotifications = (uid,title,body) => {
+
+
+const token ="66471889D82B7C1A418309AD9ABD6D46F6B55E83C45A368AFC90387526B1E0C9"
+
     var myHeaders = new Headers();
     // myHeaders.append("Accept", "application/json");
     myHeaders.append("Content-Type", "application/json");
-    myHeaders.append("Access-Control-Allow-Origin", "*"); 
+    // myHeaders.append("Access-Control-Allow-Origin", "*");
+    // myHeaders.append('Access-Control-Allow-Credentials', true); 
+    // myHeaders.append('Access-Control-Allow-Origin',"http://localhost:3000"); 
+    // myHeaders.append( "Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept"); 
     myHeaders.append("Authorization", "Bearer 66471889D82B7C1A418309AD9ABD6D46F6B55E83C45A368AFC90387526B1E0C9");
-
+    // myHeaders.append("mode", 'no-cors'); 
 
     var raw = JSON.stringify({
       "interests": [
         "148"
       ],
-      "fcm": {
+      "web": {
         "notification": {
-          "title": "aur g Ha ",
-          "body": "Hello, world!"
+          "title": "Hello",
+          "body": "Hello, world!",
+          "deep_link": "https://www.pusher.com"
         }
       }
+      // "fcm": {
+      //   "notification": {
+      //     "title": "aur g Ha ",
+      //     "body": "Hello, world!"
+      //   }
+      // }
     });
     
     var requestOptions = {
         method: 'POST',
-        // mode: 'no-cors',
         headers:myHeaders,
         body: raw,
     };
@@ -32,3 +45,9 @@ const SendNotifications = (uid,title,body) => {
 }
 
 export default SendNotifications
+
+
+
+
+
+

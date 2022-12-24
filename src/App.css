@@ -221,6 +221,9 @@ input:checked + .slider .off
   --pretty-modal-modal-container-background-color:#161d31 ;
   --pretty-modal-modal-container-transform: translateX(-125rem);
   --pretty-modal-modal-container-border-radius: 0.8em;
+  --pretty-modal-backdrop-backdrop-filter: blur(0em);
+  --pretty-modal-backdrop-background-color: rgba(8, 8, 8, 0.5);
+
 
 }
 

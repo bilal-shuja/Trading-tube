@@ -1,4 +1,3 @@
-import SendNotification from '../Notifications/SendNotifications';
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
@@ -34,6 +33,7 @@ const RewardApprovalSheet = () => {
         if (parseUserObj !== null) {
           setRoleID(parseUserObj.role_id);
           setSenderID(parseUserObj.id)
+          gettingPromoStatus(parseUserObj.id)
 
         }
     
@@ -153,7 +153,6 @@ const RewardApprovalSheet = () => {
       .then((res)=>{
         if(res.data.status === '200'){
           toast.info("Notified to User",{theme:"dark"});
-          // SendNotification(memID,"Reward Rejection", queryOne)
           setQueryOne('');
         }
         else{
@@ -190,9 +189,9 @@ const RewardApprovalSheet = () => {
     }
 
 
-    function gettingPromoStatus(){
+    function gettingPromoStatus(ID){
       const getPromoObj = {
-        user_id:senderID
+        user_id:ID
       }
       axios.post(`${process.env.REACT_APP_BASE_URL}getcheck`,getPromoObj)
       .then((res)=>{
@@ -291,7 +290,6 @@ function submitHostQuery(){
     useEffect(() => {
       SetLocalLogin()
       gettingRewards()
-      // gettingPromoStatus()
     }, [])
     
   return (

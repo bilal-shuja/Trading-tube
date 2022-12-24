@@ -14,7 +14,6 @@ const ShareBalanceSheet = () => {
       axios.post( `${process.env.REACT_APP_BASE_URL}fetch_send_balance`)
       .then((res)=>{
         setBalanceSheet(res.data.data)
-        console.log(res.data.data)
       })
       .catch((error)=>{
          return null

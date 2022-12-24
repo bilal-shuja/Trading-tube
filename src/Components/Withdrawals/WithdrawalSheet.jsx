@@ -1,4 +1,3 @@
-import SendNotification from '../Notifications/SendNotifications';
 import QuerySelect from './WithdrawalSelection.js';
 import React,{useState, useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
@@ -136,6 +135,7 @@ const withdrawalObj = {
   .then((res)=>{
     if(res.data.status === '200'){
       toast.info(`Withdrawal Rejected!`,{theme:"dark"});
+      geneNotification()
       setTimeout(() => {
         window.location.reload(true)
       }, 3000);
@@ -171,8 +171,6 @@ function geneNotification(){
   .then((res)=>{
     if(res.data.status === '200'){
       toast.info("Notified to User",{theme:"dark"});
-      // SendNotification(userID,"Withdrawal Rejection", queryOne)
-
     }
     else{
       toast.info(`${res.data.message}`,{theme:"dark"});
@@ -758,7 +756,6 @@ function submitHostQuery(){
                            </div>
                            <button onClick={()=>{
                             withdrawalRejection()
-                            geneNotification()
                           }} className="btn btn-outline-info btn-sm"
                           >Submit</button>
                            </div>

@@ -1,4 +1,3 @@
-import SendNotification from "../Notifications/SendNotifications";
 import QuerySelect from './DepositSelection.js';
 import React,{useState,useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
@@ -146,29 +145,7 @@ const AllDepositsTable = () => {
 
 
 
-  
-    function geneNotification(){
-      const notifiObj ={
-        receiver_id:memID,
-        body:queryOne,
-        title:"Deposit_Rejections"
-      }
-      axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
-      .then((res)=>{
-        if(res.data.status === '200'){
-          toast.info("Notified to User",{theme:"dark"});
-          // SendNotification(memID , "Deposit_Rejections",queryOne)
-        }
-        else{
-          toast.info(`${res.data.message}`,{theme:"dark"});
-    
-        }
-      })
-      .catch((error)=>{
-        toast.warn("Something went wrong",{theme:"dark"});
-    
-      })
-    }
+
 
   function rejectDeposit(){
     const rejDepObj = {
@@ -179,6 +156,7 @@ const AllDepositsTable = () => {
     .then((res)=>{
       if(res.data.status === '200'){
         toast.info("Deposit Rejected!",{theme:"dark"});
+        geneNotification()
         setTimeout(() => {
           window.location.reload(true)
         }, 3000);
@@ -193,6 +171,29 @@ const AllDepositsTable = () => {
      return null
     })
 
+  }
+
+    
+  function geneNotification(){
+    const notifiObj ={
+      receiver_id:memID,
+      body:queryOne,
+      title:"Deposit_Rejections"
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
+    .then((res)=>{
+      if(res.data.status === '200'){
+        toast.info("Notified to User",{theme:"dark"});
+      }
+      else{
+        toast.info(`${res.data.message}`,{theme:"dark"});
+  
+      }
+    })
+    .catch((error)=>{
+      toast.warn("Something went wrong",{theme:"dark"});
+  
+    })
   }
 
     function submitHostQuery(){
@@ -504,7 +505,6 @@ const AllDepositsTable = () => {
                               type="text" className="form-control " defaultValue={queryOne} id="exampleInputEmail1"  placeholder="Enter Rejection Reason" onChange={(e)=> setQueryOne(e.target.value)} row={6} style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color,marginRight:"15em"}}/>
                            </div>
                            <button onClick={()=>{
-                            geneNotification()
                             rejectDeposit()
                           }} className="btn btn-outline-info btn-sm"
                           >Submit</button>

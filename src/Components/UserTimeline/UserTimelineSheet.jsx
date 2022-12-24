@@ -1,7 +1,7 @@
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
-import {useLocation} from 'react-router-dom';
+import {Link ,useLocation, useNavigate, ScrollRestoration } from 'react-router-dom';
 import { toast } from "react-toastify";
 import Filter from '../Filters/Filter';
 import {Modal} from 'pretty-modal';
@@ -10,6 +10,7 @@ import 'moment-timezone';
 import axios from 'axios';
 
 const UserTimelineSheet = () => {
+    const navigate = useNavigate();
 
     const location = useLocation();
     const ID = location.state.ID;
@@ -135,7 +136,6 @@ const UserTimelineSheet = () => {
     }
 
     
-console.log(getReferral);
     
 
 
@@ -173,7 +173,10 @@ console.log(getReferral);
         <div className="col-sm-6">
           <ol className="breadcrumb float-sm-right">
             <li className="breadcrumb-item">
-              <a className="text-white" href={`${targetSheet}`}><i class="fas fa-circle-arrow-left fa-2x"></i></a>
+              <Link className="text-white"
+              to={`${targetSheet}`} 
+              preventScrollReset={true}
+              ><i class="fas fa-circle-arrow-left fa-2x"></i></Link>
               </li>
           </ol>
         </div>
