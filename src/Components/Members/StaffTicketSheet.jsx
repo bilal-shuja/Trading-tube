@@ -41,6 +41,7 @@ const StaffTicketSheet = () => {
       axios.post(`${process.env.REACT_APP_BASE_URL}refferaltickets`,userObj)
       .then((res)=>{
         setHelpCenter(res.data.data)
+        
       })
       .catch((error)=>{
         return null;

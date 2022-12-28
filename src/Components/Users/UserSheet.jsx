@@ -1,12 +1,15 @@
+import UserTimelineModal from '../UserTimeline/UserTimelineModal';
 import ConfirmQuery from '../ConfirmQuery/ConfirmQueryModal';
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
-import { toast } from "react-toastify";
 import {Link} from 'react-router-dom';
+import {toast} from "react-toastify";
 import Moment from 'react-moment';
 import 'moment-timezone';
 import axios from 'axios';
+
+
 
 const UserSheet = () => {
 
@@ -125,6 +128,11 @@ useEffect(() => {
 
 function UserList ({items,index}){
   const [isShow,setShow] = useState(false)
+  const [isShowUserModal,setShowUserModal] = useState(false)
+
+  function onHide(){
+    setShowUserModal(false)
+  }
 
 
   function onActionBack (val){
@@ -170,9 +178,17 @@ function UserList ({items,index}){
     </Link>&nbsp;&nbsp;
     
     
-    <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id, target:"/UserSheet"}}>
+    <button className="btn btn-outline-primary btn-sm" onClick={ ()=>{
+      
+      setShowUserModal(true)
+      
+      }}>
       <i className="fa-solid fa-timeline"></i>
-    </Link>
+    </button>
+
+    {/* <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id, target:"/UserSheet"}}>
+      <i className="fa-solid fa-timeline"></i>
+    </Link> */}
 
     &nbsp;&nbsp;
 
@@ -210,6 +226,15 @@ function UserList ({items,index}){
       body={`Are you sure you want to suspend ${items.username}`}
       action={onActionBack}
       />
+{
+  isShowUserModal === true &&
+  <UserTimelineModal
+  ID = {items.id}
+  isShow = {isShowUserModal}
+  onHide={onHide}
+/>
+}
+
   </>
   )
 

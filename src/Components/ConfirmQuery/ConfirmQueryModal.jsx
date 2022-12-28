@@ -8,23 +8,16 @@ const ConfirmQueryModal = ({isShow,body,action}) => {
 
     <Modal open={isShow}>
 
-    <div className="card" style={{ background: colorScheme.body_bg_color }}>
-    <div className="card-body p-3">
-    <h6>{body}</h6>
+    <div className="card p-3" style={{ background: colorScheme.body_bg_color }}>
+    <div className="card-body">
+    <p style={{fontSize:"1em", fontFamily:"monospace"}}>{body}</p>
   </div>
-</div>
-
-<div className="card-footer">
-    <button
+  <div className="col-lg-12">
+  <button onClick={()=> action("No")} className="btn btn-outline-info btn-md">No</button>
+    <button onClick={()=> action("Yes")} className="btn btn-outline-danger float-right btn-md">Agree?</button>
+  </div>
     
-    onClick={()=> action("No")}
-    className="btn btn-outline-info col-3">No</button>
-    <button
-    
-    onClick={()=> action("Yes")}
-    className="btn btn-outline-danger float-right col-3">Agree?</button>
-
-</div>    
+  </div>
 </Modal>
   )
 }

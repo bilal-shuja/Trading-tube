@@ -9,6 +9,7 @@ import axios from 'axios';
 const HelpChatCenter = () => {
   const location = useLocation();
   const ID = location.state.ID
+  const userID = location.state.userID;
   const userName = location.state.userName;
   const title = location.state.userTitle;
   const ticketStatus = location.state.ticketStatus;
@@ -39,6 +40,27 @@ const HelpChatCenter = () => {
     }
   }
 
+  function geneNotification(){
+    const notifiObj ={
+      receiver_id:userID,
+      body:ticketReply,
+      title:"Ticket Reply"
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
+    .then((res)=>{
+      if(res.data.status === '200'){
+        toast.info("Notified to User",{theme:"dark"});
+      }
+      else{
+        toast.info(`${res.data.message}`,{theme:"dark"});
+  
+      }
+    })
+    .catch((error)=>{
+      toast.warn("Something went wrong",{theme:"dark"});
+  
+    })
+  }
  
 
 
@@ -57,6 +79,7 @@ const HelpChatCenter = () => {
       toast.info("Message Send!",{theme:"dark"})
       setTicketReply('')
       gettingRelpyTicket()
+      geneNotification()
     })
     .catch((error)=>{
       if(error.status === 401){

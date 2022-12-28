@@ -1,20 +1,19 @@
+import {Link ,useLocation, useNavigate, ScrollRestoration } from 'react-router-dom';
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
-import {Link ,useLocation, useNavigate, ScrollRestoration } from 'react-router-dom';
 import { toast } from "react-toastify";
 import Filter from '../Filters/Filter';
-import {Modal} from 'pretty-modal';
+// import {Modal} from 'pretty-modal';
+import Modal from 'react-modal';
+
 import Moment from 'react-moment';
 import 'moment-timezone';
 import axios from 'axios';
 
-const UserTimelineSheet = () => {
-    const navigate = useNavigate();
-
-    const location = useLocation();
-    const ID = location.state.ID;
-    const targetSheet = location.state.target;
+const UserTimelineModal = ({ID,isShow,onHide}) => {
+    // const ID = location.state.ID;
+    // const targetSheet = location.state.target;
     const[userInfo , setUserInfo] = useState('');
     const[userDepo , setUserDepo] = useState([]);
     const[userWithdrawal , setUserWithdrawal] = useState([]);
@@ -149,9 +148,9 @@ const UserTimelineSheet = () => {
     }, [])
     
   return (
-    <>
-    <div className="scroll-view-two scrollbar-secondary-two">
-   <div className="content-wrapper"  style={{ background: colorScheme.body_bg_color }}>
+    <Modal isOpen={isShow} className="content-wrapper  user_modal">
+    
+  <div className="usermodal_height"  style={{ background: colorScheme.body_bg_color }}>
   <section className="content-header">
     <div className="container-fluid">
       <div className="row mb-2">
@@ -172,18 +171,21 @@ const UserTimelineSheet = () => {
         <div className="col-sm-6">
           <ol className="breadcrumb float-sm-right">
             <li className="breadcrumb-item">
-              <button className="text-white"
-              to={`${targetSheet}`} 
-              // preventScrollReset={true}
-              
-              ><i class="fas fa-circle-arrow-left fa-2x"></i></button>
+              <a className="text-white"
+              style={{cursor:"pointer"}}
+              onClick={onHide}
+              >
+              <i class="fas fa-circle-arrow-left fa-2x"></i>
+              </a>
               </li>
           </ol>
         </div>
       </div>
     </div>
   </section>
-  <section className="content">
+  <div className="scroll-view-two scrollbar-secondary-two">
+
+  <section className="content usermodal_Content">
     <div className="container-fluid">
       <div className="row">
         <div className="col-md-12">
@@ -504,11 +506,14 @@ const UserTimelineSheet = () => {
       </div>
     </div>
   </section>
-</div>
-    </div>
 
-    </>
+
+ </div>
+ 
+
+ </div> 
+    </Modal>
   )
 }
 
-export default UserTimelineSheet
+export default UserTimelineModal

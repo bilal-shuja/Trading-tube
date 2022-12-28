@@ -222,14 +222,20 @@ input:checked + .slider .off
   --pretty-modal-modal-container-transform: translateX(-125rem);
   --pretty-modal-modal-container-border-radius: 0.8em;
   --pretty-modal-backdrop-backdrop-filter: blur(0em);
-  --pretty-modal-backdrop-background-color: rgba(8, 8, 8, 0.5);
+  --pretty-modal-backdrop-background-color: rgba(54, 53, 53, 0.5);
 
+  --pretty-modal-modal-container-padding: 0px;
+  --pretty-modal-backdrop-padding: 0px 0;
 
 }
+.user_modal{
+  background-color: rgba(0, 0, 0, 0.7);
+  margin-top: 3em;
+}
+.usermodal_height{
+  height: 100%;
 
-
-/* .anything{
-  color:#17181c;
-  color:#0e121d;
-  color:#151516;
-} */
+}
+.usermodal_Content{
+  margin-bottom: 15em;
+}

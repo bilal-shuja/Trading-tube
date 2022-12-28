@@ -1,3 +1,4 @@
+import UserTimelineModal from '../UserTimeline/UserTimelineModal';
 import ConfirmQuery from '../ConfirmQuery/ConfirmQueryModal';
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
@@ -13,13 +14,14 @@ const MemberSheet = () => {
   const[members , setMembers] = useState([]);
   const[memDate , setMemDate] = useState('');
   const[memPhone , setMemPhone] = useState('');
-  
-
   const[roleID , setRoleID] = useState('');
 
   const[receID , setReceID] = useState('');
   const[hostMessage , setHostMessage] = useState('');
   const[senderID , setSenderID] = useState('');
+
+  
+
   
   const SetLocalLogin = async () => {
     try {
@@ -100,6 +102,12 @@ const MemberSheet = () => {
 
 function MemberList ({items , index}){
   const[isShow,setShow] = useState(false);
+  const [isShowUserModal,setShowUserModal] = useState(false)
+
+  function onHide(){
+    setShowUserModal(false)
+  }
+
 
   function onActionBack (val){
     setShow(false)
@@ -175,28 +183,36 @@ function MemberList ({items , index}){
 roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6" ? null:
     <td>
    <div className="d-flex justify-content-center">
-    <Link className="btn btn-outline-info btn-sm" to="/UpdateMemberForm" state={{ID:items.id}}>
+        <Link  className="btn btn-outline-info btn-sm" to="/UpdateMemberForm" state={{ID:items.id}}>
           <i className="fa fa-pen"></i>
         </Link>&nbsp;&nbsp;
-             
-        <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id, target:"/MemberSheet"}}>
-          <i className="fa-solid fa-timeline"></i>
-        </Link>
-        &nbsp;&nbsp;
 
-    <button className="btn btn-outline-danger btn-sm" onClick={()=>{
-      setShow(true)
-      
-      }}>
+        <button className="btn btn-outline-primary btn-sm" onClick={()=>{setShowUserModal(true)}}>
+          <i className="fa-solid fa-timeline"></i>
+        </button>&nbsp;&nbsp;
+        {/* <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id, target:"/MemberSheet"}}>
+          <i className="fa-solid fa-timeline"></i>
+        </Link> */}
+        
+
+    <button className="btn btn-outline-danger btn-sm" onClick={()=>{setShow(true)}}>
         <i className="fa fa-user-minus"></i>
     </button> 
 
-  <ConfirmQuery
-  isShow={isShow}
-  body={`Are you sure you want to suspend ${items.username}`}
-  action={onActionBack}
-  />
+          <ConfirmQuery
+          isShow={isShow}
+          body={`Are you sure you want to suspend ${items.username}`}
+          action={onActionBack}
+          />
 
+          {
+          isShowUserModal === true &&
+          <UserTimelineModal
+          ID = {items.id}
+          isShow = {isShowUserModal}
+          onHide={onHide}
+        />
+        }
     {/* <button className="btn btn-outline-danger btn-sm" onClick={()=>deleteMembers(items.id)}>
         <i className="fa fa-trash"></i>
       </button>
