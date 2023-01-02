@@ -420,7 +420,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
     <>
     {
       MemberSheetIdentifier ? null:
-        <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier?"col-sm-4":"col-sm-4"}>
+        <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier?"col-sm-3":"col-sm-3"}>
                     <label htmlFor="" className="form-label">Filter by {LuckyDrawSheetIdentifier || ParticipantSheetIdentifier ? "Fee":"Price"}:</label>
                         <div className="form-group">
                           <select  className="form-control" 
@@ -444,7 +444,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
                     
                     {
                       PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier || MemberSheetIdentifier? null:
-                      <div className="col-sm-4">
+                      <div className="col-sm-3">
                       <label htmlFor="" className="form-label"> Search with Status:</label>
                     <div className="form-group">
                       <select type="text" className="form-control" 
@@ -462,7 +462,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
                     </div>
                     }
       
-         <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier?"col-sm-4":"col-sm-4"}>
+         <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier?"col-sm-3":"col-sm-3"}>
                 <label htmlFor="" className="form-label "> Search with Date:</label>
                     <div className="form-group">
                       <input type="text" className="form-control" placeholder="Search by Date..."
@@ -476,7 +476,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
             </div>
 {
   DepoSheetIdentifier || MemberSheetIdentifier || PromotionSheetIdentifier? 
-  <div className="col-sm-4">
+  <div className="col-sm-3">
                 <label htmlFor="" className="form-label "> Search with Phone:</label>
                     <div className="form-group">
                       <input type="text" className="form-control" placeholder="Search by Phone..."

@@ -1,3 +1,4 @@
+import UserTimelineModal from '../UserTimeline/UserTimelineModal';
 import QuerySelect from './WithdrawalSelection.js';
 import React,{useState, useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
@@ -28,7 +29,8 @@ const WithdrawalSheet = () => {
   const[queryOne , setQueryOne] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const [ID , setID] = useState('');
-  const[userID , setUserID] = useState('')
+  const[userID , setUserID] = useState('');
+  const[showLength, setShowLength] = useState(15);
 
 
   const SetLocalLogin = async () => {
@@ -56,6 +58,9 @@ const WithdrawalSheet = () => {
       return error
     })
   }
+        // select the remaining rows
+    const remainingWithdrawalUsers = withdrawalData.slice(showLength);
+
 
   function withdrawalReq(id){
     const withdrawalObj = {
@@ -158,9 +163,6 @@ const withdrawalObj = {
 }
 
 
-
-
-
 function geneNotification(){
   const notifiObj ={
     receiver_id:userID,
@@ -209,10 +211,105 @@ function submitHostQuery(){
 }
 
 
+function WithdrawalSheetFun({items , index}){
+
+  const [isShowUserModal,setShowUserModal] = useState(false)
+
+  function onHide(){
+    setShowUserModal(false)
+  }
+  return(
+    <>
+    <tr key={index} style={{ color: colorScheme.card_txt_color }}>
+    <td>{withdrawalData.length-index}</td>
+    <td>{items.user_id}</td>
+    <td>{items.username}</td>
+    <td>{items.phone}</td>
+    <td>{items.account_title}</td>
+    <td>{items.account_type}</td>
+    <td>{items.account_subtype}</td>
+    <td>{items.account_number}</td>
+    <td>{items.requested_amount}</td>
+    {
+        items.status === "approved"?
+        <td style={{ color: "#64dd17" }}>{items.status}</td>
+        :
+        <td style={{ color: "#ff1744" }}>{items.status}</td>
+
+      }
+
+    <td>{items.Idate}</td>
+    <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+
+    {
+      roleID === "2"|| roleID === "3"|| roleID === "4"? null:
+      <td>
+        <div className="d-flex justify-content-center">
+          <>
+          <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
+            <i className="fa fa-circle-check"></i>
+          </button>
+          &nbsp;&nbsp;
+
+          <button className="btn btn-outline-primary btn-sm" onClick={()=>{setShowUserModal(true)}}>
+        <i className="fa-solid fa-timeline"></i>
+        </button>
+        
+        &nbsp;&nbsp;
+        {
+         items.status === "approved"?
+         null
+         :
+          <button onClick={() => {
+         setIsOpen(true)
+         setID(items.id)
+         setUserID(items.user_id)
+        }} 
+         className="btn btn-outline-danger btn-sm"
+         data-toggle="tooltip" 
+         data-placement="top" 
+         title="Withdrawal Rejection"
+         >
+           <i className="fa-solid fa-circle-xmark"></i>
+         </button>
+          }
+          </>
+          &nbsp;&nbsp;
+          {
+          roleID === "1" || roleID === "6"? null:
+          <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+          onClick={()=>{setReceID(items.user_id)}}
+          >
+          Query
+        </button>
+
+        }
+        </div>
+      </td>
+  }
+  </tr>
+
+
+
+{
+  isShowUserModal === true &&
+  <UserTimelineModal
+  ID = {items.user_id}
+  isShow = {isShowUserModal}
+  onHide={onHide}
+/>
+}
+</>
+  )
+
+}
+
+
+
+
   useEffect(() => {
     gettingWithdrawal()
     SetLocalLogin()
-
   }, [])
   
 
@@ -273,7 +370,7 @@ function submitHostQuery(){
                 }
                   </div>
                   <div className="row p-3">
-                  <div className="col-sm-4">
+                  <div className="col-sm-3">
                       <label htmlFor="" className="form-label"> Search with Status:</label>
                     <div className="form-group">
                       <select type="text" className="form-control" 
@@ -289,7 +386,7 @@ function submitHostQuery(){
                          </select>
                     </div>
                     </div>
-                    <div className="col-sm-4">
+                    <div className="col-sm-3">
                     <label htmlFor="" className="form-label">Filter by Account No /Address:</label>
                         <div className="form-group">
                         <input type="text" className="form-control" placeholder="Search by Account No..."
@@ -302,7 +399,7 @@ function submitHostQuery(){
                         </div>
                     </div>
 
-                  <div className="col-sm-4">
+                  <div className="col-sm-3">
                           <label htmlFor="" className="form-label "> Search with Date:</label>
                               <div className="form-group">
                                 <input type="text" className="form-control" placeholder="Search by Date..."
@@ -315,7 +412,7 @@ function submitHostQuery(){
                           </div>
                       </div>
 
-                      <div className="col-sm-4">
+                      <div className="col-sm-3">
                 <label htmlFor="" className="form-label "> Search with Phone:</label>
                     <div className="form-group">
                       <input type="text" className="form-control" placeholder="Search by Phone..."
@@ -358,131 +455,17 @@ function submitHostQuery(){
                           
                          ?
                       withdrawalData.filter((items)=> items.status === withdrawalStatus).map((items,index)=>{
-                          return(
-                            <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{withdrawalData.length-index}</td>
-                            <td>{items.user_id}</td>
-                            <td>{items.username}</td>
-                            <td>{items.phone}</td>
-                            <td>{items.account_title}</td>
-                            <td>{items.account_type}</td>
-                            <td>{items.account_subtype}</td>
-                            <td>{items.account_number}</td>
-                            <td>{items.requested_amount}</td>
-                            {
-                                items.status === "approved"?
-                                <td style={{ color: "#64dd17" }}>{items.status}</td>
-                                :
-                                <td style={{ color: "#ff1744" }}>{items.status}</td>
-
-                              }
-  
-                            <td>{items.Idate}</td>
-                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-
-                            {
-                              roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                              <td>
-                                <div className="d-flex justify-content-center">
-                                  <>
-                                  <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
-                                    <i className="fa fa-circle-check"></i>
-                                  </button>
-                                  &nbsp;&nbsp;
-                                  <button onClick={() => {
-                                 setIsOpen(true)
-                                 setID(items.id)
-                                 setUserID(items.user_id)
-                                }} 
-                                 className="btn btn-outline-danger btn-sm"
-                                 data-toggle="tooltip" 
-                                 data-placement="top" 
-                                 title="Withdrawal Rejection"
-                                 >
-                                   <i className="fa-solid fa-circle-xmark"></i>
-                                 </button>
-                                  </>
-                                  &nbsp;&nbsp;
-                                  {
-                                  roleID === "1" || roleID === "6"? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.user_id)}}
-                                  >
-                                  Query
-                                </button>
-
-                                }
-                                </div>
-                              </td>
-                          }
-                          </tr>
-
-                          )
+                        return(
+                          <WithdrawalSheetFun items={items} index={index}/>
+                        )
+                       
                         })
                         :
                         ( withdrawalAcc !== '' && withdrawalStatus === 'All') || ( withdrawalAcc !== '' && withdrawalDate === ' ')
                         ?
                         withdrawalData.filter((items)=> items.account_number === withdrawalAcc).map((items,index)=>{
                           return(
-                            <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{withdrawalData.length-index}</td>
-                            <td>{items.user_id}</td>
-                            <td>{items.username}</td>
-                            <td>{items.phone}</td>
-                            <td>{items.account_title}</td>
-                            <td>{items.account_type}</td>
-                            <td>{items.account_subtype}</td>
-                            <td>{items.account_number}</td>
-                            <td>{items.requested_amount}</td>
-                            {
-                                items.status === "approved"?
-                                <td style={{ color: "#64dd17" }}>{items.status}</td>
-                                :
-                                <td style={{ color: "#ff1744" }}>{items.status}</td>
-
-                              }
-  
-                            <td>{items.Idate}</td>
-                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-
-                            {
-                              roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                              <td>
-                                <div className="d-flex justify-content-center">
-                                <>
-                                  <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
-                                    <i className="fa fa-circle-check"></i>
-                                  </button>
-                                  &nbsp;&nbsp;
-                                  <button onClick={() => {
-                                 setIsOpen(true)
-                                 setID(items.id)
-                                 setUserID(items.user_id)
-
-                                }} 
-                                 className="btn btn-outline-danger btn-sm"
-                                 data-toggle="tooltip" 
-                                 data-placement="top" 
-                                 title="Withdrawal Rejection"
-                                 >
-                                   <i className="fa-solid fa-circle-xmark"></i>
-                                 </button>
-                                  </>
-                                  &nbsp;&nbsp;
-                                  {
-                                  roleID === "1" || roleID === "6"? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.user_id)}}
-                                  >
-                                  Query
-                                </button>
-
-                                }
-                                </div>
-                              </td>
-                          }
-                          </tr>
-
+                            <WithdrawalSheetFun items={items} index={index}/>
                           )
                         })
                         :
@@ -491,65 +474,7 @@ function submitHostQuery(){
 
                         withdrawalData.filter((items)=> items.Idate === withdrawalDate).map((items,index)=>{
                           return(
-                            <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{withdrawalData.length-index}</td>
-                            <td>{items.user_id}</td>
-                            <td>{items.username}</td>
-                            <td>{items.phone}</td>
-                            <td>{items.account_title}</td>
-                            <td>{items.account_type}</td>
-                            <td>{items.account_subtype}</td>
-                            <td>{items.account_number}</td>
-                            <td>{items.requested_amount}</td>
-                            {
-                                items.status === "approved"?
-                                <td style={{ color: "#64dd17" }}>{items.status}</td>
-                                :
-                                <td style={{ color: "#ff1744" }}>{items.status}</td>
-
-                              }
-  
-                            <td>{items.Idate}</td>
-                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-
-                            {
-                              roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                              <td>
-                                <div className="d-flex">
-                                <>
-                                  <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
-                                    <i className="fa fa-circle-check"></i>
-                                  </button>
-                                  &nbsp;&nbsp;
-                                  <button onClick={() => {
-                                 setIsOpen(true)
-                                 setID(items.id)
-                                 setUserID(items.user_id)
-
-                                }} 
-                                 className="btn btn-outline-danger btn-sm"
-                                 data-toggle="tooltip" 
-                                 data-placement="top" 
-                                 title="Withdrawal Rejection"
-                                 >
-                                   <i className="fa-solid fa-circle-xmark"></i>
-                                 </button>
-                                  </>
-                                  &nbsp;&nbsp;
-                                  {
-                                  roleID === "1" || roleID === "6"? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.user_id)}}
-                                  >
-                                  Query
-                                </button>
-
-                                }
-                                </div>
-                              </td>
-                          }
-                          </tr>
-
+                            <WithdrawalSheetFun items={items} index={index}/>
                           )
                         })
                         :
@@ -557,136 +482,13 @@ function submitHostQuery(){
                         ?
                         withdrawalData.filter((items)=> items.phone === withdrawalPhone).map((items,index)=>{
                           return(
-                            <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{withdrawalData.length-index}</td>
-                            <td>{items.user_id}</td>
-                            <td>{items.username}</td>
-                            <td>{items.phone}</td>
-                            <td>{items.account_title}</td>
-                            <td>{items.account_type}</td>
-                            <td>{items.account_subtype}</td>
-                            <td>{items.account_number}</td>
-                            <td>{items.requested_amount}</td>
-                            {
-                              items.status === "approved"?
-                              <td style={{ color: "#64dd17" }}>{items.status}</td>
-                              :
-                              <td style={{ color: "#ff1744" }}>{items.status}</td>
-
-                            }
-  
-                            <td>{items.Idate}</td>
-                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-
-                            {
-                              roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                              <td>
-                                <div className="d-flex">
-                              <>
-                                  <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info btn-sm">
-                                    <i className="fa fa-circle-check"></i>
-                                  </button>
-                                  &nbsp;&nbsp;
-                                  <button onClick={() => {
-                                 setIsOpen(true)
-                                 setID(items.id)
-                                 setUserID(items.user_id)
-
-                                }} 
-                                 className="btn btn-outline-danger btn-sm"
-                                 data-toggle="tooltip" 
-                                 data-placement="top" 
-                                 title="Withdrawal Rejection"
-                                 >
-                                   <i className="fa-solid fa-circle-xmark"></i>
-                                 </button>
-                              </>
-                                  &nbsp;&nbsp;
-                                  {
-                                  roleID === "1" || roleID ==="6"? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.user_id)}}
-                                  >
-                                  Query
-                                </button>
-
-                                }
-                                </div>
-                              </td>
-                          }
-                          </tr>
-
+                            <WithdrawalSheetFun items={items} index={index}/>
                           )
                         })
                         :
-                          withdrawalData.filter((items)=> items.status ==="approved" || items.status === "unapproved").map((items,index)=>{
+                          withdrawalData.filter((items,index)=> index <= showLength &&( items.status ==="approved" || items.status === "unapproved")).map((items,index)=>{
                             return(
-                              <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{withdrawalData.length-index}</td>
-                              <td>{items.user_id}</td>
-                              <td>{items.username}</td>
-                              <td>{items.phone}</td>
-                              <td>{items.account_title}</td>
-                              <td>{items.account_type}</td>
-                              <td>{items.account_subtype}</td>
-                              <td>{items.account_number}</td>
-                              <td>{items.requested_amount}</td>
-                              {
-                                items.status === "approved"?
-                                <td style={{ color: "#64dd17" }}>{items.status}</td>
-                                :
-                                <td style={{ color: "#ff1744" }}>{items.status}</td>
-
-                              }
-    
-                              <td>{items.Idate}</td>
-                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-
-                                <td>
-                                <div className="d-flex">
-                              
-                              {
-                                roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                                <>
-                                  <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info btn-sm">
-                                    <i className="fa fa-circle-check"></i>
-                                  </button>
-                                  &nbsp;&nbsp;
-                                {
-                                  items.status === "approved"? null:
-                                  <button onClick={() => {
-                                    setIsOpen(true)
-                                    setID(items.id)
-                                    setUserID(items.user_id)
-
-                                   }} 
-                                    className="btn btn-outline-danger btn-sm"
-                                    data-toggle="tooltip" 
-                                    data-placement="top" 
-                                    title="Withdrawal Rejection"
-                                    >
-                                      <i className="fa-solid fa-circle-xmark"></i>
-                                    </button>
-                                }
-                                  
-
-
-                                </>
-                                }
-                                  &nbsp;&nbsp;
-                                  {
-                                  roleID === "1" || roleID === "6"? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.user_id)}}
-                                  >
-                                  Query
-                                </button>
-                                }
-                                </div>
-                              </td>
-
-                            </tr>
-
+                              <WithdrawalSheetFun items={items} index={index}/>
                             )
                           })
 
@@ -705,6 +507,12 @@ function submitHostQuery(){
                       <h2>No Record Found</h2>
                       </div>
                     }
+
+                    {remainingWithdrawalUsers.length > 0 && (
+                      // only display the "Show More" button if there are more rows to show
+                      <button  className="btn btn-outline-info" onClick={()=> setShowLength(showLength+15)}>Show More</button>
+                    )}
+
                     </div>
                   </div>
 

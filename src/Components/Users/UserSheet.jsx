@@ -22,6 +22,7 @@ const UserSheet = () => {
     const[hostMessage , setHostMessage] = useState('');
     const[senderID , setSenderID] = useState('');
 
+  const[showLength, setShowLength] = useState(30);
 
 
     const SetLocalLogin = async () => {
@@ -50,6 +51,11 @@ const UserSheet = () => {
         toast.warn("Something went wrong" , {theme:"dark"})
       })
     }
+
+
+     // select the remaining rows
+     const remainingUsers = users.slice(showLength);
+
 
     function deleteMembers(id){
       axios.post(`${process.env.REACT_APP_BASE_URL}deleteuserwithid/${id}`)
@@ -171,7 +177,7 @@ function UserList ({items,index}){
 
   <div className="d-flex justify-content-center">
   {
-    roleID === "2"|| roleID === "3"|| roleID === "4" || roleID === "6"? null:
+    roleID === "2"|| roleID === "3"|| roleID === "4" ? null:
     <>
   <Link className="btn btn-outline-info btn-sm" to="/UpdateUserForm" state={{ID:items.id}}>
       <i className="fa fa-pen"></i>
@@ -268,7 +274,7 @@ function UserList ({items,index}){
                     <h5>Users Sheet</h5>
                     <button className="btn btn-outline-info btn-sm" onClick={()=>{window.location.reload()}}>Reset Filters</button>
                         <div className="row p-2">
-                        <div className="col-sm-4">
+                        <div className="col-sm-3">
                           <label htmlFor="" className="form-label "> Search with Date:</label>
                               <div className="form-group">
                                 <input type="text" className="form-control" placeholder="Search by Date..."
@@ -281,7 +287,7 @@ function UserList ({items,index}){
                           </div>
                       </div>
 
-                      <div className="col-sm-4">
+                      <div className="col-sm-3">
                         <label htmlFor="" className="form-label "> Search with Phone:</label>
                             <div className="form-group">
                               <input type="text" className="form-control" placeholder="Search by Phone..."
@@ -299,7 +305,6 @@ function UserList ({items,index}){
 
                         {
                           users.length !== 0?
-
                           <table className="table  text-nowrap">
                           <thead className="text-center">
                             <tr>
@@ -321,7 +326,7 @@ function UserList ({items,index}){
                           </thead>
                           <tbody className="text-center">
                 
-                                  {filteredData.map((items,index)=>{
+                                  {filteredData.filter((items, index)=> index <= showLength).map((items,index)=>{
                                     return(
 
                                       <UserList items={items} index={index}  /> 
@@ -330,10 +335,10 @@ function UserList ({items,index}){
 
                                   })
                                   
-                                  
                                   }
                                   </tbody>
                                   </table>
+                                 
                                   :
 
                                 <div className="text-center">
@@ -341,10 +346,12 @@ function UserList ({items,index}){
                                 </div>
 
                         }
-                   
-                    
+                   {remainingUsers.length > 0 && (
+                      // only display the "Show More" button if there are more rows to show
+                      <button  className="btn btn-outline-info" onClick={()=> setShowLength(showLength+15)}>Show More</button>
+                    )}
+                    </div>
                   </div>
-                </div>
 
                 
                 {/*Query Modal Start  */}

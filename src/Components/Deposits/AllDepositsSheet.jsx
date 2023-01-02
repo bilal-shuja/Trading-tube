@@ -1,3 +1,4 @@
+import UserTimelineModal from '../UserTimeline/UserTimelineModal';
 import QuerySelect from './DepositSelection.js';
 import React,{useState,useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
@@ -221,6 +222,132 @@ const AllDepositsTable = () => {
     }
 
 
+
+    function DepositSheet({items , index}){
+      const [isShowUserModal,setShowUserModal] = useState(false)
+
+      function onHide(){
+        setShowUserModal(false)
+      }
+    
+      return(
+        <>
+        <tr key={items.id} style={{ color: colorScheme.card_txt_color }}>
+        <td>{depoTemArr.length-index}</td>
+          <td>{items.payer_id}</td>
+          <td>{items.username}</td>
+          <td>{items.phone}</td>
+          <td>{items.account_title}</td>
+          <td>{items.account_type}</td>
+          <td>{items.account_subtype}</td>
+          <td>{items.account_no}</td>
+          <td>{items.amount}</td>
+          <td>
+          <img className="img-fluid" src={`${process.env.REACT_APP_IMG_URL}${items.proof_image}`} alt=""  width={60}
+           style={{cursor:"pointer"}}
+           onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.proof_image}`, "_blank")}
+          />
+          </td>
+          {/* {
+           items.verified === "true"?
+          <td style={{color:"#64dd17"}}>{items.verified}</td>
+          :
+          <td style={{color:"#ff1744"}}>{items.verified}</td>
+          } */}
+  
+          {
+            items.status === "approved"?
+            <td style={{color:"#64dd17"}}>{items.status}</td>
+            :
+            <td style={{color:"#ff1744"}}>{items.status}</td>
+  
+          }
+          <td>{items.Idate}</td>
+          <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+  
+         
+      <td>
+      <div className="d-flex align-items-center">
+      {
+            roleID === "2"|| roleID === "3"|| roleID === "4"? null:
+            <>
+  
+              <button onClick={()=> approveSingleDepo(items.id)}  className="btn btn-outline-info btn-sm" 
+              data-toggle="tooltip" 
+              data-placement="top" 
+              title="approved/unapproved deposit"
+              >
+                <i  className="fa fa-person-circle-check"></i>
+              </button>
+              
+              &nbsp;&nbsp;
+
+              <button className="btn btn-outline-primary btn-sm" onClick={()=>{setShowUserModal(true)}}>
+              <i className="fa-solid fa-timeline"></i>
+              </button>
+        
+        &nbsp;&nbsp;
+  
+        {
+          items.status === "approved"? null:
+        
+          <button onClick={() => {
+            setIsOpen(true)
+            setMemID(items.payer_id)
+            setDepoID(items.id)
+           }} 
+            className="btn btn-outline-danger btn-sm"
+            data-toggle="tooltip" 
+            data-placement="top" 
+            title="Deposit Rejection"
+            >
+              <i className="fa-solid fa-circle-xmark"></i>
+            </button>  
+            }
+              </>
+      }
+        
+        &nbsp;&nbsp;
+    {
+      checkBox === true? 
+       <div className="custom-control custom-checkbox">
+       <input className="custom-control-input custom-control-input-info" type="checkbox" id={`customCheckbox${items.id}`} onChange={()=>depoHandler(items.id)} />
+       <label htmlFor={`customCheckbox${items.id}`} className="custom-control-label">Check</label>
+       </div>
+       :
+       null
+    }
+    
+  
+    {
+      roleID === "1" || roleID === "6"? null:
+      <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+        onClick={()=>{setReceID(items.payer_id)}}>
+        Query
+      </button>
+  
+     }
+                
+     
+  
+      </div>
+      </td>
+    </tr>
+
+    
+        {
+          isShowUserModal === true &&
+          <UserTimelineModal
+          ID = {items.payer_id}
+          isShow = {isShowUserModal}
+          onHide={onHide}
+        />
+        }
+    </>
+      )
+    
+    }
+
     useEffect(() => {
       gettingDeposits()
       SetLocalLogin()
@@ -345,101 +472,7 @@ const AllDepositsTable = () => {
             {
                 depoTemArr.filter((item)=> item.status === "approved" || item.status === "unapproved" || item.status === "All").map((items,index)=>{
                     return(
-                        <tr key={items.id} style={{ color: colorScheme.card_txt_color }}>
-                          <td>{depoTemArr.length-index}</td>
-                            <td>{items.payer_id}</td>
-                            <td>{items.username}</td>
-                            <td>{items.phone}</td>
-                            <td>{items.account_title}</td>
-                            <td>{items.account_type}</td>
-                            <td>{items.account_subtype}</td>
-                            <td>{items.account_no}</td>
-                            <td>{items.amount}</td>
-                            <td>
-                            <img className="img-fluid" src={`${process.env.REACT_APP_IMG_URL}${items.proof_image}`} alt=""  width={60}
-                             style={{cursor:"pointer"}}
-                             onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.proof_image}`, "_blank")}
-                            />
-                            </td>
-                            {/* {
-                             items.verified === "true"?
-                            <td style={{color:"#64dd17"}}>{items.verified}</td>
-                            :
-                            <td style={{color:"#ff1744"}}>{items.verified}</td>
-                            } */}
-
-                            {
-                              items.status === "approved"?
-                              <td style={{color:"#64dd17"}}>{items.status}</td>
-                              :
-                              <td style={{color:"#ff1744"}}>{items.status}</td>
-
-                            }
-                            <td>{items.Idate}</td>
-                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-
-                           
-                        <td>
-                        <div className="d-flex align-items-center">
-                        {
-                              roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                              <>
-
-                                <button onClick={()=> approveSingleDepo(items.id)}  className="btn btn-outline-info btn-sm" 
-                                data-toggle="tooltip" 
-                                data-placement="top" 
-                                title="approved/unapproved deposit"
-                                >
-                                  <i  className="fa fa-person-circle-check"></i>
-                                </button>
-                                
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-
-                          {
-                            items.status === "approved"? null:
-                          
-                            <button onClick={() => {
-                              setIsOpen(true)
-                              setMemID(items.payer_id)
-                              setDepoID(items.id)
-                             }} 
-                              className="btn btn-outline-danger btn-sm"
-                              data-toggle="tooltip" 
-                              data-placement="top" 
-                              title="Deposit Rejection"
-                              >
-                                <i className="fa-solid fa-circle-xmark"></i>
-                              </button>  
-                              }
-                                </>
-                        }
-                          
-                          &nbsp;&nbsp;
-                      {
-                        checkBox === true? 
-                         <div className="custom-control custom-checkbox">
-                         <input className="custom-control-input custom-control-input-info" type="checkbox" id={`customCheckbox${items.id}`} onChange={()=>depoHandler(items.id)} />
-                         <label htmlFor={`customCheckbox${items.id}`} className="custom-control-label">Check</label>
-                         </div>
-                         :
-                         null
-                      }
-                      
-
-                      {
-                        roleID === "1" || roleID === "6"? null:
-                        <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                          onClick={()=>{setReceID(items.payer_id)}}>
-                          Query
-                        </button>
-
-                       }
-                                  
-                       
-
-                        </div>
-                        </td>
-                      </tr>
+                       <DepositSheet items={items} index={index}/>
                     )
                 })
               
@@ -459,10 +492,7 @@ const AllDepositsTable = () => {
     </div>
 
               {/* Rejection Modal */}
-              <Modal 
-                    ariaLabelledby="modal1_label"
-                    ariaDescribedby="modal1_desc"
-                    onClose={() => {setIsOpen(false)}} open={isOpen}>
+              <Modal ariaLabelledby="modal1_label" ariaDescribedby="modal1_desc" onClose={() => {setIsOpen(false)}} open={isOpen}>
                            <div className="card-body">
                             <h5><b>Possible Notes*</b> </h5>
                             <ul>
@@ -510,13 +540,13 @@ const AllDepositsTable = () => {
                           >Submit</button>
                            </div>
                            </Modal>
-
                     {/* Rejection Modal */}
 
 
 
+            
+            
             {/*Query Modal Start  */}
-                
             <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
               <div className="modal-dialog" >
                 <div className="modal-content" style={{background:colorScheme.card_bg_color,color:colorScheme.card_txt_color}}>

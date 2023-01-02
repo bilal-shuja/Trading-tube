@@ -103,7 +103,7 @@ useEffect(() => {
                     <h5>Suspended Users Sheet</h5>
                     <button className="btn btn-outline-info btn-sm" onClick={()=>{window.location.reload()}}>Reset Filters</button>
                         <div className="row p-2">
-                        <div className="col-sm-4">
+                        <div className="col-sm-3">
                           <label htmlFor="" className="form-label "> Search with Date:</label>
                               <div className="form-group">
                                 <input type="text" className="form-control" placeholder="Search by Date..."
@@ -116,7 +116,7 @@ useEffect(() => {
                           </div>
                       </div>
 
-                      <div className="col-sm-4">
+                      <div className="col-sm-3">
                         <label htmlFor="" className="form-label "> Search with Phone:</label>
                             <div className="form-group">
                               <input type="text" className="form-control" placeholder="Search by Phone..."

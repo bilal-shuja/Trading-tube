@@ -1,3 +1,4 @@
+import UserTimelineModal from '../UserTimeline/UserTimelineModal';
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
@@ -21,7 +22,8 @@ const RewardApprovalSheet = () => {
     const[receID , setReceID] = useState('');
     const[hostMessage , setHostMessage] = useState('');
     const[senderID , setSenderID] = useState('');
-  
+  const[showLength, setShowLength] = useState(10);
+
 
     const PromotionSheetIdentifier = "PromotionSheet";
 
@@ -52,6 +54,9 @@ const RewardApprovalSheet = () => {
         return error;
       })
     }
+
+      // select the remaining rows
+     const remainingPromoUsers = promotionSheet.slice(showLength);
 
     function changingRewardAppStatus(memID){
       const rewardObj = {
@@ -285,11 +290,151 @@ function submitHostQuery(){
     toast.warn("Something went wrong" , {theme:"dark"})
   })
 }
+
+function RewardApprovalSheetFun({items , index}){
+  const [isShowUserModal,setShowUserModal] = useState(false)
+
+  function onHide(){
+    setShowUserModal(false)
+  }
+  return(
+    <>
+    <tr key={index+1} style={{ color: colorScheme.card_txt_color }}>
+    <td>{promotionSheet.length-index}</td>
+    <td>{items.id}</td>
+    <td>{items.member_name}</td>
+    <td>{items.cnic}</td>
+    <td>{items.phone}</td>
+    <td>
+
+      <img src={`${process.env.REACT_APP_IMG_URL}${items.image}`}  width={50}
+        style={{cursor:"pointer"}}
+        alt="cnic-img"
+        data-toggle="modal" data-target="#staticBackdrop"
+        onClick={()=> setImage(items.image)}
+        />
+    </td>
+    <td>{items.amount}</td>
+    <td>
+      <img src={`${process.env.REACT_APP_IMG_URL}${items.image_2}`}  width={50}
+        style={{cursor:"pointer"}}
+        alt="review-img"
+        data-toggle="modal" data-target="#staticBackdrop"
+        onClick={()=> setImage(items.image_2)}
+      />
+    </td>
+    {
+      items.status === "approved"?
+      <td style={{color:"#64dd17"}}>{items.status}</td>
+      :
+      <td style={{color:"#ff1744"}}>{items.status}</td>
+
+    }
+    <td>{items.Idate}</td>
+  <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
+
+    {
+      roleID === "2"|| roleID === "3"|| roleID === "4"? null:
+       <td> 
+        <div className="d-flex">
+          {
+         items.status === "unapproved"?
+         <button onClick={() => {
+        
+           changingRewardAppStatus(items.member_id)
+          }} 
+          data-toggle="tooltip" 
+          data-placement="top" 
+          title="Approve Reward"
+           className="btn btn-outline-info btn-sm">
+             <i className="fa-solid fa-circle-check"></i>
+           </button>
+           :
+           null
+          }
+       &nbsp;&nbsp;
+          {
+         items.status === "approved"?
+         <>
+         <button onClick={() => {
+          changingRewardRejStatus(items.member_id)
+        }} 
+        data-toggle="tooltip" 
+        data-placement="top" 
+        title="Unapprove Reward"
+           className="btn btn-outline-warning btn-sm">
+            <i className="fa-solid fa-minus"></i>
+          </button> 
+          &nbsp;&nbsp;
+          </>
+          :
+          null   
+          }
+
+        <button className="btn btn-outline-primary btn-sm" onClick={()=>{setShowUserModal(true)}}>
+        <i className="fa-solid fa-timeline"></i>
+        </button>
+
+        &nbsp;&nbsp;
+
+        {
+         items.status === "approved"?
+         null
+         :
+       <button onClick={() => {
+       setIsOpen(true)
+       setMemID(items.member_id)
+      }} 
+       className="btn btn-outline-danger btn-sm"
+       data-toggle="tooltip" 
+       data-placement="top" 
+       title="Reward Rejection"
+       >
+         <i className="fa-solid fa-circle-xmark"></i>
+       </button>
+   
+      }
+
+       &nbsp;&nbsp;
+       
+        </div>                   
+        {/* <button type="button" className="btn btn-outline-primary btn-sm " data-toggle="modal" data-target="#staticBackdrop">
+      show
+      </button> */}
+      </td>
+
+}
+<td>
+       {
+        roleID === "1" || roleID === "6"? null:
+        <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
+        onClick={()=>{setReceID(items.member_id)}}
+        >
+        Query
+      </button>
+
+      }
+</td>
+
+  </tr>
+
+{
+  isShowUserModal === true &&
+  <UserTimelineModal
+  ID = {items.member_id}
+  isShow = {isShowUserModal}
+  onHide={onHide}
+/>
+}
+</>
+  )
+}
     
 
     useEffect(() => {
       SetLocalLogin()
       gettingRewards()
+
     }, [])
     
   return (
@@ -368,123 +513,21 @@ function submitHostQuery(){
                       </thead>
                       <tbody className="text-center">
                         {
-                          promotionSheet.map((items, index)=>{
+                          promotionSheet.filter((items, index)=> index <= showLength).map((items, index)=>{
                             return(
-                              <tr key={index+1} style={{ color: colorScheme.card_txt_color }}>
-                              <td>{promotionSheet.length-index}</td>
-                              <td>{items.id}</td>
-                              <td>{items.member_name}</td>
-                              <td>{items.cnic}</td>
-                              <td>{items.phone}</td>
-                              <td>
-                         
-                                <img src={`${process.env.REACT_APP_IMG_URL}${items.image}`}  width={50}
-                                  // onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.image}` , "_blank")}
-                                  style={{cursor:"pointer"}}
-                                  alt="cnic-img"
-                                  data-toggle="modal" data-target="#staticBackdrop"
-                                  onClick={()=> setImage(items.image)}
-                                  />
-                              </td>
-                              <td>{items.amount}</td>
-                              <td>
-                                {/* onClick={()=>window.open(`${process.env.REACT_APP_IMG_URL}${items.image_2}` , "_blank")} */}
-                                <img src={`${process.env.REACT_APP_IMG_URL}${items.image_2}`}  width={50}
-                                  style={{cursor:"pointer"}}
-                                  alt="review-img"
-                                  data-toggle="modal" data-target="#staticBackdrop"
-                                  onClick={()=> setImage(items.image_2)}
-                                />
-                              </td>
-                              {
-                                items.status === "approved"?
-                                <td style={{color:"#64dd17"}}>{items.status}</td>
-                                :
-                                <td style={{color:"#ff1744"}}>{items.status}</td>
-
-                              }
-                              <td>{items.Idate}</td>
-                            <td><Moment date={items.updated_at} format="hh:mm:ss"/></td>
-
-                              {
-                                roleID === "2"|| roleID === "3"|| roleID === "4"? null:
-                                 <td> 
-                                  <div className="d-flex">
-                                    {
-                                   items.status === "unapproved"?
-                                   <button onClick={() => {
-                                  
-                                     changingRewardAppStatus(items.member_id)
-                                    }} 
-                                    data-toggle="tooltip" 
-                                    data-placement="top" 
-                                    title="Approve Reward"
-                                     className="btn btn-outline-info btn-sm">
-                                       <i className="fa-solid fa-circle-check"></i>
-                                     </button>
-                                     :
-                                     null
-                                    }
-                                 &nbsp;&nbsp;
-                                    {
-                                   items.status === "approved"?
-                                   <>
-                                   <button onClick={() => {
-                                    changingRewardRejStatus(items.member_id)
-                                  }} 
-                                  data-toggle="tooltip" 
-                                  data-placement="top" 
-                                  title="Unapprove Reward"
-                                     className="btn btn-outline-warning btn-sm">
-                                      <i className="fa-solid fa-minus"></i>
-                                    </button> 
-                                    &nbsp;&nbsp;
-                                    </>
-                                    :
-                                    null   
-                                    }
-                                 {/* &nbsp;&nbsp; */}
-                              
-                                 <button onClick={() => {
-                                 setIsOpen(true)
-                                 setMemID(items.member_id)
-                                }} 
-                                 className="btn btn-outline-danger btn-sm"
-                                 data-toggle="tooltip" 
-                                 data-placement="top" 
-                                 title="Reward Rejection"
-                                 >
-                                   <i className="fa-solid fa-circle-xmark"></i>
-                                 </button>
-
-                                 &nbsp;&nbsp;
-                                 
-                                  </div>                   
-                                  {/* <button type="button" className="btn btn-outline-primary btn-sm " data-toggle="modal" data-target="#staticBackdrop">
-                                show
-                                </button> */}
-                                </td>
-
-                          }
-                          <td>
-                                 {
-                                  roleID === "1" || roleID === "6"? null:
-                                  <button type="button" className="btn btn-outline-primary btn-sm" data-toggle="modal" data-target="#exampleModal"
-                                  onClick={()=>{setReceID(items.member_id)}}
-                                  >
-                                  Query
-                                </button>
-
-                                }
-                          </td>
-                          
-                            </tr>
+                              <RewardApprovalSheetFun items={items} index={index}/>
                             )
+                           
                           })
                         }
                        
                       </tbody>
                     </table>
+                    {remainingPromoUsers.length > 0 && (
+                      // only display the "Show More" button if there are more rows to show
+                      <button  className="btn btn-outline-info" onClick={()=> setShowLength(showLength+10)}>Show More</button>
+                    )}
+                    
 
                     {/* Image Modal */}
                           <div className="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabIndex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">

@@ -1,16 +1,12 @@
+import {useLocation } from 'react-router-dom';
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
-import {Link ,useLocation, useNavigate, ScrollRestoration } from 'react-router-dom';
-import { toast } from "react-toastify";
-import Filter from '../Filters/Filter';
-import {Modal} from 'pretty-modal';
 import Moment from 'react-moment';
 import 'moment-timezone';
 import axios from 'axios';
 
 const UserTimelineSheet = () => {
-    const navigate = useNavigate();
 
     const location = useLocation();
     const ID = location.state.ID;

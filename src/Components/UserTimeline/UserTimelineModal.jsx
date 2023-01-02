@@ -30,7 +30,6 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
           setTimeout(() => {
             setDisplay(val)
           }, 1000);
-        
     }
 
 
@@ -145,11 +144,10 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
         getUserTotals()
         gettingReferralTotal()
         SetLocalLogin()
-    }, [])
+    }, [ID])
     
   return (
     <Modal isOpen={isShow} className="content-wrapper  user_modal">
-    
   <div className="usermodal_height"  style={{ background: colorScheme.body_bg_color }}>
   <section className="content-header">
     <div className="container-fluid">
