@@ -7,6 +7,8 @@ import axios from 'axios';
 const StaffTicketSheet = () => {
     const [helpCenter, setHelpCenter] = useState([]);
     const [status, setStatus] = useState("pending");
+  
+    // Getting admin information from local storage:
 
     const SetLocalLogin = async () => {
         try {
@@ -23,9 +25,9 @@ const StaffTicketSheet = () => {
         }
       }
 
+  // Radio button which shows (pendig/closed) tickets in the screen:
   
     const changePeriod = (e) => {
-      console.log(e.target.checked);
       if (e.target.checked === true) {
         setStatus("pending");
       } else if (e.target.checked === false) {
@@ -33,6 +35,8 @@ const StaffTicketSheet = () => {
       } else {
       }
     }
+
+    // Function of fetching reffereal(A user/member got registered from any user/member referral code) tickets:
   
     function gettingHelpData(memID){
         const userObj = {

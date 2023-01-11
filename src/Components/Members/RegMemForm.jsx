@@ -1,8 +1,8 @@
-import React,{useState, useEffect} from 'react';
-import { toast } from "react-toastify";
-import colorScheme from '../Colors/Styles.js';
-import "react-toastify/dist/ReactToastify.css";
 import {useRegPostMutation} from '../services/Auth.js';
+import React,{useState, useEffect} from 'react';
+import "react-toastify/dist/ReactToastify.css";
+import colorScheme from '../Colors/Styles.js';
+import { toast } from "react-toastify";
 
 
 const RegMemForm = () => {
@@ -22,10 +22,29 @@ const RegMemForm = () => {
     const[loading , setLoading] = useState(false);
     const[referCode, setReferCode] = useState('');
     const [sendRefCode , setSendRefCode] = useState('')
-    const[cnic , setCnic] = useState('')
+    const[cnic , setCnic] = useState('');
+
+  // Getting admin information from local storage:
+
+  const SetLocalLogin = async () => {
+    try {
+      let userObj = await localStorage.getItem('user');
+      let parseUserObj = JSON.parse(userObj)
+      
+      if (parseUserObj !== null) {
+        setReferCode(parseUserObj.referal_code)
+      
+      }
+
+    } catch {
+      return null;
+    }
+  }
 
 
-  const submitPackage = async (e)=>{
+// Function(RTQuery is used) for registering company members/hosts:
+
+  const submitRegMembers = async (e)=>{
     e.preventDefault();
       setLoading(true)
       if(role && userName && email && password === repassword && phone){
@@ -92,21 +111,6 @@ const RegMemForm = () => {
 
   }
 
-  const SetLocalLogin = async () => {
-    try {
-      let userObj = await localStorage.getItem('user');
-      let parseUserObj = JSON.parse(userObj)
-      
-      if (parseUserObj !== null) {
-        setReferCode(parseUserObj.referal_code)
-      
-      }
-
-    } catch {
-      return null;
-    }
-  }
-
   useEffect(() => {
     SetLocalLogin()
   }, [])
@@ -138,7 +142,7 @@ const RegMemForm = () => {
             </div>
             {/* /.card-header */}
             {/* form start */}
-      <form onSubmit={submitPackage}>
+      <form onSubmit={submitRegMembers}>
 
               <div className="card-body">
                 <div className="row">

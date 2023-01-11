@@ -2,7 +2,7 @@ import React from 'react';
 import colorScheme from "../Colors/Styles.js";
 
 
-const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,StopPromotionData,luckyDrawData,ParticipantData,MemeberData,DateFilter,StatusFilter,PhoneFilter , PriceStatus, PackageTableIdentifier, DepoSheetIdentifier,InvestmentSheetIdentifier,BalanceSheetIdentifier,PromotionSheetIdentifier,StopPromoSheetIdentifier,LuckyDrawSheetIdentifier,ParticipantSheetIdentifier,MemberSheetIdentifier}) => {
+const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,StopPromotionData,luckyDrawData,ParticipantData,MemeberData,DateFilter,StatusFilter,PhoneFilter , PriceStatus, UsernameFilter,PackageTableIdentifier, DepoSheetIdentifier,InvestmentSheetIdentifier,BalanceSheetIdentifier,PromotionSheetIdentifier,StopPromoSheetIdentifier,LuckyDrawSheetIdentifier,ParticipantSheetIdentifier,MemberSheetIdentifier}) => {
 
 
 
@@ -118,6 +118,16 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
           StatusFilter(DepositData)
         }
       }
+      else if(PromotionSheetIdentifier){
+        if(e.target.value !== "All"){
+          const statusFilter = PromotionData.filter((items)=> items.status === e.target.value)
+          StatusFilter(statusFilter)
+        }
+        else{
+          StatusFilter(PromotionData)
+        }
+      }
+      
       else if(InvestmentSheetIdentifier){
         if(e.target.value !== "All"){
           const statusFilter = InvestData.filter((items)=> items.Status === e.target.value)
@@ -413,6 +423,45 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
       }
     }
 
+    
+    function searchByUsername(e){
+      if(DepoSheetIdentifier){
+        if(e.target.value !== " "){
+          const phoneFilter = DepositData.filter((items)=> items.username.toLowerCase() === e.target.value)
+          UsernameFilter(phoneFilter)      
+        }
+        else{
+          UsernameFilter(DepositData)
+        }
+  
+
+      }
+   
+      else if(MemberSheetIdentifier){
+        if(e.target.value !== " "){
+          const phoneFilter = MemeberData.filter((items)=> items.username.toLowerCase() === e.target.value)
+          UsernameFilter(phoneFilter)      
+        }
+        else{
+          UsernameFilter(MemeberData)
+        }
+  
+      }
+      else if(PromotionSheetIdentifier){
+        if(e.target.value !== " "){
+          const phoneFilter = PromotionData.filter((items)=>  items.member_name.toLowerCase()  === e.target.value)
+          UsernameFilter(phoneFilter)      
+        }
+        else{
+          UsernameFilter(PromotionData)
+        }
+  
+      }
+      else{
+        return null;
+      }
+    }
+
 
 
     
@@ -443,7 +492,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
 
                     
                     {
-                      PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier || MemberSheetIdentifier? null:
+                     StopPromoSheetIdentifier || ParticipantSheetIdentifier || MemberSheetIdentifier? null:
                       <div className="col-sm-3">
                       <label htmlFor="" className="form-label"> Search with Status:</label>
                     <div className="form-group">
@@ -455,8 +504,8 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
                         onChange={(e)=>searchByStatus(e)}
                         >
                             <option value="All">All</option>
-                            <option value={DepoSheetIdentifier?"approved":"active"}>{DepoSheetIdentifier?"approved":"active"}</option>
-                            <option value={DepoSheetIdentifier?"unapproved":"in-active"}>{DepoSheetIdentifier?"unapproved":"in-active"}</option>
+                            <option value={DepoSheetIdentifier || PromotionSheetIdentifier?"approved":"active"}>{DepoSheetIdentifier || PromotionSheetIdentifier?"approved":"active"}</option>
+                            <option value={DepoSheetIdentifier || PromotionSheetIdentifier?"unapproved":"in-active"}>{DepoSheetIdentifier || PromotionSheetIdentifier?"unapproved":"in-active"}</option>
                          </select>
                     </div>
                     </div>
@@ -485,6 +534,24 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
                         color: colorScheme.card_txt_color,
                         }}
                         onChange={(e)=> searchByPhone(e)}
+                      />
+                 </div>
+            </div>
+            :
+            null
+}
+
+{
+  DepoSheetIdentifier || MemberSheetIdentifier || PromotionSheetIdentifier? 
+  <div className="col-sm-3">
+                <label htmlFor="" className="form-label "> Search with Username:</label>
+                    <div className="form-group">
+                      <input type="text" className="form-control" placeholder="Search by Username..."
+                       style={{
+                        background: colorScheme.card_bg_color,
+                        color: colorScheme.card_txt_color,
+                        }}
+                        onChange={(e)=> searchByUsername(e)}
                       />
                  </div>
             </div>

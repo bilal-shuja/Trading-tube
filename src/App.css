@@ -200,22 +200,22 @@ input:checked + .slider .off
 
 
   .type-message{
+    border: 1px solid #d0d2d6;
   /* border-bottom: none;
   border-left:none;
   border-right: none; */
-  border: 1px solid #d0d2d6;
   /* outline: none; */
   /* margin-top:9em; */
 }
 
 .text-box{
-  /* display:inline-block; */
   position:relative;
 }
 .text-box-btn{
   position:absolute;
   bottom:10px;
   right:10px;
+  margin-bottom: 1.5em;
 }
 :root {
   --pretty-modal-modal-container-background-color:#161d31 ;

@@ -9,6 +9,8 @@ import axios from "axios";
 const RejectDepositSheet = () => {
     const [rejectDepoSheet , setDepostSheet] = useState([]);
 
+    // Function fetch rejected user deposits in sheet:
+    
     function gettingRejectDepo(){
         axios.post( `${process.env.REACT_APP_BASE_URL}fetch_rejected_deposit`)
         .then((res)=>{
@@ -18,6 +20,8 @@ const RejectDepositSheet = () => {
           return null;
         })
     }
+
+    // Function used to retrieved the user from reject deposit sheet <-> deposit sheet:
 
     function rejectDeposit(id){
       const rejDepObj = {

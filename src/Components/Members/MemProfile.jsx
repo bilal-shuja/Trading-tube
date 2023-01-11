@@ -8,6 +8,9 @@ const MemProfile = () => {
 
   const[mem , setMem] = useState('');
   const[amount , setAmount] = useState('');
+  
+  // Getting admin information from local storage:
+
   const SetLocalLogin = async () => {
     try {
       let userObj = await localStorage.getItem('user');
@@ -24,16 +27,21 @@ const MemProfile = () => {
     }
   }
 
+
+// Function for fetching specific member:
+
   function gettingMembers(id){
     axios.post(`${process.env.REACT_APP_BASE_URL}fetchuserwithid/${id}`)
     .then((res)=>{
       setMem(res.data.data)
     })
     .catch((error)=>{
-      console.log(error)
+      return null;
     })
   }
 
+
+  // Function for getting total balance of member:
 
   function gettingTotalAmount(id){
     const memIdObj ={

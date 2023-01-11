@@ -7,15 +7,19 @@ const LevelRewardSheet = () => {
 
     const [getLevelRewards , setLevelRewardSheet] = useState([]);
 
+    // Function fetching rewards according the defined levels in application:
+
     function gettingLevelRewards(){
         axios.post(`${process.env.REACT_APP_BASE_URL}fetch_requested_level_rewards`)
         .then((res)=>{
             setLevelRewardSheet(res.data.data)
         })
         .catch((error)=>{
-            console.log(error)
+          return null;
         })
       }
+
+      // Function to approved the level reward when the user unlock/achieve that level:
 
       function approveReqLevelReward(id,userID,rewardPrice){
         const rewardAppObj = {
@@ -32,7 +36,7 @@ const LevelRewardSheet = () => {
 
         })
         .catch((res)=>{
-                toast.warn("Already got balance", {theme:"dark"})
+                toast.warn("Already got reward", {theme:"dark"})
         })
 
       }

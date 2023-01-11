@@ -7,13 +7,15 @@ import axios from "axios";
 const LevelSheet = () => {
     const [levelSheet , setLevelSheet] = useState([]);
 
+    // Function for fetching level reward in the sheet:
+
     function gettingLevels(){
         axios.get( `${process.env.REACT_APP_BASE_URL}fetchalllevels`)
         .then((res)=>{
             setLevelSheet(res.data.Data)
         })
         .catch((error)=>{
-            console.log(error)
+          return null;
         })
     }
 

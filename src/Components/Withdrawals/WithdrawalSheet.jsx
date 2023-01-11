@@ -18,6 +18,7 @@ const WithdrawalSheet = () => {
   const[withdrawalStatus , setWithdrawalStatus] = useState('All');
   const[withdrawalAcc , setWithdrawalAcc] = useState('');
   const[withdrawalPhone , setWithdrawalPhone] = useState('');
+  const[withdrawalUsername , setWithdrawalUsername] = useState('');
 
   const[appWithdrawalDate ,setAppWithdrawalDate] = useState('')
   const[roleID , setRoleID] = useState('');
@@ -30,7 +31,7 @@ const WithdrawalSheet = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [ID , setID] = useState('');
   const[userID , setUserID] = useState('');
-  const[showLength, setShowLength] = useState(15);
+  const[showLength, setShowLength] = useState(70);
 
 
   const SetLocalLogin = async () => {
@@ -70,9 +71,9 @@ const WithdrawalSheet = () => {
     axios.post(`${process.env.REACT_APP_BASE_URL}approve_status`,withdrawalObj)
     .then((res)=>{
       toast.info(`Withdrawal ${res.data.message}`,{theme:"dark"});
-      setTimeout(() => {
-        window.location.reload()
-      }, 2000);
+      // setTimeout(() => {
+      //   window.location.reload()
+      // }, 2000);
     })
     .catch((error)=>{
       if(error.status === 401){
@@ -95,9 +96,9 @@ function approveWithdrawalByDate(){
   .then((res)=>{
    
       toast.info(res.data.message,{theme:"dark"});
-      setTimeout(() => {
-        window.location.reload()
-      }, 2000);
+      // setTimeout(() => {
+      //   window.location.reload()
+      // }, 2000);
 
 
   })
@@ -141,9 +142,9 @@ const withdrawalObj = {
     if(res.data.status === '200'){
       toast.info(`Withdrawal Rejected!`,{theme:"dark"});
       geneNotification()
-      setTimeout(() => {
-        window.location.reload(true)
-      }, 3000);
+      // setTimeout(() => {
+      //   window.location.reload(true)
+      // }, 3000);
     }
     else{
       toast.info(`${res.data.message}`,{theme:"dark"});
@@ -425,6 +426,19 @@ function WithdrawalSheetFun({items , index}){
                  </div>
             </div>
 
+            <div className="col-sm-3">
+                <label htmlFor="" className="form-label "> Search with Usrename:</label>
+                    <div className="form-group">
+                      <input type="text" className="form-control" placeholder="Search by Username..."
+                       style={{
+                        background: colorScheme.card_bg_color,
+                        color: colorScheme.card_txt_color,
+                        }}
+                        onChange={(e)=> setWithdrawalUsername(e.target.value)}
+                      />
+                 </div>
+            </div>
+
             </div>
                   <div className="card-body table-responsive p-2">
                     {
@@ -481,6 +495,14 @@ function WithdrawalSheetFun({items , index}){
                         ( withdrawalPhone !== '' && withdrawalStatus === 'All') || ( withdrawalPhone !== '' && withdrawalAcc === ' ')
                         ?
                         withdrawalData.filter((items)=> items.phone === withdrawalPhone).map((items,index)=>{
+                          return(
+                            <WithdrawalSheetFun items={items} index={index}/>
+                          )
+                        })
+                        :
+                        ( withdrawalUsername !== '' && withdrawalStatus === 'All') || ( withdrawalUsername !== '' && withdrawalAcc === ' ')
+                        ?
+                        withdrawalData.filter((items)=> items.username.toLowerCase() === withdrawalUsername).map((items,index)=>{
                           return(
                             <WithdrawalSheetFun items={items} index={index}/>
                           )

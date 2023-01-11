@@ -1,6 +1,6 @@
 import React,{useState , useEffect} from 'react';
-import colorScheme from "../Colors/Styles.js";
 import "react-toastify/dist/ReactToastify.css";
+import colorScheme from "../Colors/Styles.js";
 import { toast } from "react-toastify";
 import {Link} from 'react-router-dom';
 import Moment from 'react-moment';
@@ -13,7 +13,8 @@ const StaffQuerySheet = () => {
     const[userPhone , setUserPhone] = useState('');
     const[roleID , setRoleID] = useState('');
 
-    
+    // Getting admin information from local storage:
+
     const SetLocalLogin = async () => {
         try {
           let userObj = await localStorage.getItem('user');
@@ -28,6 +29,8 @@ const StaffQuerySheet = () => {
         }
       }
 
+    // Function fetching members/staff quries to (super admin/ assist admin):
+
     function gettingUsers(){
         const roleObj = {
             role_id:1 ,roleID:6
@@ -40,6 +43,8 @@ const StaffQuerySheet = () => {
         toast.warn("Something went wrong" , {theme:"dark"})
       })
     }
+
+    // Function for updating staff query status (if the query get resolved);
 
     function updateIssueStatus(id){
         const statObj = {

@@ -16,11 +16,10 @@ const UpdateMemForm = () => {
     const [userEmail, setUserEmail] = useState("");
     const [userPhone , setUserPhone] = useState("");
     const[role , setRole] = useState('none');
+    const[loading , setLoading] = useState(false);
 
-
-  
-    const[loading , setLoading] = useState(false)
-
+    // Function for getting specific member/user:  
+    
     function gettingIndMember(){
         axios.post(`${process.env.REACT_APP_BASE_URL}fetchuserwithid/${ID}`)
         .then((res)=>{
@@ -34,25 +33,24 @@ const UpdateMemForm = () => {
   
         })
         .catch((error)=>{
-          console.log(error)
+          return null;
         })
     }
+
+    // Function for updating member/user information:
 
     function submitMemInfo(e){
         e.preventDefault()
         setLoading(true)
     
         var formdata = new FormData();
-    formdata.append("username",username);
-    formdata.append("firstname", userFirstName);
-    formdata.append("lastname",userLastName);
-    formdata.append("email", userEmail);
-    formdata.append("phone", userPhone);
-    formdata.append("role_id", role);
-    formdata.append("sender_role_id", 1);
-    
-    
-    
+        formdata.append("username",username);
+        formdata.append("firstname", userFirstName);
+        formdata.append("lastname",userLastName);
+        formdata.append("email", userEmail);
+        formdata.append("phone", userPhone);
+        formdata.append("role_id", role);
+        formdata.append("sender_role_id", 1);
     
         axios.post(`${process.env.REACT_APP_BASE_URL}updatememberwithid/${ID}`,formdata)
         .then((res)=>{
@@ -67,6 +65,8 @@ const UpdateMemForm = () => {
           toast.warn("Something went wrong",{theme:"dark"})
         })
       }
+
+      
       useEffect(() => {
         gettingIndMember();
     

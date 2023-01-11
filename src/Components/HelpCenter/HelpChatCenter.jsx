@@ -1,5 +1,4 @@
 import React,{useState , useEffect , useRef } from "react";
-import Cancel from '../Images/cancel.svg';
 import { Link, useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
@@ -7,6 +6,9 @@ import { toast } from "react-toastify";
 import axios from 'axios';
 
 const HelpChatCenter = () => {
+  
+  // Getting users information from Help center screen:
+
   const location = useLocation();
   const ID = location.state.ID
   const userID = location.state.userID;
@@ -18,12 +20,14 @@ const HelpChatCenter = () => {
 
 
 
-  const[getTicketReplys , setTicketReplys] = useState([])
-  const [adminID , setAdminID] = useState('')
-  const[memName , setMemName] = useState('')
+  const[getTicketReplys , setTicketReplys] = useState([]);
   const[ticketReply , setTicketReply] = useState('');
   const[loading , setLoading] = useState(false);
+  const [adminID , setAdminID] = useState('');
+  const[memName , setMemName] = useState('');
 
+
+  // Getting admin information from local storage:
 
   const SetLocalLogin = async () => {
     try {
@@ -40,29 +44,8 @@ const HelpChatCenter = () => {
     }
   }
 
-  function geneNotification(){
-    const notifiObj ={
-      receiver_id:userID,
-      body:ticketReply,
-      title:"Ticket Reply"
-    }
-    axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
-    .then((res)=>{
-      if(res.data.status === '200'){
-        toast.info("Notified to User",{theme:"dark"});
-      }
-      else{
-        toast.info(`${res.data.message}`,{theme:"dark"});
-  
-      }
-    })
-    .catch((error)=>{
-      toast.warn("Something went wrong",{theme:"dark"});
-  
-    })
-  }
- 
 
+//  Function which reply's the user ticket by the host's side:
 
   function replyingTicket(){
     setLoading(true)
@@ -94,6 +77,8 @@ const HelpChatCenter = () => {
     })
   }
 
+  // Function fetching specific user reply in ticket section: 
+
   function gettingRelpyTicket(){
     const ticketID={
       ticket_id:ID
@@ -106,6 +91,33 @@ const HelpChatCenter = () => {
       console.log(error)
     })
   }
+
+  // Function of generating notification to that specific user for replying to the ticket:
+
+  function geneNotification(){
+    const notifiObj ={
+      receiver_id:userID,
+      body:ticketReply,
+      title:"Ticket Reply"
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
+    .then((res)=>{
+      if(res.data.status === '200'){
+        toast.info("Notified to User",{theme:"dark"});
+      }
+      else{
+        toast.info(`${res.data.message}`,{theme:"dark"});
+  
+      }
+    })
+    .catch((error)=>{
+      toast.warn("Something went wrong",{theme:"dark"});
+  
+    })
+  }
+
+
+  // Function for getting to the current message in the chat section:
 
   function useChatScroll(newMessage){
     const ref = useRef();
@@ -120,8 +132,9 @@ const HelpChatCenter = () => {
   
   const ref = useChatScroll(getTicketReplys)
 
+// Function, when the conversation between  user & host gets done this function will close that ticket:
 
-  function closeTicket(ID){
+function closeTicket(ID){
 const statusObj ={
   status:"closed"
 }
@@ -155,7 +168,7 @@ const statusObj ={
 <div className="scroll-view-two scrollbar-secondary-inbox">
 
       <div className="content-wrapper" style={{ background: colorScheme.body_bg_color }}>
-        <section className="content-header">
+        <section className="content-header" >
           <div className="container-fluid ">
             <div className="row mb-2 mt-5">
               <div className="col-sm-9">
@@ -196,11 +209,11 @@ const statusObj ={
       
 
         
-<div  className="content mt-3">
+<div  className="content mt-3" >
   <div className="container">
-    {/* <di className="row"> */}
       <div ref={ref} className="scroll-view-two scrollbar-secondary-two">
           <div  className="col-lg-8 col-sm-8">
+
           {/* User Area */}
           <div className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one}}>
             <div className="card-header">
@@ -232,8 +245,8 @@ const statusObj ={
             getTicketReplys.map((items,index)=>{
               return(
                 <>
-                <div key={index} className={items.sender_type === "Admin"?"col-lg-8 col-sm-8 float-right":"col-lg-8 col-sm-8 float-left"}>
-                <div className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one,}}>
+                <div key={index} className={items.sender_type === "Admin"?"col-lg-8 col-sm-8 float-right":"col-lg-8 col-sm-8 float-left"} >
+                <div className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one}}>
              <div className="card-header">
                <div className="card-tools">
                  <button type="button" className={items.sender_type === "Admin"?"btn btn-tool staff-date-box rounded text-white mr-2":"btn btn-tool user-date-box rounded text-white mr-2"} data-card-widget="" title="Remove">
@@ -260,15 +273,17 @@ const statusObj ={
            }
 
         </div>
-
-{
-ticketStatus === "closed"? null:
+        
+    {/* Reply box section*/}
+    {
+      
+      ticketStatus === "closed"? null:
             
-        <div className="col-lg-11 col-sm-12 mx-auto mb-2 mt-2">
+        <div className="col-lg-11 col-sm-12 mx-auto">
         <div className="text-box">
         <textarea className="form-control type-message rounded p-4" placeholder="Type your message here..." value={ticketReply} onChange={(e)=>{setTicketReply(e.target.value)}} rows={5}  style={{ background: colorScheme.body_bg_color , color: colorScheme.card_txt_color  }} />
        
-        <button onClick={replyingTicket} className="btn btn-outline-info d-block col-2 mt-3 float-right text-box-btn">
+        <button onClick={replyingTicket} className="btn btn-outline-info d-block col-2 float-right text-box-btn">
           {
             loading === true? "Loading...":"Send"
           }
@@ -276,9 +291,8 @@ ticketStatus === "closed"? null:
         </div>
         </div>
 
-  } 
+    } 
     
-    {/* </di> */}
   </div>
 </div>
 

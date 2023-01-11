@@ -15,14 +15,16 @@ const UserSheet = () => {
 
     const[users , setUsers] = useState([]);
     const[userDate , setUserDate] = useState('');
-    const[userPhone , setUserPhone] = useState('');
+    const[userPhone, setUserPhone] = useState('');
+    const[userName, setUsername] = useState('');
+    const[referalCode , setReferalCode] = useState('');
     const[roleID , setRoleID] = useState('');
 
     const[receID , setReceID] = useState('');
     const[hostMessage , setHostMessage] = useState('');
     const[senderID , setSenderID] = useState('');
 
-  const[showLength, setShowLength] = useState(30);
+  const[showLength, setShowLength] = useState(100);
 
 
     const SetLocalLogin = async () => {
@@ -128,8 +130,9 @@ useEffect(() => {
 
  const filteredData = users.length > 0 && userDate !=='' &&  userPhone === '' ?  users.filter((items)=> items.Idate === userDate) 
  :     userDate ==='' &&  userPhone !== '' ? users.filter((items)=> items.phone === userPhone) 
+ :        userDate ==='' &&  userPhone === '' && userName !==''  ? users.filter((items)=> items.username.toLowerCase() === userName)
+ :        userDate ==='' &&  userPhone === '' && userName ==='' &&  referalCode !== '' ? users.filter((items)=>items.referal_code.toLowerCase() === referalCode)
  : users.filter((items)=> items.role_id === "5")
-
 
 
 function UserList ({items,index}){
@@ -299,6 +302,33 @@ function UserList ({items,index}){
                               />
                         </div>
                     </div>
+
+                    <div className="col-sm-3">
+                        <label htmlFor="" className="form-label "> Search with Username:</label>
+                            <div className="form-group">
+                              <input type="text" className="form-control" placeholder="Search by Username..."
+                              style={{
+                                background: colorScheme.card_bg_color,
+                                color: colorScheme.card_txt_color,
+                                }}
+                                onChange={(e)=> setUsername(e.target.value)}
+                              />
+                        </div>
+                    </div>
+
+                    <div className="col-sm-3">
+                        <label htmlFor="" className="form-label "> Search with Refer Code:</label>
+                            <div className="form-group">
+                              <input type="text" className="form-control" placeholder="Search with Refer Code..."
+                              style={{
+                                background: colorScheme.card_bg_color,
+                                color: colorScheme.card_txt_color,
+                                }}
+                                onChange={(e)=> setReferalCode(e.target.value)}
+                              />
+                        </div>
+                    </div>
+
                     </div>
                   </div>
                   <div className="card-body table-responsive p-2">
@@ -348,7 +378,7 @@ function UserList ({items,index}){
                         }
                    {remainingUsers.length > 0 && (
                       // only display the "Show More" button if there are more rows to show
-                      <button  className="btn btn-outline-info" onClick={()=> setShowLength(showLength+15)}>Show More</button>
+                      <button  className="btn btn-outline-info" onClick={()=> setShowLength(showLength+40)}>Show More</button>
                     )}
                     </div>
                   </div>

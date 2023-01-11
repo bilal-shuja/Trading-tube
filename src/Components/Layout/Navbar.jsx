@@ -4,6 +4,9 @@ import colorScheme from '../Colors/Styles.js';
 
 const Navbar = () => {
  const navigate = useNavigate();
+  
+ // Logout functionality from admin dashboard:
+   
   const logOut = async ()=>{
     let login = await  localStorage.setItem('login',false);
     if(login === false){

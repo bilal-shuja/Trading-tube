@@ -14,6 +14,8 @@ const MemberSheet = () => {
   const[members , setMembers] = useState([]);
   const[memDate , setMemDate] = useState('');
   const[memPhone , setMemPhone] = useState('');
+  const[userName, setUsername] = useState('');
+  const[referalCode , setReferalCode] = useState('');
   const[roleID , setRoleID] = useState('');
 
   const[receID , setReceID] = useState('');
@@ -21,7 +23,7 @@ const MemberSheet = () => {
   const[senderID , setSenderID] = useState('');
 
   
-
+  // Getting admin information from local storage:
   
   const SetLocalLogin = async () => {
     try {
@@ -38,6 +40,8 @@ const MemberSheet = () => {
     }
   }
 
+  // Function fetching all company members:
+
     function gettingMembers(){
       axios.post(`${process.env.REACT_APP_BASE_URL}fetchallusers`)
       .then((res)=>{
@@ -47,6 +51,8 @@ const MemberSheet = () => {
         return null;
       })
     }
+
+    // Filter against host/members roles(like which member can view who's data or not):
 
     const newSheet = members.length > 0 && members.filter((items)=>                    
                         
@@ -60,9 +66,9 @@ const MemberSheet = () => {
 
 
 
+// Function for deleting member permanently( which is not in used right now):
 
     function deleteMembers(id){
-   
         axios.post(`${process.env.REACT_APP_BASE_URL}deleteuserwithid/${id}`)
         .then((res)=>{
             toast.error("Member deleted" , {theme:"dark"})
@@ -75,7 +81,9 @@ const MemberSheet = () => {
         })
     }
 
-    function submitHostQuery(){
+
+  // Function that generates query from hosts/members(admin/manager/staff) and submitted to super admin:
+  function submitHostQuery(){
       const hostQueryObj = {
         sender_id:senderID,
         user_id:receID,
@@ -100,6 +108,7 @@ const MemberSheet = () => {
     }
 
 
+    // Child function for member sheet:
 function MemberList ({items , index}){
   const[isShow,setShow] = useState(false);
   const [isShowUserModal,setShowUserModal] = useState(false)
@@ -122,7 +131,7 @@ function MemberList ({items , index}){
   
    }
 
-
+  //  Function for suspending user/members (only access by super admin): 
 
    function suspendUser(){
     const suspendUserObj = {
@@ -235,8 +244,6 @@ roleID === "2"|| roleID === "3"|| roleID === "4" ? null:
 }
   
 
-  
-
 
 useEffect(() => {
     gettingMembers();
@@ -301,7 +308,37 @@ useEffect(() => {
                               />
                         </div>
                     </div>
+
+                    
+                    <div className="col-sm-3">
+                        <label htmlFor="" className="form-label "> Search with Username:</label>
+                            <div className="form-group">
+                              <input type="text" className="form-control" placeholder="Search by Username..."
+                              style={{
+                                background: colorScheme.card_bg_color,
+                                color: colorScheme.card_txt_color,
+                                }}
+                                onChange={(e)=> setUsername(e.target.value)}
+                              />
+                        </div>
                     </div>
+
+                    <div className="col-sm-3">
+                        <label htmlFor="" className="form-label "> Search with Refer Code:</label>
+                            <div className="form-group">
+                              <input type="text" className="form-control" placeholder="Search with Refer Code..."
+                              style={{
+                                background: colorScheme.card_bg_color,
+                                color: colorScheme.card_txt_color,
+                                }}
+                                onChange={(e)=> setReferalCode(e.target.value)}
+                              />
+                        </div>
+                    </div>
+                    
+                    </div>
+
+         
                     
                   </div>
                   <div className="card-body table-responsive p-2">
@@ -349,7 +386,24 @@ useEffect(() => {
                             )
                             })
                           :
+                          memDate ==='' &&  memPhone === '' && userName !== ''?
+                        
+                          newSheet.filter((items)=> items.username.toLowerCase() === userName).map((items,index)=>{
+                            return(
+                              <MemberList items={items} index={index}/>
+                            )
+                            })
+                          :
 
+                          memDate ==='' &&  memPhone === '' && userName === '' &&  referalCode !== '' ?
+                        
+                          newSheet.filter((items)=> items.referal_code.toLowerCase() === referalCode).map((items,index)=>{
+                            return(
+                              <MemberList items={items} index={index}/>
+                            )
+                            })
+                          :
+                          
                        newSheet.map((items,index)=>{
                           return(
                             <MemberList items={items} index={index}/>

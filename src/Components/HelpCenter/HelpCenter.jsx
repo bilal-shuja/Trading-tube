@@ -8,8 +8,9 @@ const HelpCenter = () => {
   const [helpCenter, setHelpCenter] = useState([]);
   const [status, setStatus] = useState("pending");
 
+  // Radio button which shows (pendig/closed) tickets in the screen:
+
   const changePeriod = (e) => {
-    console.log(e.target.checked);
     if (e.target.checked === true) {
       setStatus("pending");
     } else if (e.target.checked === false) {
@@ -17,6 +18,8 @@ const HelpCenter = () => {
     } else {
     }
   }
+
+  // fetching all tickets of user in the screen:
 
   function gettingHelpData(){
     axios.get(`${process.env.REACT_APP_BASE_URL}fetch_all_tickets`)
