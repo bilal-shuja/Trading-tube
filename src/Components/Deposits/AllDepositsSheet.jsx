@@ -28,6 +28,9 @@ const AllDepositsTable = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [memID, setMemID] = useState("");
   const [depoID, setDepoID] = useState("");
+  const[showLength, setShowLength] = useState(30);
+
+  const [index , setIndex] = useState('');
 
   const DepoSheetIdentifier = "DepositSheet";
 
@@ -59,6 +62,9 @@ const AllDepositsTable = () => {
         return error;
       });
   }
+
+  const remainingDepositUsers = getDepos.slice(showLength);
+
 
   const depoHandler = (id) => {
     setDepoChecks((prevState) => {
@@ -109,9 +115,6 @@ const AllDepositsTable = () => {
       .post(`${process.env.REACT_APP_BASE_URL}show`, depObj)
       .then((res) => {
         toast.info(`Deposit ${res.data.message}`, { theme: "dark" });
-        // setTimeout(() => {
-        //   window.location.reload(true);
-        // }, 2000);
       })
       .catch((error) => {
         if (error.status === 401) {
@@ -153,6 +156,16 @@ const AllDepositsTable = () => {
     setDepoSum(getDepoSum);
   }
 
+
+
+  function removeUserFromDepopsitSheet() {
+    setTempArr((prevState) => {
+      const tasks = [...prevState];
+      tasks.splice(index, 1);
+      return tasks;
+    });
+  }
+
   // Function which rejects the specific user:
   function rejectDeposit() {
     const rejDepObj = {
@@ -168,9 +181,8 @@ const AllDepositsTable = () => {
         if (res.data.status === "200") {
           toast.info("Deposit Rejected!", { theme: "dark" });
           geneNotification();
-          // setTimeout(() => {
-          //   window.location.reload(true);
-          // }, 3000);
+          removeUserFromDepopsitSheet();
+    
         } else {
           toast.warn(res.data.message, { theme: "dark" });
         }
@@ -302,6 +314,7 @@ const AllDepositsTable = () => {
                         setIsOpen(true);
                         setMemID(items.payer_id);
                         setDepoID(items.id);
+                        setIndex(index)
                       }}
                       className="btn btn-outline-danger btn-sm"
                       data-toggle="tooltip"
@@ -397,7 +410,7 @@ const AllDepositsTable = () => {
                     <div className="card-header">
                       <h3>Deposits Sheet</h3>
 
-                      <di className="row">
+                      <div className="row">
                         <div className="col-lg-3">
                           <div className="form-group">
                             <input
@@ -423,7 +436,7 @@ const AllDepositsTable = () => {
                           </button>
                         </div>
 
-                      </di>
+                      </div>
 
                       <button
                         className="btn btn-outline-info mt-2 btn-sm"
@@ -433,7 +446,7 @@ const AllDepositsTable = () => {
                       >
                         Reset Filters
                       </button>
-                      &nbsp;&nbsp;&nbsp;&nbsp;
+                      &nbsp;&nbsp;&nbsp;
                       {/* <button className="btn btn-outline-info  btn-md mt-2" onClick={()=>setCheckBox(true)}>
                             Check & Approve
                         </button>
@@ -545,6 +558,11 @@ const AllDepositsTable = () => {
                           <h2>No Record Found</h2>
                         </div>
                       )}
+
+                    {remainingDepositUsers.length > 0 && (
+                      // only display the "Show More" button if there are more rows to show
+                      <button  className="btn btn-outline-info" onClick={()=> setShowLength(showLength+30)}>Show More</button>
+                    )}
                     </div>
                   </div>
 

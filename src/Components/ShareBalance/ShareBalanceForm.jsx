@@ -53,7 +53,7 @@ const ShareBalanceForm = () => {
         axios.post(`${process.env.REACT_APP_BASE_URL}fetch_user_with_phone/${val === "key"?e.target.value:e}`)
         .then((res)=>{
           setUserName(res.data.Data.username)
-          setUserID(res.data.Data.id)
+          setUserID( res.data.Data.id)
           setUserPhone(res.data.Data.phone)
           showBtn(true)
   
@@ -82,7 +82,7 @@ const ShareBalanceForm = () => {
         axios.post(`${process.env.REACT_APP_BASE_URL}Send_balance`,balanceObj)
         .then((res)=>{
           toast.info("Balance Sended!",{theme:"dark"});
-          geneNotification()
+          // geneNotification()
           setInput(false);
           setLoading(false)
           setTimeout(() => {
@@ -115,20 +115,22 @@ const ShareBalanceForm = () => {
     
       }
 
+
+  
       function geneNotification(){
         const notifiObj ={
-          receiver_id:userID,
+          receiver_id:148,
           body:`Congratulations! You have received amount ${amount} from trading tube`,
           title:"Balance Received!"
         }
         axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
         .then((res)=>{
           toast.info("Notified to User",{theme:"dark"});
-          // SendNotification(userID,"Balance Received!", `Congratulations! You have received amount ${amount} from trading tube`)
           
         })
         .catch((error)=>{
           toast.warn("Something went wrong",{theme:"dark"});
+          console.log(error)
 
         })
       }

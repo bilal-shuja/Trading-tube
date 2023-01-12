@@ -31,7 +31,9 @@ const WithdrawalSheet = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [ID , setID] = useState('');
   const[userID , setUserID] = useState('');
-  const[showLength, setShowLength] = useState(70);
+  const[showLength, setShowLength] = useState(30);
+
+  const[index , setIndex] = useState('')
 
 
   const SetLocalLogin = async () => {
@@ -71,9 +73,6 @@ const WithdrawalSheet = () => {
     axios.post(`${process.env.REACT_APP_BASE_URL}approve_status`,withdrawalObj)
     .then((res)=>{
       toast.info(`Withdrawal ${res.data.message}`,{theme:"dark"});
-      // setTimeout(() => {
-      //   window.location.reload()
-      // }, 2000);
     })
     .catch((error)=>{
       if(error.status === 401){
@@ -96,11 +95,6 @@ function approveWithdrawalByDate(){
   .then((res)=>{
    
       toast.info(res.data.message,{theme:"dark"});
-      // setTimeout(() => {
-      //   window.location.reload()
-      // }, 2000);
-
-
   })
   .catch((error)=>{
     toast.warn(error.data.message,{theme:"dark"});
@@ -132,6 +126,16 @@ function gettingWithdrawalSum(){
  
 }
 
+
+function removeUserFromWithdrawalSheet() {
+  setWithdrawalData((prevState) => {
+    const tasks = [...prevState];
+    tasks.splice(index, 1);
+    return tasks;
+  });
+}
+
+
    
 function withdrawalRejection(){
 const withdrawalObj = {
@@ -141,10 +145,8 @@ const withdrawalObj = {
   .then((res)=>{
     if(res.data.status === '200'){
       toast.info(`Withdrawal Rejected!`,{theme:"dark"});
-      geneNotification()
-      // setTimeout(() => {
-      //   window.location.reload(true)
-      // }, 3000);
+      geneNotification();
+      removeUserFromWithdrawalSheet();
     }
     else{
       toast.info(`${res.data.message}`,{theme:"dark"});
@@ -265,6 +267,7 @@ function WithdrawalSheetFun({items , index}){
          setIsOpen(true)
          setID(items.id)
          setUserID(items.user_id)
+         setIndex(index)
         }} 
          className="btn btn-outline-danger btn-sm"
          data-toggle="tooltip" 
@@ -532,7 +535,7 @@ function WithdrawalSheetFun({items , index}){
 
                     {remainingWithdrawalUsers.length > 0 && (
                       // only display the "Show More" button if there are more rows to show
-                      <button  className="btn btn-outline-info" onClick={()=> setShowLength(showLength+15)}>Show More</button>
+                      <button  className="btn btn-outline-info" onClick={()=> setShowLength(showLength+30)}>Show More</button>
                     )}
 
                     </div>
@@ -542,7 +545,8 @@ function WithdrawalSheetFun({items , index}){
                     <Modal 
                     ariaLabelledby="modal1_label"
                     ariaDescribedby="modal1_desc"
-                    onClose={() => {setIsOpen(false)}} open={isOpen}>
+                    onClose={() => {setIsOpen(false)}} 
+                    open={isOpen}>
                            <div className="card-body">
                             <h5><b>Possible Notes*</b> </h5>
                             <ul>

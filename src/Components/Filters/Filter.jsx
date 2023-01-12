@@ -2,7 +2,13 @@ import React from 'react';
 import colorScheme from "../Colors/Styles.js";
 
 
-const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,StopPromotionData,luckyDrawData,ParticipantData,MemeberData,DateFilter,StatusFilter,PhoneFilter , PriceStatus, UsernameFilter,PackageTableIdentifier, DepoSheetIdentifier,InvestmentSheetIdentifier,BalanceSheetIdentifier,PromotionSheetIdentifier,StopPromoSheetIdentifier,LuckyDrawSheetIdentifier,ParticipantSheetIdentifier,MemberSheetIdentifier}) => {
+const Filter = ({
+            PackageData,DepositData, InvestData,BalanceData ,PromotionData,StopPromotionData,
+              luckyDrawData,ParticipantData,MemeberData,BalanceSheetData,RetBalanceSheetData,DateFilter,StatusFilter,
+              PhoneFilter , PriceStatus, UsernameFilter,PackageTableIdentifier, DepoSheetIdentifier,InvestmentSheetIdentifier,
+              BalanceSheetIdentifier,PromotionSheetIdentifier,StopPromoSheetIdentifier,LuckyDrawSheetIdentifier,ParticipantSheetIdentifier,
+              MemberSheetIdentifier,ShareBalanceSheetIdentifier,RetBalanceSheetIdentifier
+            }) => {
 
 
 
@@ -90,6 +96,26 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
       }
       else{
         DateFilter(MemeberData)
+      }
+    }
+    else if(ShareBalanceSheetIdentifier){
+
+      if(e.target.value !== " "){
+        const dateFilter = BalanceSheetData.filter((items)=> items.date === e.target.value)
+        DateFilter(dateFilter)      
+      }
+      else{
+        DateFilter(BalanceSheetData)
+      }
+    }
+    else if(RetBalanceSheetIdentifier){
+
+      if(e.target.value !== " "){
+        const dateFilter = RetBalanceSheetData.filter((items)=> items.date === e.target.value)
+        DateFilter(dateFilter)      
+      }
+      else{
+        DateFilter(RetBalanceSheetData)
       }
     }
       
@@ -418,6 +444,29 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
         }
   
       }
+      else if(ShareBalanceSheetIdentifier){
+        if(e.target.value !== " "){
+          const phoneFilter = BalanceSheetData.filter((items)=>items.userphone === e.target.value || items.sender_phone === e.target.value)
+          PhoneFilter(phoneFilter)      
+        }
+        else{
+          PhoneFilter(BalanceSheetData)
+        }
+  
+      }
+      else if(RetBalanceSheetIdentifier){
+        if(e.target.value !== " "){
+          const phoneFilter = RetBalanceSheetData.filter((items)=>items.userphone === e.target.value || items.sender_phone === e.target.value)
+          PhoneFilter(phoneFilter)      
+        }
+        else{
+          PhoneFilter(RetBalanceSheetData)
+        }
+  
+      }
+
+      
+       
       else{
         return null;
       }
@@ -457,6 +506,26 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
         }
   
       }
+      else if(ShareBalanceSheetIdentifier){
+        if(e.target.value !== " "){
+          const phoneFilter = BalanceSheetData.filter((items)=>  items.username.toLowerCase()  === e.target.value || items.sender_name.toLowerCase()   === e.target.value)
+          UsernameFilter(phoneFilter)      
+        }
+        else{
+          UsernameFilter(BalanceSheetData)
+        }
+  
+      }
+      else if(RetBalanceSheetIdentifier){
+        if(e.target.value !== " "){
+          const phoneFilter = RetBalanceSheetData.filter((items)=>  items.username.toLowerCase()  === e.target.value || items.sender_name.toLowerCase()   === e.target.value)
+          UsernameFilter(phoneFilter)      
+        }
+        else{
+          UsernameFilter(RetBalanceSheetData)
+        }
+  
+      }
       else{
         return null;
       }
@@ -468,7 +537,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
   return (
     <>
     {
-      MemberSheetIdentifier ? null:
+      MemberSheetIdentifier || ShareBalanceSheetIdentifier || RetBalanceSheetIdentifier ? null:
         <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier?"col-sm-3":"col-sm-3"}>
                     <label htmlFor="" className="form-label">Filter by {LuckyDrawSheetIdentifier || ParticipantSheetIdentifier ? "Fee":"Price"}:</label>
                         <div className="form-group">
@@ -492,7 +561,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
 
                     
                     {
-                     StopPromoSheetIdentifier || ParticipantSheetIdentifier || MemberSheetIdentifier? null:
+                     StopPromoSheetIdentifier || ParticipantSheetIdentifier || MemberSheetIdentifier || ShareBalanceSheetIdentifier || RetBalanceSheetIdentifier? null:
                       <div className="col-sm-3">
                       <label htmlFor="" className="form-label"> Search with Status:</label>
                     <div className="form-group">
@@ -524,7 +593,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
                  </div>
             </div>
 {
-  DepoSheetIdentifier || MemberSheetIdentifier || PromotionSheetIdentifier? 
+  DepoSheetIdentifier || MemberSheetIdentifier || PromotionSheetIdentifier || ShareBalanceSheetIdentifier || RetBalanceSheetIdentifier? 
   <div className="col-sm-3">
                 <label htmlFor="" className="form-label "> Search with Phone:</label>
                     <div className="form-group">
@@ -542,7 +611,7 @@ const Filter = ({PackageData,DepositData, InvestData,BalanceData ,PromotionData,
 }
 
 {
-  DepoSheetIdentifier || MemberSheetIdentifier || PromotionSheetIdentifier? 
+  DepoSheetIdentifier || MemberSheetIdentifier || PromotionSheetIdentifier || ShareBalanceSheetIdentifier || RetBalanceSheetIdentifier? 
   <div className="col-sm-3">
                 <label htmlFor="" className="form-label "> Search with Username:</label>
                     <div className="form-group">

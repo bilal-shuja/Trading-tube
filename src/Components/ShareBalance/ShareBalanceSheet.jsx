@@ -2,24 +2,47 @@ import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from '../Colors/Styles.js';
 import { toast } from "react-toastify";
+import Filter from "../Filters/Filter";
 import Moment from 'react-moment';
 import 'moment-timezone';
 import axios from "axios";
 
 const ShareBalanceSheet = () => {
   const [balanceSheet , setBalanceSheet] = useState([]);
+  const [balanceTemArr, setTempArr] = useState([]);
+  const[balanceSheetSum , setBalanceSheetSum] = useState('');
 
 
+  const ShareBalanceSheetIdentifier = "ShareBalanceSheet";
   function gettingShareBalance(){
       axios.post( `${process.env.REACT_APP_BASE_URL}fetch_send_balance`)
       .then((res)=>{
         setBalanceSheet(res.data.data)
+        setTempArr(res.data.data)
       })
       .catch((error)=>{
          return null
       })
   }
 
+
+  function gettingBalanceSheetSum() {
+    const getBalanceSheetSum = balanceTemArr.reduce((acc, curr) => acc + +curr.send_amount, 0);
+    setBalanceSheetSum(getBalanceSheetSum);
+  }
+  function gettingDate(val) {
+    setTempArr(val);
+  }
+
+
+  function gettingPhone(val) {
+    setTempArr(val);
+  }
+
+  function gettingUsername(val){
+    setTempArr(val);
+
+  }
 
 
   function retrieveBalance(ID,userID,roleID,senderID,retAmount){
@@ -54,8 +77,6 @@ const ShareBalanceSheet = () => {
 
 
 
-
-
   useEffect(() => {
     gettingShareBalance()
 }, [])
@@ -82,12 +103,59 @@ const ShareBalanceSheet = () => {
 
                 <div className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one,}}>
                   <div className="card-header">
-                    <h5>Share Balance Sheet</h5>   
+                    <h5>Share Balance Sheet</h5> 
+                    
+                    <div className="row">
+                        <div className="col-lg-3">
+                          <div className="form-group">
+                            <input
+                              type="text"
+                              className="form-control form-control-sm"
+                              defaultValue={balanceSheetSum}
+                              placeholder="total Amount"
+                              style={{
+                                background: colorScheme.login_card_bg,
+                                color: colorScheme.card_txt_color,
+                              }}
+                            />
+                          </div>
+                        </div>
+                        
+                        <div className="col-lg-3">
+                          <button
+                            className="btn btn-outline-info btn-sm"
+                            onClick={gettingBalanceSheetSum}
+                          >
+                            {" "}
+                            Total Amount
+                          </button>
+                        </div>
+
+                      </div>
+
+                      <button
+                        className="btn btn-outline-info mt-2 btn-sm"
+                        onClick={() => {
+                          window.location.reload();
+                        }}
+                      >
+                        Reset Filters
+                      </button>
+                      &nbsp;&nbsp;&nbsp;  
                   </div>
+                  <div className="row p-3">
+                      <Filter
+                        BalanceSheetData={balanceSheet}
+                        DateFilter={gettingDate}
+                        PhoneFilter={gettingPhone}
+                        UsernameFilter={gettingUsername}
+                        ShareBalanceSheetIdentifier={ShareBalanceSheetIdentifier}
+                      />
+                    </div>
                   <div className="card-body table-responsive p-2">
             {
 
-            balanceSheet.length !==0?
+            balanceTemArr.length !==0?
                     <table className="table  text-nowrap">
                       <thead className="text-center">
                         <tr>
@@ -105,7 +173,7 @@ const ShareBalanceSheet = () => {
                       <tbody className="text-center">
                         {      
                         
-                        balanceSheet.map((items,index)=>{
+                        balanceTemArr.map((items,index)=>{
                             return(
                               <tr key={index} style={{ color: colorScheme.card_txt_color }}>
                               <td>{items.id}</td>

@@ -16,15 +16,19 @@ const RewardApprovalSheet = () => {
   const [roleID, setRoleID] = useState("");
   const [getRewardStat, setRewardStat] = useState("");
 
+  const[memID , setMemID] = useState('');
   const [getImage, setImage] = useState(""); 
   const[memFirstName , setMemName] = useState('');
   const[memLastName , setMemCinc] = useState('')
+  const [queryOne, setQueryOne] = useState("");
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const [rotateImg, setRotateImg] = useState("");
   const [receID, setReceID] = useState("");
   const [hostMessage, setHostMessage] = useState("");
   const [senderID, setSenderID] = useState("");
-  const [showLength, setShowLength] = useState(80);
+  const [showLength, setShowLength] = useState(30);
   const [loading, setLoading] = useState(false);
   const [index, setIndex] = useState("");
 
@@ -62,135 +66,137 @@ const RewardApprovalSheet = () => {
   // select the remaining rows
   const remainingPromoUsers = promotionSheet.slice(showLength);
 
-  // function changingRewardAppStatus(memID){
-  //   const rewardObj = {
-  //     member_id:memID
-  //   }
-  //   axios.post(`${process.env.REACT_APP_BASE_URL}update_reward_status_bymid`,rewardObj)
-  //   .then((res)=>{
-  //     if(res.data.status === '200'){
-  //       toast.info(`Reward ${res.data.message}`,{theme:"dark"});
-  //       geneRewardNotification(memID)
-  //       // setTimeout(() => {
-  //       //   window.location.reload(true)
-  //       // }, 3000);
-  //     }
-  //     else{
-  //       toast.info(`Reward${res.data.message}`,{theme:"dark"});
+  function changingRewardAppStatus(memID){
+    const rewardObj = {
+      member_id:memID
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}update_reward_status_bymid`,rewardObj)
+    .then((res)=>{
+      if(res.data.status === '200'){
+        toast.info(`Reward ${res.data.message}`,{theme:"dark"});
+        geneRewardNotification(memID)
+      }
+      else{
+        toast.info(`Reward${res.data.message}`,{theme:"dark"});
 
-  //     }
-  //   })
-  //   .catch((error)=>{
-  //     if(error.status === "401"){
-  //     toast.warn(error.data.message,{theme:"dark"});
+      }
+    })
+    .catch((error)=>{
+      if(error.status === "401"){
+      toast.warn(error.data.message,{theme:"dark"});
 
-  //     }
-  //     toast.warn("Something went wrong",{theme:"dark"});
-  //   })
+      }
+      toast.warn("Something went wrong",{theme:"dark"});
+    })
 
-  // }
+  }
 
-  // function changingRewardRejStatus(memID){
-  //   const rewardObj = {
-  //     member_id:memID
-  //   }
-  //   axios.post(`${process.env.REACT_APP_BASE_URL}update_reward_status_bymid`,rewardObj)
-  //   .then((res)=>{
-  //     if(res.data.status === '200'){
-  //       toast.warn(`Reward ${res.data.message}`,{theme:"dark"});
-  //       // setTimeout(() => {
-  //       //   window.location.reload(true)
-  //       // }, 3000);
-  //     }
-  //     else{
-  //       toast.info(`Reward${res.data.message}`,{theme:"dark"});
+  function changingRewardRejStatus(memID){
+    const rewardObj = {
+      member_id:memID
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}update_reward_status_bymid`,rewardObj)
+    .then((res)=>{
+      if(res.data.status === '200'){
+        toast.warn(`Reward ${res.data.message}`,{theme:"dark"});
+      }
+      else{
+        toast.info(`Reward${res.data.message}`,{theme:"dark"});
 
-  //     }
-  //   })
-  //   .catch((error)=>{
-  //     if(error.data.status === "401"){
-  //     toast.warn(error.data.message,{theme:"dark"});
+      }
+    })
+    .catch((error)=>{
+      if(error.data.status === "401"){
+      toast.warn(error.data.message,{theme:"dark"});
 
-  //     }
-  //     toast.warn("Something went wrong",{theme:"dark"});
-  //   })
+      }
+      toast.warn("Something went wrong",{theme:"dark"});
+    })
 
-  // }
+  }
 
-  // function RewardRejection(){
-  //   setLoading(true)
-  //   axios.post(`${process.env.REACT_APP_BASE_URL}delete_reward/${memID}`)
-  //   .then((res)=>{
-  //     if(res.data.status === '200'){
-  //       toast.info(`Reward Approval Rejected!`,{theme:"dark"});
-  //       geneNotification();
-  //       setLoading(false);
-  //       removeUserFromRewardSheet();
-  //       // setTimeout(() => {
-  //       //   window.location.reload(true)
-  //       // }, 3000);
 
-  //     }
-  //     else{
-  //       toast.info(`${res.data.message}`,{theme:"dark"});
 
-  //     }
+  function removeUserFromRewardSheet() {
+    setpromotionSheetTempArr((prevState) => {
+      const tasks = [...prevState];
+      tasks.splice(index, 1);
+      return tasks;
+    });
+  }
 
-  //   })
-  //   .catch((error)=>{
-  //     if(error.status === "401"){
-  //     toast.warn(error.data.message,{theme:"dark"});
+  function RewardRejection(){
+    setLoading(true)
+    axios.post(`${process.env.REACT_APP_BASE_URL}delete_reward/${memID}`)
+    .then((res)=>{
+      if(res.data.status === '200'){
+        toast.info(`Reward Approval Rejected!`,{theme:"dark"});
+        geneNotification();
+        removeUserFromRewardSheet();
+        setLoading(false);
 
-  //     }
-  //     toast.warn("Something went wrong",{theme:"dark"});
-  //   })
+      }
+      else{
+        toast.info(`${res.data.message}`,{theme:"dark"});
 
-  // }
+      }
 
-  // function geneNotification(){
-  //   const notifiObj ={
-  //     receiver_id:memID,
-  //     body:queryOne,
-  //     title:"Reward Rejection"
-  //   }
-  //   axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
-  //   .then((res)=>{
-  //     if(res.data.status === '200'){
-  //       toast.info("Notified to User",{theme:"dark"});
-  //       setQueryOne('');
-  //     }
-  //     else{
-  //       toast.info(`${res.data.message}`,{theme:"dark"});
+    })
+    .catch((error)=>{
+      if(error.status === "401"){
+      toast.warn(error.data.message,{theme:"dark"});
 
-  //     }
-  //   })
-  //   .catch((error)=>{
-  //     toast.warn("Something went wrong",{theme:"dark"});
+      }
+      toast.warn("Something went wrong",{theme:"dark"});
+    })
 
-  //   })
-  // }
+  }
 
-  // function geneRewardNotification(memID){
-  //   const notifiObj ={
-  //     receiver_id:memID,
-  //     body:`Congratulations! You have received amount of 500 from trading tube`,
-  //     title:"Reward amount received"
-  //   }
-  //   axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
-  //   .then((res)=>{
-  //     if(res.data.status === '200'){
-  //       toast.info("Notified to User",{theme:"dark"});
-  //     }
-  //     else{
-  //       toast.info(`${res.data.message}`,{theme:"dark"});
 
-  //     }
-  //   })
-  //   .catch((error)=>{
-  //     toast.warn("Something went wrong",{theme:"dark"});
+  function geneNotification(){
+    const notifiObj ={
+      receiver_id:memID,
+      body:queryOne,
+      title:"Reward Rejection"
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
+    .then((res)=>{
+      if(res.data.status === '200'){
+        toast.info("Notified to User",{theme:"dark"});
+        setQueryOne('');
+      }
+      else{
+        toast.info(`${res.data.message}`,{theme:"dark"});
 
-  //   })
-  // }
+      }
+    })
+    .catch((error)=>{
+      toast.warn("Something went wrong",{theme:"dark"});
+
+    })
+  }
+
+  function geneRewardNotification(memID){
+    const notifiObj ={
+      receiver_id:memID,
+      body:`Congratulations! You have received amount of 500 from trading tube`,
+      title:"Reward amount received"
+    }
+    axios.post(`${process.env.REACT_APP_BASE_URL}post_notification`,notifiObj)
+    .then((res)=>{
+      if(res.data.status === '200'){
+        toast.info("Notified to User",{theme:"dark"});
+      }
+      else{
+        toast.info(`${res.data.message}`,{theme:"dark"});
+
+      }
+    })
+    .catch((error)=>{
+      toast.warn("Something went wrong",{theme:"dark"});
+
+    })
+  }
   
   function gettingRewardAppSum() {
     const getRewardAppSum = promotionSheetTemArr.reduce((acc, curr) => acc + +curr.amount, 0);
@@ -291,146 +297,15 @@ const RewardApprovalSheet = () => {
       });
   }
 
-  function removeUserFromRewardSheet() {
-    setPromotionSheet((prevState) => {
-      const tasks = [...prevState];
-      tasks.splice(index, 1);
-      return tasks;
-    });
-  }
 
   function RewardApprovalSheetFun({ items, index }) {
-    const [queryOne, setQueryOne] = useState("");
 
     const [isShowUserModal, setShowUserModal] = useState(false);
-    const [isOpen, setIsOpen] = useState(false);
 
     function onHide() {
       setShowUserModal(false);
     }
 
-    function changingRewardAppStatus() {
-      const rewardObj = {
-        member_id: items.member_id,
-      };
-      axios
-        .post(
-          `${process.env.REACT_APP_BASE_URL}update_reward_status_bymid`,
-          rewardObj
-        )
-        .then((res) => {
-          if (res.data.status === "200") {
-            toast.info(`Reward ${res.data.message}`, { theme: "dark" });
-            geneRewardNotification(items.member_id);
-            // setTimeout(() => {
-            //   window.location.reload(true)
-            // }, 3000);
-          } else {
-            toast.info(`Reward${res.data.message}`, { theme: "dark" });
-          }
-        })
-        .catch((error) => {
-          if (error.status === "401") {
-            toast.warn(error.data.message, { theme: "dark" });
-          }
-          toast.warn("Something went wrong", { theme: "dark" });
-        });
-    }
-
-    function changingRewardRejStatus() {
-      const rewardObj = {
-        member_id: items.member_id,
-      };
-      axios
-        .post(
-          `${process.env.REACT_APP_BASE_URL}update_reward_status_bymid`,
-          rewardObj
-        )
-        .then((res) => {
-          if (res.data.status === "200") {
-            toast.warn(`Reward ${res.data.message}`, { theme: "dark" });
-            // setTimeout(() => {
-            //   window.location.reload(true)
-            // }, 3000);
-          } else {
-            toast.info(`Reward${res.data.message}`, { theme: "dark" });
-          }
-        })
-        .catch((error) => {
-          if (error.data.status === "401") {
-            toast.warn(error.data.message, { theme: "dark" });
-          }
-          toast.warn("Something went wrong", { theme: "dark" });
-        });
-    }
-
-    function RewardRejection() {
-      setLoading(true);
-      axios
-        .post(
-          `${process.env.REACT_APP_BASE_URL}delete_reward/${items.member_id}`
-        )
-        .then((res) => {
-          if (res.data.status === "200") {
-            toast.info(`Reward Approval Rejected!`, { theme: "dark" });
-            geneNotification();
-            setLoading(false);
-            removeUserFromRewardSheet();
-            // setTimeout(() => {
-            //   window.location.reload(true)
-            // }, 3000);
-          } else {
-            toast.info(`${res.data.message}`, { theme: "dark" });
-          }
-        })
-        .catch((error) => {
-          if (error.status === "401") {
-            toast.warn(error.data.message, { theme: "dark" });
-          }
-          toast.warn("Something went wrong", { theme: "dark" });
-        });
-    }
-
-    function geneNotification() {
-      const notifiObj = {
-        receiver_id: items.member_id,
-        body: queryOne,
-        title: "Reward Rejection",
-      };
-      axios
-        .post(`${process.env.REACT_APP_BASE_URL}post_notification`, notifiObj)
-        .then((res) => {
-          if (res.data.status === "200") {
-            toast.info("Notified to User", { theme: "dark" });
-            setQueryOne("");
-          } else {
-            toast.info(`${res.data.message}`, { theme: "dark" });
-          }
-        })
-        .catch((error) => {
-          toast.warn("Something went wrong", { theme: "dark" });
-        });
-    }
-
-    function geneRewardNotification() {
-      const notifiObj = {
-        receiver_id: items.member_id,
-        body: `Congratulations! You have received amount of 500 from trading tube`,
-        title: "Reward amount received",
-      };
-      axios
-        .post(`${process.env.REACT_APP_BASE_URL}post_notification`, notifiObj)
-        .then((res) => {
-          if (res.data.status === "200") {
-            toast.info("Notified to User", { theme: "dark" });
-          } else {
-            toast.info(`${res.data.message}`, { theme: "dark" });
-          }
-        })
-        .catch((error) => {
-          toast.warn("Something went wrong", { theme: "dark" });
-        });
-    }
 
     return (
       <>
@@ -530,7 +405,7 @@ const RewardApprovalSheet = () => {
                   <button
                     onClick={() => {
                       setIsOpen(true);
-                      //  setitems.member_id(items.member_id)
+                      setMemID(items.member_id)
                       setIndex(index);
                     }}
                     className="btn btn-outline-danger btn-sm"
@@ -543,9 +418,6 @@ const RewardApprovalSheet = () => {
                 )}
                 &nbsp;&nbsp;
               </div>
-              {/* <button type="button" className="btn btn-outline-primary btn-sm " data-toggle="modal" data-target="#staticBackdrop">
-              show
-              </button> */}
             </td>
           )}
           <td>
@@ -573,73 +445,7 @@ const RewardApprovalSheet = () => {
           />
         )}
 
-        {/* Rejection Modal */}
-        <Modal
-          ariaLabelledby="modal1_label"
-          ariaDescribedby="modal1_desc"
-          open={isOpen}
-        >
-          <div className="card-body">
-            <h5>
-              <b>Possible Notes*</b>{" "}
-            </h5>
-            <ul>
-              {QuerySelect.map((items) => {
-                return (
-                  <div className="custom-control custom-checkbox">
-                    <input
-                      className="custom-control-input custom-control-input-info"
-                      type="checkbox"
-                      id={`customCheckbox${items.id}`}
-                      onChange={() => {
-                        if (queryOne.includes(items.message)) {
-                          var new_str = queryOne.replace(items.message, "");
-                          setQueryOne(new_str);
-                        } else {
-                          setQueryOne(queryOne + " " + items.message);
-                        }
-                      }}
-                    />
-                    <label
-                      htmlFor={`customCheckbox${items.id}`}
-                      className="custom-control-label"
-                    >
-                      {items.message}
-                    </label>
-                  </div>
-                );
-              })}
-            </ul>
-
-            <div className="form-group">
-              <label htmlFor="exampleInputEmail1">Rejection Reason*</label>
-              <textarea
-                type="text"
-                className="form-control "
-                defaultValue={queryOne}
-                id="exampleInputEmail1"
-                placeholder="Enter Rejection Reason"
-                onChange={(e) => setQueryOne(e.target.value)}
-                row={6}
-                style={{
-                  background: colorScheme.login_card_bg,
-                  color: colorScheme.card_txt_color,
-                  marginRight: "15em",
-                }}
-              />
-            </div>
-            <button
-              onClick={() => {
-                RewardRejection();
-              }}
-              className="btn btn-outline-info btn-sm"
-            >
-              {loading === true ? "..." : "Submit"}
-            </button>
-          </div>
-        </Modal>
-
-        {/* Rejection Modal */}
+      
       </>
     );
   }
@@ -795,11 +601,81 @@ const RewardApprovalSheet = () => {
                         // only display the "Show More" button if there are more rows to show
                         <button
                           className="btn btn-outline-info"
-                          onClick={() => setShowLength(showLength + 40)}
+                          onClick={() => setShowLength(showLength + 30)}
                         >
                           Show More
                         </button>
                       )}
+
+                      
+                    {/* Rejection Modal */}
+        <Modal
+          ariaLabelledby="modal1_label"
+          ariaDescribedby="modal1_desc"
+          onClose={() => {setIsOpen(false)}}
+          open={isOpen}
+        >
+          <div className="card-body">
+            <h5>
+              <b>Possible Notes*</b>{" "}
+            </h5>
+            <ul>
+              {QuerySelect.map((items) => {
+                return (
+                  <div className="custom-control custom-checkbox">
+                    <input
+                      className="custom-control-input custom-control-input-info"
+                      type="checkbox"
+                      id={`customCheckbox${items.id}`}
+                      onChange={() => {
+                        if (queryOne.includes(items.message)) {
+                          var new_str = queryOne.replace(items.message, "");
+                          setQueryOne(new_str);
+                        } else {
+                          setQueryOne(queryOne + " " + items.message);
+                        }
+                      }}
+                    />
+                    <label
+                      htmlFor={`customCheckbox${items.id}`}
+                      className="custom-control-label"
+                    >
+                      {items.message}
+                    </label>
+                  </div>
+                );
+              })}
+            </ul>
+
+            <div className="form-group">
+              <label htmlFor="exampleInputEmail1">Rejection Reason*</label>
+              <textarea
+                type="text"
+                className="form-control "
+                defaultValue={queryOne}
+                id="exampleInputEmail1"
+                placeholder="Enter Rejection Reason"
+                onChange={(e) => setQueryOne(e.target.value)}
+                row={6}
+                style={{
+                  background: colorScheme.login_card_bg,
+                  color: colorScheme.card_txt_color,
+                  marginRight: "15em",
+                }}
+              />
+            </div>
+            <button
+              onClick={() => {
+                RewardRejection();
+              }}
+              className="btn btn-outline-info btn-sm"
+            >
+              {loading === true ? "..." : "Submit"}
+            </button>
+          </div>
+        </Modal>
+
+        {/* Rejection Modal */}
 
                       {/* Image Modal */}
                       <div
@@ -879,8 +755,9 @@ const RewardApprovalSheet = () => {
                     </div>
                   </div>
 
-                  {/*Query Modal Start  */}
 
+
+                  {/*Query Modal Start  */}
                   <div
                     className="modal fade"
                     id="exampleModal"
