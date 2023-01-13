@@ -1,7 +1,8 @@
-import {useLocation } from 'react-router-dom';
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
+import {useLocation } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import Moment from 'react-moment';
 import 'moment-timezone';
 import axios from 'axios';
@@ -168,11 +169,11 @@ const UserTimelineSheet = () => {
         <div className="col-sm-6">
           <ol className="breadcrumb float-sm-right">
             <li className="breadcrumb-item">
-              <button className="text-white"
+              <Link className="text-white"
               to={`${targetSheet}`} 
               // preventScrollReset={true}
               
-              ><i class="fas fa-circle-arrow-left fa-2x"></i></button>
+              ><i class="fas fa-circle-arrow-left fa-2x"></i></Link>
               </li>
           </ol>
         </div>

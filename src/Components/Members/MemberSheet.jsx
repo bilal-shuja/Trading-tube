@@ -54,7 +54,7 @@ const MemberSheet = () => {
 
     // Filter against host/members roles(like which member can view who's data or not):
 
-    const newSheet = members.length > 0 && members.filter((items)=>                    
+    const newMemberSheet = members.length > 0 && members.filter((items)=>                    
                         
     Number(roleID) === 2 ? items.role_id !== "1" && items.role_id !== "2"&& items.role_id === "6"  && items.role_id !== "5" :
     Number(roleID) === 3 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id === "6" && items.role_id !== "5" && items.role_id !== "3" :
@@ -158,7 +158,7 @@ function MemberList ({items , index}){
 
   return(
     <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-      <td>{newSheet.length-index}</td>
+      <td>{newMemberSheet.length-index}</td>
     <td>{items.id}</td>
     <td>{items.username}</td>
     <td>{items.firstname}</td>
@@ -371,7 +371,7 @@ useEffect(() => {
                         {
                            memDate !=='' &&  memPhone === '' ?
 
-                           newSheet.filter((items)=> items.Idate === memDate).map((items,index)=>{
+                           newMemberSheet.filter((items)=> items.Idate === memDate).map((items,index)=>{
                             return(
                               <MemberList items={items} index={index}/>
                           
@@ -380,7 +380,7 @@ useEffect(() => {
                           :
                           memDate ==='' &&  memPhone !== '' ?
                         
-                          newSheet.filter((items)=> items.phone === memPhone).map((items,index)=>{
+                          newMemberSheet.filter((items)=> items.phone === memPhone).map((items,index)=>{
                             return(
                               <MemberList items={items} index={index}/>
                             )
@@ -388,7 +388,7 @@ useEffect(() => {
                           :
                           memDate ==='' &&  memPhone === '' && userName !== ''?
                         
-                          newSheet.filter((items)=> items.username.toLowerCase() === userName).map((items,index)=>{
+                          newMemberSheet.filter((items)=> items.username.toLowerCase() === userName).map((items,index)=>{
                             return(
                               <MemberList items={items} index={index}/>
                             )
@@ -397,14 +397,14 @@ useEffect(() => {
 
                           memDate ==='' &&  memPhone === '' && userName === '' &&  referalCode !== '' ?
                         
-                          newSheet.filter((items)=> items.referal_code.toLowerCase() === referalCode).map((items,index)=>{
+                          newMemberSheet.filter((items)=> items.referal_code.toLowerCase() === referalCode).map((items,index)=>{
                             return(
                               <MemberList items={items} index={index}/>
                             )
                             })
                           :
                           
-                       newSheet.map((items,index)=>{
+                          newMemberSheet.map((items,index)=>{
                           return(
                             <MemberList items={items} index={index}/>
                           )

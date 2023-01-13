@@ -7,6 +7,7 @@ import axios from 'axios';
 const HelpCenter = () => {
   const [helpCenter, setHelpCenter] = useState([]);
   const [status, setStatus] = useState("pending");
+   
 
   // Radio button which shows (pendig/closed) tickets in the screen:
 
@@ -159,6 +160,11 @@ const HelpCenter = () => {
                             >
                               <i className="fa-sharp fa-solid fa-comment"></i>
                             </Link>
+
+                            &nbsp;&nbsp;
+                             <Link className="btn btn-outline-primary btn-lg" to="/TimeLine" state={{ID:items.user_id, target:"/HelpCenter"}}>
+                                <i className="fa-solid fa-timeline"></i>
+                              </Link>
                             </div>
                           </div>
                         );
@@ -242,6 +248,11 @@ const HelpCenter = () => {
                             >
                               <i className="fa-sharp fa-solid fa-comment"></i>
                             </Link>
+
+                            &nbsp;&nbsp;
+                             <Link className="btn btn-outline-primary btn-lg" to="/TimeLine" state={{ID:items.user_id, target:"/HelpCenter"}}>
+                                <i className="fa-solid fa-timeline"></i>
+                              </Link>
                             </div>
                           </div>
                         );
@@ -323,6 +334,10 @@ const HelpCenter = () => {
                             >
                               <i className="fa-sharp fa-solid fa-comment"></i>
                             </Link>
+                            &nbsp;&nbsp;
+                             <Link className="btn btn-outline-primary btn-lg" to="/TimeLine" state={{ID:items.user_id, target:"/HelpCenter"}}>
+                                <i className="fa-solid fa-timeline"></i>
+                              </Link>
                           </div>
                         </div>
                       );

@@ -17,6 +17,7 @@ const UpdateMemForm = () => {
     const [userPhone , setUserPhone] = useState("");
     const[role , setRole] = useState('none');
     const[loading , setLoading] = useState(false);
+    const[password , setPassword] = useState('');
 
     // Function for getting specific member/user:  
     
@@ -51,6 +52,8 @@ const UpdateMemForm = () => {
         formdata.append("phone", userPhone);
         formdata.append("role_id", role);
         formdata.append("sender_role_id", 1);
+        formdata.append("password", password);
+
     
         axios.post(`${process.env.REACT_APP_BASE_URL}updatememberwithid/${ID}`,formdata)
         .then((res)=>{
@@ -165,6 +168,14 @@ const UpdateMemForm = () => {
                             </select>
                           </div>
                     </div>
+
+                    <div className="col-4">
+                  <div className="form-group">
+                      <label htmlFor="exampleInputEmail1">Password*</label>
+                      <input type="text" name="Password"  className="form-control" id="exampleInputEmail5"   placeholder="Enter Password" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} onChange={(e) =>setPassword(e.target.value)}
+                      />
+                  </div>
+                  </div>
                   
               </div>
 

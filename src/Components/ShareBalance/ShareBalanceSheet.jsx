@@ -8,12 +8,27 @@ import 'moment-timezone';
 import axios from "axios";
 
 const ShareBalanceSheet = () => {
+  const[balanceSheetSum , setBalanceSheetSum] = useState('');
   const [balanceSheet , setBalanceSheet] = useState([]);
   const [balanceTemArr, setTempArr] = useState([]);
-  const[balanceSheetSum , setBalanceSheetSum] = useState('');
-
+  const[roleID , setRoleID] = useState('');
 
   const ShareBalanceSheetIdentifier = "ShareBalanceSheet";
+
+  
+  const SetLocalLogin = async () => {
+    try {
+      let userObj = await localStorage.getItem('user');
+      let parseUserObj = JSON.parse(userObj)
+      
+      if (parseUserObj !== null) {
+        setRoleID(parseUserObj.role_id)
+      }
+
+    } catch {
+      return null;
+    }
+  }
   function gettingShareBalance(){
       axios.post( `${process.env.REACT_APP_BASE_URL}fetch_send_balance`)
       .then((res)=>{
@@ -43,6 +58,15 @@ const ShareBalanceSheet = () => {
     setTempArr(val);
 
   }
+
+  const newShareBalanceSheet = balanceTemArr.length > 0 && balanceTemArr.filter((items)=>                    
+                        
+  Number(roleID) === 2 ? items.role_id !== "1" && items.role_id !== "2"&& items.role_id === "6"  && items.role_id !== "5" :
+  Number(roleID) === 3 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id === "6" && items.role_id !== "5" && items.role_id !== "3" :
+  Number(roleID) === 4 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id === "6" &&  items.role_id !== "5" && items.role_id !== "3" && items.role_id !== "4" :
+  items.role_id !=="5"
+
+)
 
 
   function retrieveBalance(ID,userID,roleID,senderID,retAmount){
@@ -78,7 +102,9 @@ const ShareBalanceSheet = () => {
 
 
   useEffect(() => {
+    SetLocalLogin()
     gettingShareBalance()
+
 }, [])
   return (
     <>
@@ -173,7 +199,7 @@ const ShareBalanceSheet = () => {
                       <tbody className="text-center">
                         {      
                         
-                        balanceTemArr.map((items,index)=>{
+                        newShareBalanceSheet.map((items,index)=>{
                             return(
                               <tr key={index} style={{ color: colorScheme.card_txt_color }}>
                               <td>{items.id}</td>

@@ -89,7 +89,6 @@ const DeductBalanceSheet = () => {
                                   <td>{items.deducted_amount}</td>
                                   <td>{items.date}</td>
                                   <td>
-                                    {" "}
                                     <Moment
                                       date={items.updated_at}
                                       format="hh:mm:ss"

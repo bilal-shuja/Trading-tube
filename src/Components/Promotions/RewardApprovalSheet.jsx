@@ -1,5 +1,5 @@
 import UserTimelineModal from "../UserTimeline/UserTimelineModal";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
 import QuerySelect from "./QuerySelection.js";
@@ -18,8 +18,9 @@ const RewardApprovalSheet = () => {
 
   const[memID , setMemID] = useState('');
   const [getImage, setImage] = useState(""); 
-  const[memFirstName , setMemName] = useState('');
-  const[memLastName , setMemCinc] = useState('')
+  const[FirstName , setFirstName] = useState('');
+  const[LastName , setLastName] = useState('');
+  const[memCnic , setMemCinc] = useState('')
   const [queryOne, setQueryOne] = useState("");
 
   const [isOpen, setIsOpen] = useState(false);
@@ -57,6 +58,7 @@ const RewardApprovalSheet = () => {
       .then((res) => {
         setPromotionSheet(res.data.Rewards);
         setpromotionSheetTempArr(res.data.Rewards);
+        console.log(res.data.Rewards);
       })
       .catch((error) => {
         return error;
@@ -325,7 +327,8 @@ const RewardApprovalSheet = () => {
               data-target="#staticBackdrop"
               onClick={() => {
                 setImage(items.image)
-                setMemName(items.member_name)
+                setFirstName(items.firstname)
+                setLastName(items.lastname)
                 setMemCinc(items.cnic)
               }
               }
@@ -343,7 +346,8 @@ const RewardApprovalSheet = () => {
               onClick={() => 
                 {
                   setImage(items.image_2)
-                  setMemName(items.member_name)
+                  setFirstName(items.firstname)
+                  setLastName(items.lastname)
                   setMemCinc(items.cnic)
                 }
               }
@@ -695,8 +699,9 @@ const RewardApprovalSheet = () => {
                               color: colorScheme.card_txt_color,
                             }}
                           >
-                             <label htmlFor="">Name: &nbsp;{memFirstName}</label>
-                                <label htmlFor="">Cnic: &nbsp;{memLastName}</label>
+                             <label htmlFor="">First name: &nbsp;{FirstName}</label>
+                             <label htmlFor="">Last name: &nbsp;{LastName}</label>
+                             <label htmlFor="">CNIC: &nbsp;{memCnic}</label>
                             <div className="modal-header">
                               <div>
                                 {/* <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> */}

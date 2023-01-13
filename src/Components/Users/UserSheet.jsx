@@ -378,7 +378,7 @@ function UserList ({items,index}){
                         }
                    {remainingUsers.length > 0 && (
                       // only display the "Show More" button if there are more rows to show
-                      <button  className="btn btn-outline-info" onClick={()=> setShowLength(showLength+40)}>Show More</button>
+                      <button  className="btn btn-outline-info" onClick={()=> setShowLength(showLength+50)}>Show More</button>
                     )}
                     </div>
                   </div>
