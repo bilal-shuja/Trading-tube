@@ -1,13 +1,14 @@
 import React, { useState , useEffect} from "react";
 import colorScheme from "../Colors/Styles.js";
 import ReadMoreReact from "read-more-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from 'axios';
 
 const HelpCenter = () => {
   const [helpCenter, setHelpCenter] = useState([]);
   const [status, setStatus] = useState("pending");
-   
+  const [scrollPosition, setScrollPosition] = useState(0);
+  const location = useLocation();
 
   // Radio button which shows (pendig/closed) tickets in the screen:
 
@@ -34,9 +35,24 @@ const HelpCenter = () => {
     
   }
 
+  
+
+
+
   useEffect(() => {
-    gettingHelpData()
+    gettingHelpData();
+
+  }, []);
+
+  useEffect(() => {
+    // window.self.addEventListener("scroll",()=>{
+    //  const scrolled =  sessionStorage.getItem(window.location.pathname , window.scrollY);
+    //  window.scroll(0, scrolled)
+    //  console.log("HelpCenter", scrolled);
+      // console.log("App.js"+window.location.pathname , window.scrollY)
+    // })
   }, [])
+  
   
 
   return (
@@ -160,9 +176,8 @@ const HelpCenter = () => {
                             >
                               <i className="fa-sharp fa-solid fa-comment"></i>
                             </Link>
-
                             &nbsp;&nbsp;
-                             <Link className="btn btn-outline-primary btn-lg" to="/TimeLine" state={{ID:items.user_id, target:"/HelpCenter"}}>
+                             <Link className="btn btn-outline-primary btn-lg"  to="/TimeLine" state={{ID:items.user_id, target:"/HelpCenter"}}>
                                 <i className="fa-solid fa-timeline"></i>
                               </Link>
                             </div>

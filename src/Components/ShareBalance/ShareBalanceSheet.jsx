@@ -59,14 +59,14 @@ const ShareBalanceSheet = () => {
 
   }
 
-  const newShareBalanceSheet = balanceTemArr.length > 0 && balanceTemArr.filter((items)=>                    
+//   const newShareBalanceSheet = balanceTemArr.length > 0 && balanceTemArr.filter((items)=>                    
                         
-  Number(roleID) === 2 ? items.role_id !== "1" && items.role_id !== "2"&& items.role_id === "6"  && items.role_id !== "5" :
-  Number(roleID) === 3 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id === "6" && items.role_id !== "5" && items.role_id !== "3" :
-  Number(roleID) === 4 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id === "6" &&  items.role_id !== "5" && items.role_id !== "3" && items.role_id !== "4" :
-  items.role_id !=="5"
+//   Number(roleID) === 2 ? items.role_id !== "1" && items.role_id !== "2"&& items.role_id === "6"  && items.role_id !== "5" :
+//   Number(roleID) === 3 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id === "6" && items.role_id !== "5" && items.role_id !== "3" :
+//   Number(roleID) === 4 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id === "6" &&  items.role_id !== "5" && items.role_id !== "3" && items.role_id !== "4" :
+//   items.role_id !=="5"
 
-)
+// )
 
 
   function retrieveBalance(ID,userID,roleID,senderID,retAmount){
@@ -181,7 +181,7 @@ const ShareBalanceSheet = () => {
                   <div className="card-body table-responsive p-2">
             {
 
-            balanceTemArr.length !==0?
+                    balanceSheet.length !==0?
                     <table className="table  text-nowrap">
                       <thead className="text-center">
                         <tr>
@@ -199,7 +199,7 @@ const ShareBalanceSheet = () => {
                       <tbody className="text-center">
                         {      
                         
-                        newShareBalanceSheet.map((items,index)=>{
+                        balanceSheet.map((items,index)=>{
                             return(
                               <tr key={index} style={{ color: colorScheme.card_txt_color }}>
                               <td>{items.id}</td>

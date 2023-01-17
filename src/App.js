@@ -1,7 +1,7 @@
 import './App.css';
 import React,{useState, useEffect} from 'react' ;
 
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route , ScrollRestoration  } from "react-router-dom";
 
 // Layout
 import Navbar from './Components/Layout/Navbar.jsx';
@@ -93,7 +93,6 @@ import LiveChatCenter from './Components/HelpCenter/LiveChatCenter.jsx';
 
 
 function App() {
-
   const[login , setLogin] = useState(false)
   const SetLocalLogin= async ()=>{
     try{
@@ -111,7 +110,19 @@ function App() {
 
   useEffect(() => {
     SetLocalLogin()
+ 
   }, [])
+
+  
+  // useEffect(() => {
+    
+  // window.self.addEventListener("scroll",()=>{
+  //     sessionStorage.setItem(window.location.pathname , window.scrollY);
+  //   })
+  // }, [])
+
+
+
   return (
     <div className="wrapper">
       {
@@ -123,7 +134,7 @@ function App() {
           </Routes>
       </Router>
         :
-           <Router>
+           <Router >
            <Navbar/>
            <Sidebar/>
            <Routes>
@@ -202,6 +213,7 @@ function App() {
            
            </Routes>
            <Footer/>
+           
            </Router>
 
       }

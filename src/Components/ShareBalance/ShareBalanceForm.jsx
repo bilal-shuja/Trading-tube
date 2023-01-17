@@ -63,12 +63,14 @@ const ShareBalanceForm = () => {
           toast.warn(error.response.data.message, {theme:"dark"})
         })
 
-  
-      
+        console.log(userName+""+ userID)
     }
+
+
 
     function submitBalance(){
         setLoading(true)
+
 
         if(userName && userPhone && amount){
           const balanceObj ={
@@ -142,8 +144,7 @@ const ShareBalanceForm = () => {
       
   return (
     <>
-       <div className="scroll-view-two scrollbar-secondary-two">
-
+<div className="scroll-view-two scrollbar-secondary-two">
 <div className="content-wrapper p-3" style={{background:colorScheme.body_bg_color}}>
 <section className="content-header">
 <div className="container-fluid">

@@ -2,7 +2,7 @@ import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
 import {useLocation } from 'react-router-dom';
-import {Link} from 'react-router-dom';
+import {Link , useNavigate } from 'react-router-dom';
 import Moment from 'react-moment';
 import 'moment-timezone';
 import axios from 'axios';
@@ -31,6 +31,7 @@ const UserTimelineSheet = () => {
         
     }
 
+    const navigate = useNavigate()
 
     
   const SetLocalLogin = async () => {
@@ -131,8 +132,7 @@ const UserTimelineSheet = () => {
     })
     }
 
-    
-    
+
 
 
     useEffect(() => {
@@ -170,8 +170,10 @@ const UserTimelineSheet = () => {
           <ol className="breadcrumb float-sm-right">
             <li className="breadcrumb-item">
               <Link className="text-white"
-              to={`${targetSheet}`} 
+              to={`${targetSheet}`}
               // preventScrollReset={true}
+              // onClick={()=>navigate(-1)}
+
               
               ><i class="fas fa-circle-arrow-left fa-2x"></i></Link>
               </li>

@@ -175,13 +175,16 @@ function MemberList ({items , index}){
       items.role_id === "2"?
       <td>Admin</td>
       :
+      items.role_id === "6"?
+      <td>Assist Admin</td>
+      :
       items.role_id === "3"?
       <td>Manager</td>
       :
       items.role_id === "4"?
       <td>Staff</td>
       :
-      items.role_id !== null || undefined || " "?
+      items.role_id=== "5" || items.role_id !== null || undefined || " "?
       <td>User</td>
       :
       null

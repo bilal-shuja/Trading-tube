@@ -89,11 +89,13 @@ const LevelRewardSheet = () => {
                       <tr>
                         <th>#</th>
                         <th>Title</th>
+                        <th>Username</th>
+                        <th>Phone</th>
                         <th>Body</th>
                         <th>Reward Price</th>
                         <th>Level</th>
                         <th>Status</th>
-                        {/* <th>Date</th> */}
+                        <th>Date</th>
                         <th>Actions</th>
                       </tr>
                     </thead>
@@ -103,13 +105,15 @@ const LevelRewardSheet = () => {
                       getLevelRewards.map((items,index)=>{
                           return(
                             <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-                            <td>{items.user_id}</td>
+                            <td>{getLevelRewards.length-index}</td>
+                            <td>{items.username}</td>
+                            <td>{items.phone}</td>
                             <td>{items.title}</td>
                             <td>{items.body}</td>
                              <td>{items.reward_price}</td>
                              <td>{items.level}</td>
                              {items.is_got === "1"?<td style={{color:"#64dd17"}}>Taken</td>:<td style={{color:"#ff1744"}}>Not Taken</td>}
-                            {/* <td>{items.Idate}</td> */}
+                            <td>{items.created_at}</td>
                             
                             <td>
                              <div className="d-flex justify-content-center">
