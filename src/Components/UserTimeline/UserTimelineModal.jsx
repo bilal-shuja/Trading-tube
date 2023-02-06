@@ -1,30 +1,31 @@
-import {Link ,useLocation, useNavigate, ScrollRestoration } from 'react-router-dom';
+import UserTimelineModalSub from '../UserTimeline/UserTimelineModalSub';
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
-import { toast } from "react-toastify";
-import Filter from '../Filters/Filter';
-// import {Modal} from 'pretty-modal';
-import Modal from 'react-modal';
-
 import Moment from 'react-moment';
-import 'moment-timezone';
+import Modal from 'react-modal';
 import axios from 'axios';
+import 'moment-timezone';
 
 const UserTimelineModal = ({ID,isShow,onHide}) => {
-    // const ID = location.state.ID;
-    // const targetSheet = location.state.target;
-    const[userInfo , setUserInfo] = useState('');
-    const[userDepo , setUserDepo] = useState([]);
-    const[userWithdrawal , setUserWithdrawal] = useState([]);
-    const[userTeamOne , setUserTeamOne] = useState([]);
-    const[userTeamTwo , setUserTeamTwo] = useState([]);
-    const[getReferral, setReferral] = useState([])
-    const[userTotal , setUserTotal] = useState('');
-    const[roleID , setRoleID] = useState('');
 
-    const[display , setDisplay] = useState(0);
-    
+  const[userWithdrawal , setUserWithdrawal] = useState([]);
+  const[userTeamOne , setUserTeamOne] = useState([]);
+  const[userTeamTwo , setUserTeamTwo] = useState([]);
+  const[userTotal , setUserTotal] = useState('');
+  const[userInfo , setUserInfo] = useState('');
+  const[userDepo , setUserDepo] = useState([]);
+  const[getReferral, setReferral] = useState([])
+  const[roleID , setRoleID] = useState('');
+
+  const[display , setDisplay] = useState(0);
+
+  // const [isShowUserModal,setShowUserModal] = useState(false)
+
+  //   function onHide(){
+  //     setShowUserModal(false)
+  //   }
+  
     function handleDisplay(val){
 
           setTimeout(() => {
@@ -105,8 +106,7 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
 
 
     function getUserTotals(){
-      
-
+    
       const userTotalObj = {
         user_id:ID
     }
@@ -126,6 +126,7 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
     axios.post(`${process.env.REACT_APP_BASE_URL}fetch_referral`,userObj)
     .then((res)=>{
       setReferral(res.data.data)
+
     })
     .catch((error)=>{
        return null
@@ -133,7 +134,103 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
     }
 
     
-    
+    function GetTeamOne({items , index}){
+      const [isShowUserModal,setShowUserModal] = useState(false)
+
+      function onHide(){
+        setShowUserModal(false)
+      }
+      return(
+        <>
+                           
+        <div key={index+1} className="col-lg-4">
+        <li className="m-3 text-warning" style={{listStyle:"none", fontSize:"1.5em"}}>User#<b>{index+1}</b>
+        &nbsp;&nbsp; 
+        <button className="btn btn-outline-primary btn-sm" onClick={()=>{setShowUserModal(true)}}>
+          <i className="fa-solid fa-timeline"></i>
+          </button>
+        </li>
+        <li>Username:&nbsp;<b>{items.username}</b> </li>
+        <li>First Name:&nbsp;<b>{items.firstname}</b> </li>
+        <li>Last Name:&nbsp;<b>{items.lastname}</b> </li>
+
+        
+        <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
+        <li>Level:&nbsp;<b>{items.level}</b> </li>
+        <li>Email:&nbsp;<b>{items.email}</b></li>
+        <li>Phone:&nbsp;<b>{items.phone}</b></li>
+        <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
+
+        <li>Question:&nbsp;<b>{items.question}</b></li>
+        <li>Answer:&nbsp;<b>{items.answer}</b> </li>
+
+        <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.Idate}</b></li> 
+
+        <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
+        </div>
+
+        
+        {
+        isShowUserModal === true &&
+        <UserTimelineModalSub
+        ID = {items.id}
+        isShow = {isShowUserModal}
+        onHide={onHide}
+      />
+      } 
+     
+
+        </>
+      )
+    }
+
+    function GetTeamTwo({items , index}){
+      const [isShowUserModal,setShowUserModal] = useState(false)
+
+      function onHide(){
+        setShowUserModal(false)
+      }
+
+      return(
+        <>
+        <div key={index+1} className="col-lg-4">
+        <li className="m-3 text-warning" style={{listStyle:"none", fontSize:"1.5em"}}>User#<b>{index+1}</b>
+        &nbsp;&nbsp; 
+        <button className="btn btn-outline-primary btn-sm" onClick={()=>{setShowUserModal(true)}}>
+          <i className="fa-solid fa-timeline"></i>
+          </button>
+        </li>
+        <li>Username:&nbsp;<b>{items.username}</b> </li>
+        <li>First Name:&nbsp;<b>{items.firstname}</b> </li>
+        <li>Last Name:&nbsp;<b>{items.lastname}</b> </li>
+
+        
+        <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
+        <li>Level:&nbsp;<b>{items.level}</b> </li>
+        <li>Email:&nbsp;<b>{items.email}</b></li>
+        <li>Phone:&nbsp;<b>{items.phone}</b></li>
+        <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
+
+        <li>Question:&nbsp;<b>{items.question}</b></li>
+        <li>Answer:&nbsp;<b>{items.answer}</b> </li>
+        <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.Idate}</b></li> 
+
+        <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
+        </div>
+
+        {
+        isShowUserModal === true &&
+        <UserTimelineModalSub
+        ID = {items.id}
+        isShow = {isShowUserModal}
+        onHide={onHide}
+      />
+      } 
+     
+        </>
+      )
+
+    }
 
 
     useEffect(() => {
@@ -144,7 +241,7 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
         getUserTotals()
         gettingReferralTotal()
         SetLocalLogin()
-    }, [ID])
+    }, [])
     
   return (
     <Modal isOpen={isShow} className="content-wrapper  user_modal">
@@ -159,7 +256,8 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
               return(
                 <div className="d-flex mt-3">
                 <h4 className="text-bold">Referred by:&nbsp;&nbsp;{items.username}
-                &nbsp;&nbsp;({items.referal_code})
+                &nbsp;&nbsp;({items.referal_code})<br/>
+                Ph#({items.phone})
                 </h4>
                 </div>
               )
@@ -169,10 +267,9 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
         <div className="col-sm-6">
           <ol className="breadcrumb float-sm-right">
             <li className="breadcrumb-item">
-              <a className="text-white"
+              <a  className="text-white"
               style={{cursor:"pointer"}}
-              onClick={onHide}
-              >
+              onClick={onHide}>
               <i class="fas fa-circle-arrow-left fa-2x"></i>
               </a>
               </li>
@@ -418,27 +515,14 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
                  <div className="row p-3">
                   {
                     userTeamOne.map((items,index)=>{
+                       
+                   
                       return(
-                        <div key={index+1} className="col-lg-4">
-                      <li className="m-3 text-warning" style={{listStyle:"none", fontSize:"1.5em"}}>User# <b>{index+1}</b> </li>
-                      <li>Username:&nbsp;<b>{items.username}</b> </li>
-                      <li>First Name:&nbsp;<b>{items.firstname}</b> </li>
-                      <li>Last Name:&nbsp;<b>{items.lastname}</b> </li>
+                      <>
+                           
+                      <GetTeamOne items={items} index={index} />
 
-                      
-                      <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
-                      <li>Level:&nbsp;<b>{items.level}</b> </li>
-                      <li>Email:&nbsp;<b>{items.email}</b></li>
-                      <li>Phone:&nbsp;<b>{items.phone}</b></li>
-                      <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
-
-                      <li>Question:&nbsp;<b>{items.question}</b></li>
-                      <li>Answer:&nbsp;<b>{items.answer}</b> </li>
-
-                      <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.Idate}</b></li> 
-
-                      <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
-                      </div>
+                      </>
                     )
                 })
               }
@@ -458,25 +542,10 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
                   {
                    userTeamTwo.map((items,index)=>{
                      return(
-                       <div key={index+1} className="col-lg-4">
-                      <p className="m-3 text-warning" style={{listStyle:"none", fontSize:"1.5em"}}>User#<b>{index+1}</b></p>
-                      <li>Username:&nbsp;<b>{items.username}</b> </li>
-                      <li>First Name:&nbsp;<b>{items.firstname}</b> </li>
-                      <li>Last Name:&nbsp;<b>{items.lastname}</b> </li>
-
-                      
-                      <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
-                      <li>Level:&nbsp;<b>{items.level}</b> </li>
-                      <li>Email:&nbsp;<b>{items.email}</b></li>
-                      <li>Phone:&nbsp;<b>{items.phone}</b></li>
-                      <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
-
-                      <li>Question:&nbsp;<b>{items.question}</b></li>
-                      <li>Answer:&nbsp;<b>{items.answer}</b> </li>
-                      <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.Idate}</b></li> 
-
-                      <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
-                      </div>
+                      <>
+                      <GetTeamTwo items={items} index={index}/>
+                      </>
+                    
                     )
                 })
               }

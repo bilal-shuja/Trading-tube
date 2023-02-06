@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from "react";
+import React, { useState , useEffect , useRef} from "react";
 import colorScheme from "../Colors/Styles.js";
 import ReadMoreReact from "read-more-react";
 import { Link, useLocation } from "react-router-dom";
@@ -9,6 +9,13 @@ const HelpCenter = () => {
   const [status, setStatus] = useState("pending");
   const [scrollPosition, setScrollPosition] = useState(0);
   const location = useLocation();
+
+  function handleScroll(event) {
+    setScrollPosition(event.target.scrollTop);
+  }
+
+
+
 
   // Radio button which shows (pendig/closed) tickets in the screen:
 
@@ -26,7 +33,13 @@ const HelpCenter = () => {
   function gettingHelpData(){
     axios.get(`${process.env.REACT_APP_BASE_URL}fetch_all_tickets`)
     .then((res)=>{
-      setHelpCenter(res.data.data)
+      setHelpCenter(res.data.data);
+      // setTimeout(() => {
+      //   const scrollPos = sessionStorage.getItem('scrollPosition');
+      //   console.log("scrolol poosiiton",scrollPos)
+      //   window.scrollTo(0,scrollPos);
+      // }, 5000);
+ 
     })
     .catch((error)=>{
 
@@ -34,30 +47,44 @@ const HelpCenter = () => {
     })
     
   }
+  // function handleScrollPosition() {
+  //   const getScrollPosition = sessionStorage.getItem("scrollPosition");
+  //   if (getScrollPosition) {
+  //     window.scrollTo(0, parseInt(getScrollPosition));
+  //     sessionStorage.removeItem("scrollPosition");
+  //   }
 
+  // };
   
+  // function handleScrollClick () {
+  //   sessionStorage.setItem("scrollPosition", scrollPosition);
+  // };
+function exampleClick(){
+  window.scrollTo(0,2500);
+}
 
+  function handleScrollClick () {
+    sessionStorage.setItem("scrollPosition", scrollPosition);
+  };
 
 
   useEffect(() => {
-    gettingHelpData();
-
+ 
   }, []);
 
+
   useEffect(() => {
-    // window.self.addEventListener("scroll",()=>{
-    //  const scrolled =  sessionStorage.getItem(window.location.pathname , window.scrollY);
-    //  window.scroll(0, scrolled)
-    //  console.log("HelpCenter", scrolled);
-      // console.log("App.js"+window.location.pathname , window.scrollY)
-    // })
-  }, [])
-  
+    gettingHelpData()
+    // window.addEventListener('scroll', handleScrollClick);
+    // return () => window.removeEventListener('scroll', handleScrollClick);
+
+  }, []);
   
 
   return (
     <>
-<div className="scroll-view-two scrollbar-secondary-two">
+    {/* onScroll={handleScroll} */}
+<div className="scroll-view-two scrollbar-secondary-two" >
     
       <div className="content-wrapper" style={{ background: colorScheme.body_bg_color }}>
         <section className="content-header">
@@ -177,9 +204,12 @@ const HelpCenter = () => {
                               <i className="fa-sharp fa-solid fa-comment"></i>
                             </Link>
                             &nbsp;&nbsp;
-                             <Link className="btn btn-outline-primary btn-lg"  to="/TimeLine" state={{ID:items.user_id, target:"/HelpCenter"}}>
-                                <i className="fa-solid fa-timeline"></i>
+                             <Link className="btn btn-outline-primary btn-lg"  to="/TimeLine"
+                            //  onClick={()=>handleScrollClick()}
+                              state={{ID:items.user_id, target:"/HelpCenter"}}>
+                             <i className="fa-solid fa-timeline"></i>
                               </Link>
+
                             </div>
                           </div>
                         );

@@ -56,9 +56,10 @@ const MemberSheet = () => {
 
     const newMemberSheet = members.length > 0 && members.filter((items)=>                    
                         
-    Number(roleID) === 2 ? items.role_id !== "1" && items.role_id !== "2"&& items.role_id === "6"  && items.role_id !== "5" :
-    Number(roleID) === 3 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id === "6" && items.role_id !== "5" && items.role_id !== "3" :
-    Number(roleID) === 4 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id === "6" &&  items.role_id !== "5" && items.role_id !== "3" && items.role_id !== "4" :
+    Number(roleID) === 2 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id !== "6"  && items.role_id !== "5" :
+    Number(roleID) === 3 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id !== "6" && items.role_id !== "5" && items.role_id !== "3" :
+    Number(roleID) === 4 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id !== "6" &&  items.role_id !== "5" && items.role_id !== "3" && items.role_id !== "4" :
+    Number(roleID) === 6 ? items.role_id !== "1" && items.role_id !== "2" && items.role_id !== "6" && items.role_id !== "5" && items.role_id !== "3" && items.role_id !== "4" :
     items.role_id !=="5"
   
 )
@@ -158,7 +159,7 @@ function MemberList ({items , index}){
 
   return(
     <tr key={index} style={{ color: colorScheme.card_txt_color }}>
-      <td>{newMemberSheet.length-index}</td>
+    <td>{newMemberSheet.length-index}</td>
     <td>{items.id}</td>
     <td>{items.username}</td>
     <td>{items.firstname}</td>
@@ -201,7 +202,11 @@ roleID === "2"|| roleID === "3"|| roleID === "4" ? null:
 
         <button className="btn btn-outline-primary btn-sm" onClick={()=>{setShowUserModal(true)}}>
           <i className="fa-solid fa-timeline"></i>
-        </button>&nbsp;&nbsp;
+        </button>
+        
+        &nbsp;&nbsp;
+
+
         {/* <Link className="btn btn-outline-primary btn-sm" to="/TimeLine" state={{ID:items.id, target:"/MemberSheet"}}>
           <i className="fa-solid fa-timeline"></i>
         </Link> */}
@@ -391,7 +396,7 @@ useEffect(() => {
                           :
                           memDate ==='' &&  memPhone === '' && userName !== ''?
                         
-                          newMemberSheet.filter((items)=> items.username.toLowerCase() === userName).map((items,index)=>{
+                          newMemberSheet.filter((items)=> items.username === userName).map((items,index)=>{
                             return(
                               <MemberList items={items} index={index}/>
                             )
@@ -400,7 +405,7 @@ useEffect(() => {
 
                           memDate ==='' &&  memPhone === '' && userName === '' &&  referalCode !== '' ?
                         
-                          newMemberSheet.filter((items)=> items.referal_code.toLowerCase() === referalCode).map((items,index)=>{
+                          newMemberSheet.filter((items)=> items.referal_code === referalCode).map((items,index)=>{
                             return(
                               <MemberList items={items} index={index}/>
                             )

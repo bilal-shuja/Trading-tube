@@ -53,7 +53,7 @@ const LiveChat = () => {
                     <div className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one,}}>
                     <div className="card-header">
                       <div className="card-tools">
-                        <button type="button" className="btn btn-tool user-date-box rounded text-white mr-2" data-card-widget="" title="Remove">
+                        <button type="button" className={items.sent_by ==="admin"?"btn btn-tool staff-date-box rounded text-white mr-2":"btn btn-tool user-date-box rounded text-white mr-2"} data-card-widget="" title="Remove">
                         {items.date}
                         </button>
                       </div>
@@ -61,7 +61,7 @@ const LiveChat = () => {
                       <h3 className="card-title">
                          <strong>{items.sender_name}</strong> 
                       </h3>&nbsp;&nbsp;
-                      <div className="user-box rounded">{items.sent_by}</div>
+                      <div className={items.sent_by ==="admin"?"staff-box rounded":"user-box rounded"}>{items.sent_by ==="admin"?"Staff":"User"}</div>
                       </div>
                     </div>
                     <div className="card-body">
@@ -70,8 +70,8 @@ const LiveChat = () => {
                         }
 
                     </div>
-                  
-                    <Link  to="/LiveChatCenter" 
+                  <div className="card-footer text-right">
+                  <Link  to="/LiveChatCenter" 
                          state={{
                           id:items.id,
                           userID: items.user_id,
@@ -80,7 +80,17 @@ const LiveChat = () => {
                           userDate:items.date
                         }}
                         
-                        className="btn btn-outline-info d-block col-2 m-3">Chat</Link>
+                        className="btn btn-outline-info ">Chat</Link>
+
+                            &nbsp;&nbsp;
+                             <Link className="btn btn-outline-primary "  to="/TimeLine"
+                              state={{ID:items.user_id, target:"/LiveChat"}}>
+                             <i className="fa-solid fa-timeline"></i>
+                              </Link> 
+                  </div>
+            
+
+                       
                   </div>
                 )
             })

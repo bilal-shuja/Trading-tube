@@ -1,11 +1,11 @@
+import {Link , useNavigate   } from 'react-router-dom';
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
-import colorScheme from "../Colors/Styles.js";
 import {useLocation } from 'react-router-dom';
-import {Link , useNavigate } from 'react-router-dom';
+import colorScheme from "../Colors/Styles.js";
 import Moment from 'react-moment';
-import 'moment-timezone';
 import axios from 'axios';
+import 'moment-timezone';
 
 const UserTimelineSheet = () => {
 
@@ -133,6 +133,9 @@ const UserTimelineSheet = () => {
     }
 
 
+  // function sessionExpire(){
+  //     sessionStorage.removeItem('scrollPosition')
+  // }
 
 
     useEffect(() => {
@@ -144,6 +147,11 @@ const UserTimelineSheet = () => {
         gettingReferralTotal()
         SetLocalLogin()
     }, [])
+
+    useEffect(() => {
+      
+    }, [])
+    
     
   return (
     <>
@@ -169,10 +177,16 @@ const UserTimelineSheet = () => {
         <div className="col-sm-6">
           <ol className="breadcrumb float-sm-right">
             <li className="breadcrumb-item">
-              <Link className="text-white"
+              <Link className="text-white btn btn-outline-dark"
               to={`${targetSheet}`}
-              // preventScrollReset={true}
+              preventScrollReset={true}
               // onClick={()=>navigate(-1)}
+              // onClick={()=>
+              //   {
+              //     navigate(-1)
+              //     sessionExpire()
+              //   }
+              // }
 
               
               ><i class="fas fa-circle-arrow-left fa-2x"></i></Link>

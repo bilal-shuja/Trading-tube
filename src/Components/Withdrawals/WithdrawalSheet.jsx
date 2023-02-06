@@ -505,7 +505,7 @@ function WithdrawalSheetFun({items , index}){
                         :
                         ( withdrawalUsername !== '' && withdrawalStatus === 'All') || ( withdrawalUsername !== '' && withdrawalAcc === ' ')
                         ?
-                        withdrawalData.filter((items)=> items.username.toLowerCase() === withdrawalUsername).map((items,index)=>{
+                        withdrawalData.filter((items)=> items.username === withdrawalUsername).map((items,index)=>{
                           return(
                             <WithdrawalSheetFun items={items} index={index}/>
                           )

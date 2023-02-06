@@ -476,7 +476,7 @@ const Filter = ({
     function searchByUsername(e){
       if(DepoSheetIdentifier){
         if(e.target.value !== " "){
-          const phoneFilter = DepositData.filter((items)=> items.username.toLowerCase() === e.target.value)
+          const phoneFilter = DepositData.filter((items)=> items.username === e.target.value)
           UsernameFilter(phoneFilter)      
         }
         else{
@@ -488,7 +488,7 @@ const Filter = ({
    
       else if(MemberSheetIdentifier){
         if(e.target.value !== " "){
-          const phoneFilter = MemeberData.filter((items)=> items.username.toLowerCase() === e.target.value)
+          const phoneFilter = MemeberData.filter((items)=> items.username === e.target.value)
           UsernameFilter(phoneFilter)      
         }
         else{
@@ -498,7 +498,7 @@ const Filter = ({
       }
       else if(PromotionSheetIdentifier){
         if(e.target.value !== " "){
-          const phoneFilter = PromotionData.filter((items)=>  items.member_name.toLowerCase()  === e.target.value)
+          const phoneFilter = PromotionData.filter((items)=>  items.member_name  === e.target.value)
           UsernameFilter(phoneFilter)      
         }
         else{
@@ -508,7 +508,7 @@ const Filter = ({
       }
       else if(ShareBalanceSheetIdentifier){
         if(e.target.value !== " "){
-          const phoneFilter = BalanceSheetData.filter((items)=>  items.username.toLowerCase()  === e.target.value || items.sender_name.toLowerCase()   === e.target.value)
+          const phoneFilter = BalanceSheetData.filter((items)=>  items.username  === e.target.value || items.sender_name   === e.target.value)
           UsernameFilter(phoneFilter)      
         }
         else{
@@ -518,7 +518,7 @@ const Filter = ({
       }
       else if(RetBalanceSheetIdentifier){
         if(e.target.value !== " "){
-          const phoneFilter = RetBalanceSheetData.filter((items)=>  items.username.toLowerCase()  === e.target.value || items.sender_name.toLowerCase()   === e.target.value)
+          const phoneFilter = RetBalanceSheetData.filter((items)=>  items.username  === e.target.value || items.sender_name   === e.target.value)
           UsernameFilter(phoneFilter)      
         }
         else{

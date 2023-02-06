@@ -130,8 +130,8 @@ useEffect(() => {
 
  const filteredData = users.length > 0 && userDate !=='' &&  userPhone === '' ?  users.filter((items)=> items.Idate === userDate) 
  :     userDate ==='' &&  userPhone !== '' ? users.filter((items)=> items.phone === userPhone) 
- :        userDate ==='' &&  userPhone === '' && userName !==''  ? users.filter((items)=> items.username.toLowerCase() === userName)
- :        userDate ==='' &&  userPhone === '' && userName ==='' &&  referalCode !== '' ? users.filter((items)=>items.referal_code.toLowerCase() === referalCode)
+ :        userDate ==='' &&  userPhone === '' && userName !==''  ? users.filter((items)=> items.username === userName)
+ :        userDate ==='' &&  userPhone === '' && userName ==='' &&  referalCode !== '' ? users.filter((items)=>items.referal_code === referalCode)
  : users.filter((items)=> items.role_id === "5")
 
 

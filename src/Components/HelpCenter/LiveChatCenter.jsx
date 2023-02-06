@@ -151,19 +151,19 @@ useEffect(() => {
             
             chatList.map((items,index)=>{
                 return(
-                    <div key={index} className= {items.sent_by === "Admin"? "col-lg-8 col-sm-12 float-right":  "ml-4 col-lg-8 col-sm-12 float-left" }>
+                    <div key={index} className= {items.sent_by === "admin"? "col-lg-8 col-sm-8 float-right":  "ml-4 col-lg-8 col-sm-8 float-left" }>
                     <div className="card" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color,boxShadow: colorScheme.box_shadow_one,}}>
                  <div className="card-header">
                    <div className="card-tools">
-                     <button type="button" className={items.sent_by ==="Admin"?"btn btn-tool staff-date-box rounded text-white mr-2":"btn btn-tool user-date-box rounded text-white mr-2"} data-card-widget="" title="Remove">
+                     <button type="button" className={items.sent_by ==="admin"?"btn btn-tool staff-date-box rounded text-white mr-2":"btn btn-tool user-date-box rounded text-white mr-2"} data-card-widget="" title="Remove">
                      {items.date}
                      </button>
                    </div>
                    <div className="d-flex">
                    <h3 className="card-title">
-                      <strong>{items.sent_by ==="Admin"?"Admin":items.sender_name}</strong> 
+                      <strong>{items.sent_by ==="admin"?"admin":items.sender_name}</strong> 
                    </h3>&nbsp;&nbsp;
-                   <div className={items.sent_by ==="Admin"?"staff-box rounded":"user-box rounded"}>{items.sent_by ==="admin"?"Staff":"User"}</div>
+                   <div className={items.sent_by ==="admin"?"staff-box rounded":"user-box rounded"}>{items.sent_by ==="admin"?"Staff":"User"}</div>
                    </div>
            
                  </div>

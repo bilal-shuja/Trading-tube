@@ -135,7 +135,7 @@ const UpdateUserForm = () => {
                   <div className="col-4">
                   <div className="form-group">
                       <label htmlFor="exampleInputEmail1">Phone*</label>
-                      <input type="number" name="userPhone"  className="form-control" id="exampleInputEmail5"  defaultValue={userPhone} placeholder="Enter Income" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} onChange={(e) =>userPhone(e.target.value)}
+                      <input type="number" name="userPhone"  className="form-control" id="exampleInputEmail5"  defaultValue={userPhone} placeholder="Enter Income" style={{background:colorScheme.login_card_bg, color:colorScheme.card_txt_color}} onChange={(e) =>setUserPhone(e.target.value)}
                       />
                   </div>
                   </div>
