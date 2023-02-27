@@ -1,3 +1,4 @@
+import UserTimelineModal from '../UserTimeline/UserTimelineModal';
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
@@ -9,6 +10,8 @@ import 'moment-timezone';
 const UserTimelineModalSub = ({ID,isShow,onHide}) => {
 
     const [userWithdrawal , setUserWithdrawal] = useState([]);
+    const[showTotalMemOne , setShowTotalMemOne] = useState('');
+    const[showTotalMemTwo , setShowTotalMemTwo] = useState('');
     const [userTeamOne , setUserTeamOne] = useState([]);
     const [userTeamTwo , setUserTeamTwo] = useState([]);
     const [userTotal , setUserTotal] = useState('');
@@ -16,7 +19,6 @@ const UserTimelineModalSub = ({ID,isShow,onHide}) => {
     const [userDepo , setUserDepo] = useState([]);
     const [getReferral, setReferral] = useState([])
     const [roleID , setRoleID] = useState('');
-    const [isShowUserModal,setShowUserModal] = useState(false)
     const[display , setDisplay] = useState(0);
 
    
@@ -89,6 +91,8 @@ const SetLocalLogin = async () => {
     .then((res)=>{
       setUserTeamOne(res.data.first_members)
       setUserTeamTwo(res.data.second_members)
+      setShowTotalMemOne(res.data.first_members_count)
+      setShowTotalMemTwo(res.data.second_members_count)
     })
     .catch((error)=>{
        return null
@@ -123,6 +127,106 @@ const SetLocalLogin = async () => {
     .catch((error)=>{
        return null
     })
+    }
+
+    function GetTeamOne({items , index}){
+      const [isShowUserModal,setShowUserModal] = useState(false)
+
+      function onHide(){
+        setShowUserModal(false)
+      }
+
+      return(
+      <>
+         <div key={index+1} className="col-lg-4">
+                       
+                       <li className="m-3 text-warning" style={{listStyle:"none", fontSize:"1.5em"}}>User# <b>{index+1}</b> 
+                       &nbsp;&nbsp; 
+                    <button className="btn btn-outline-primary btn-sm" onClick={()=>{setShowUserModal(true)}}>
+                      <i className="fa-solid fa-timeline"></i>
+                      </button>
+                       </li>
+                       <li>Username:&nbsp;<b>{items.username}</b> </li>
+                       <li>First Name:&nbsp;<b>{items.firstname}</b> </li>
+                       <li>Last Name:&nbsp;<b>{items.lastname}</b> </li>
+ 
+                       
+                       <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
+                       <li>Level:&nbsp;<b>{items.level}</b> </li>
+                       <li>Email:&nbsp;<b>{items.email}</b></li>
+                       <li>Phone:&nbsp;<b>{items.phone}</b></li>
+                       <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
+ 
+                       <li>Question:&nbsp;<b>{items.question}</b></li>
+                       <li>Answer:&nbsp;<b>{items.answer}</b> </li>
+ 
+                       <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.Idate}</b></li> 
+ 
+                       <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
+                       </div>
+
+                       {
+                        isShowUserModal === true &&
+                        <UserTimelineModal
+                        ID = {items.id}
+                        isShow = {isShowUserModal}
+                        onHide={onHide}
+                      />
+                      } 
+     
+      
+      </>
+      )
+
+    }
+
+    function GetTeamTwo({items , index}){
+      const [isShowUserModal,setShowUserModal] = useState(false)
+
+      function onHide(){
+        setShowUserModal(false)
+      }
+
+
+      return(
+        <>
+            <div key={index+1} className="col-lg-4">
+                        <li className="m-3 text-warning" style={{listStyle:"none", fontSize:"1.5em"}}>User#<b>{index+1}</b>
+                        &nbsp;&nbsp; 
+                    <button className="btn btn-outline-primary btn-sm" onClick={()=>{setShowUserModal(true)}}>
+                      <i className="fa-solid fa-timeline"></i>
+                      </button>
+                        </li>
+                        <li>Username:&nbsp;<b>{items.username}</b> </li>
+                        <li>First Name:&nbsp;<b>{items.firstname}</b> </li>
+                        <li>Last Name:&nbsp;<b>{items.lastname}</b> </li>
+  
+                        
+                        <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
+                        <li>Level:&nbsp;<b>{items.level}</b> </li>
+                        <li>Email:&nbsp;<b>{items.email}</b></li>
+                        <li>Phone:&nbsp;<b>{items.phone}</b></li>
+                        <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
+  
+                        <li>Question:&nbsp;<b>{items.question}</b></li>
+                        <li>Answer:&nbsp;<b>{items.answer}</b> </li>
+                        <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.Idate}</b></li> 
+  
+                        <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
+                        </div>
+
+                        {
+                        isShowUserModal === true &&
+                        <UserTimelineModal
+                        ID = {items.id}
+                        isShow = {isShowUserModal}
+                        onHide={onHide}
+                      />
+                      } 
+
+        </>
+      )
+
     }
 
     
@@ -407,6 +511,7 @@ const SetLocalLogin = async () => {
                   <div className="timeline-body">
   
                     <h3 className="ml-2 text-center text-danger"> <b>"Team One"</b></h3>
+                    <h5>Total Team One Members:&nbsp;{showTotalMemOne}</h5>
                   {
                     userTeamOne.length !== 0 ?
                    <div className="row p-3">
@@ -415,29 +520,10 @@ const SetLocalLogin = async () => {
                   
                         return(
                           <>
-                       
-                        <div key={index+1} className="col-lg-4">
-                       
-                        <li className="m-3 text-warning" style={{listStyle:"none", fontSize:"1.5em"}}>User# <b>{index+1}</b> </li>
-                        <li>Username:&nbsp;<b>{items.username}</b> </li>
-                        <li>First Name:&nbsp;<b>{items.firstname}</b> </li>
-                        <li>Last Name:&nbsp;<b>{items.lastname}</b> </li>
-  
-                        
-                        <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
-                        <li>Level:&nbsp;<b>{items.level}</b> </li>
-                        <li>Email:&nbsp;<b>{items.email}</b></li>
-                        <li>Phone:&nbsp;<b>{items.phone}</b></li>
-                        <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
-  
-                        <li>Question:&nbsp;<b>{items.question}</b></li>
-                        <li>Answer:&nbsp;<b>{items.answer}</b> </li>
-  
-                        <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.Idate}</b></li> 
-  
-                        <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
-                        </div>
-                        </>
+
+                          <GetTeamOne  items={items} index={index}/>
+                     
+                          </>
                       )
                   })
                 }
@@ -449,6 +535,8 @@ const SetLocalLogin = async () => {
                  }
   
           <h3 className="ml-2 text-center text-danger"> <b>"Team Two"</b> </h3>
+          <h5>Total Team Two Members:&nbsp;{showTotalMemTwo}</h5>
+
   
                  {
                userTeamOne.length !==0?
@@ -457,25 +545,7 @@ const SetLocalLogin = async () => {
                     {
                      userTeamTwo.map((items,index)=>{
                        return(
-                         <div key={index+1} className="col-lg-4">
-                        <p className="m-3 text-warning" style={{listStyle:"none", fontSize:"1.5em"}}>User#<b>{index+1}</b></p>
-                        <li>Username:&nbsp;<b>{items.username}</b> </li>
-                        <li>First Name:&nbsp;<b>{items.firstname}</b> </li>
-                        <li>Last Name:&nbsp;<b>{items.lastname}</b> </li>
-  
-                        
-                        <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
-                        <li>Level:&nbsp;<b>{items.level}</b> </li>
-                        <li>Email:&nbsp;<b>{items.email}</b></li>
-                        <li>Phone:&nbsp;<b>{items.phone}</b></li>
-                        <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
-  
-                        <li>Question:&nbsp;<b>{items.question}</b></li>
-                        <li>Answer:&nbsp;<b>{items.answer}</b> </li>
-                        <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.Idate}</b></li> 
-  
-                        <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
-                        </div>
+                        <GetTeamTwo items={items} index={index}/>
                       )
                   })
                 }

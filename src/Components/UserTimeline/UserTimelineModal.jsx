@@ -17,6 +17,8 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
   const[userDepo , setUserDepo] = useState([]);
   const[getReferral, setReferral] = useState([])
   const[roleID , setRoleID] = useState('');
+  const[showTotalMemOne , setShowTotalMemOne] = useState('');
+  const[showTotalMemTwo , setShowTotalMemTwo] = useState('');
 
   const[display , setDisplay] = useState(0);
 
@@ -96,6 +98,8 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
     .then((res)=>{
       setUserTeamOne(res.data.first_members)
       setUserTeamTwo(res.data.second_members)
+      setShowTotalMemOne(res.data.first_members_count)
+      setShowTotalMemTwo(res.data.second_members_count)
     })
     .catch((error)=>{
        return null
@@ -510,9 +514,11 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
                 <div className="timeline-body">
 
                   <h3 className="ml-2 text-center text-danger"> <b>"Team One"</b></h3>
+                  <h5>Total Team One Members:&nbsp;{showTotalMemOne}</h5>
                 {
                   userTeamOne.length !== 0 ?
                  <div className="row p-3">
+
                   {
                     userTeamOne.map((items,index)=>{
                        
@@ -534,6 +540,7 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
                }
 
         <h3 className="ml-2 text-center text-danger"> <b>"Team Two"</b> </h3>
+        <h5>Total Team Two Members:&nbsp;{showTotalMemTwo}</h5>
 
                {
              userTeamOne.length !==0?
