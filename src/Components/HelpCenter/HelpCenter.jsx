@@ -1,7 +1,8 @@
+import UserTimelineModal from '../UserTimeline/UserTimelineModal';
 import React, { useState , useEffect , useRef} from "react";
+import { Link, useLocation } from "react-router-dom";
 import colorScheme from "../Colors/Styles.js";
 import ReadMoreReact from "read-more-react";
-import { Link, useLocation } from "react-router-dom";
 import axios from 'axios';
 
 const HelpCenter = () => {
@@ -34,16 +35,11 @@ const HelpCenter = () => {
     axios.get(`${process.env.REACT_APP_BASE_URL}fetch_all_tickets`)
     .then((res)=>{
       setHelpCenter(res.data.data);
-      // setTimeout(() => {
-      //   const scrollPos = sessionStorage.getItem('scrollPosition');
-      //   console.log("scrolol poosiiton",scrollPos)
-      //   window.scrollTo(0,scrollPos);
-      // }, 5000);
  
     })
     .catch((error)=>{
 
-      return null;
+      return error;
     })
     
   }
@@ -65,18 +61,128 @@ function exampleClick(){
 
   function handleScrollClick () {
     sessionStorage.setItem("scrollPosition", scrollPosition);
-  };
+  }
 
 
-  useEffect(() => {
- 
-  }, []);
+  function HelpCenterChat({items,index}){
+    const [isShowUserModal,setShowUserModal] = useState(false)
+  
+    function onHide(){
+      setShowUserModal(false)
+    }
+
+    return(
+      <>
+         <div
+                            className="card"
+                            style={{
+                              background: colorScheme.card_bg_color,
+                              color: colorScheme.card_txt_color,
+                              boxShadow: colorScheme.box_shadow_one,
+                            }}
+                          >
+                            <div className="card-header">
+                              <div className="card-tools">
+                                <button
+                                  type="button"
+                                  className="btn btn-tool"
+                                  data-card-widget="collapse"
+                                  title="Collapse"
+                                >
+                                  <i className="fas fa-minus" />
+                                </button>
+                                <button
+                                  type="button"
+                                  className="btn btn-tool"
+                                  data-card-widget="remove"
+                                  title="Remove"
+                                >
+                                  <i className="fas fa-times" />
+                                </button>
+                              </div>
+                              <div className="d-flex">
+                            <h3 className="card-title">
+                              <b>{items.title}</b>
+                            </h3>&nbsp;&nbsp;&nbsp;
+                            <h4 className="text-info">(#{items.id})</h4>
+                            </div>
+                            </div>
+                            <div className="card-body">
+                              <h4>{items.username}</h4>
+                              <ReadMoreReact
+                                text={items.body}
+                                min={70}
+                                ideal={140}
+                                max={300}
+                                readMoreText="...Read More"
+                              />
+                            </div>
+                            <div className="card-footer d-flex bd-highlight">
+                              <h6 className="flex-grow-1 bd-highlight">
+                                {items.status === "pending" ? (
+                                  <button className="btn btn-outline-warning">
+                                    Pending
+                                  </button>
+                                ) : (
+                                  <button className="btn btn-outline-success">
+                                    Closed
+                                  </button>
+                                )}
+                                &nbsp;&nbsp;&nbsp;
+                                {items.Idate}
+                              </h6>
+
+                              <Link
+                              to="/HelpChatCenter"
+                              state={{
+                                ID:items.id,
+                                userID: items.user_id,
+                                userName:items.username,
+                                userTitle:items.title,
+                                ticketStatus:items.status,
+                                userBody:items.body,
+                                userDate:items.created_at
+
+                              }}
+                              className="btn btn-outline-info btn-lg"
+                            >
+                              <i className="fa-sharp fa-solid fa-comment"></i>
+                            </Link>
+                            &nbsp;&nbsp;
+
+                            <button className="btn btn-outline-primary" onClick={ ()=>{
+                              setShowUserModal(true)                  
+                              }}>
+                              <i className="fa-solid fa-timeline"></i>
+                            </button>
+                             {/* <Link className="btn btn-outline-primary btn-lg"  to="/TimeLine"
+                              state={{ID:items.user_id, target:"/HelpCenter"}}>
+                             <i className="fa-solid fa-timeline"></i>
+                              </Link> */}
+
+                            </div>
+                          </div>
+
+
+
+                          {
+                isShowUserModal === true &&
+                <UserTimelineModal
+                ID = {items.user_id}
+                isShow = {isShowUserModal}
+                onHide={onHide}
+              />
+              }
+                  </>
+    )
+  
+  }
+
+
 
 
   useEffect(() => {
     gettingHelpData()
-    // window.addEventListener('scroll', handleScrollClick);
-    // return () => window.removeEventListener('scroll', handleScrollClick);
 
   }, []);
   
@@ -126,265 +232,22 @@ function exampleClick(){
                 {status === "pending"
                   ? helpCenter
                       .filter((items) => items.status === status)
-                      .map((items) => {
+                      .map((items,index) => {
                         return (
-                          <div
-                            className="card"
-                            style={{
-                              background: colorScheme.card_bg_color,
-                              color: colorScheme.card_txt_color,
-                              boxShadow: colorScheme.box_shadow_one,
-                            }}
-                          >
-                            <div className="card-header">
-                              <div className="card-tools">
-                                <button
-                                  type="button"
-                                  className="btn btn-tool"
-                                  data-card-widget="collapse"
-                                  title="Collapse"
-                                >
-                                  <i className="fas fa-minus" />
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn btn-tool"
-                                  data-card-widget="remove"
-                                  title="Remove"
-                                >
-                                  <i className="fas fa-times" />
-                                </button>
-                              </div>
-                              <div className="d-flex">
-                            <h3 className="card-title">
-                              <b>{items.title}</b>
-                            </h3>&nbsp;&nbsp;&nbsp;
-                            <h4 className="text-info">(#{items.id})</h4>
-                            </div>
-                            </div>
-                            <div className="card-body">
-                              <h4>{items.username}</h4>
-                              <ReadMoreReact
-                                text={items.body}
-                                min={70}
-                                ideal={140}
-                                max={300}
-                                readMoreText="...Read More"
-                              />
-                            </div>
-                            <div className="card-footer d-flex bd-highlight">
-                              <h6 className="flex-grow-1 bd-highlight">
-                                {items.status === "pending" ? (
-                                  <button className="btn btn-outline-warning">
-                                    Pending
-                                  </button>
-                                ) : (
-                                  <button className="btn btn-outline-success">
-                                    Closed
-                                  </button>
-                                )}
-                                &nbsp;&nbsp;&nbsp;
-                                {items.Idate}
-                              </h6>
-
-                              <Link
-                              to="/HelpChatCenter"
-                              state={{
-                                ID:items.id,
-                                userID: items.user_id,
-                                userName:items.username,
-                                userTitle:items.title,
-                                ticketStatus:items.status,
-                                userBody:items.body,
-                                userDate:items.created_at
-
-                              }}
-                              className="btn btn-outline-info btn-lg"
-                            >
-                              <i className="fa-sharp fa-solid fa-comment"></i>
-                            </Link>
-                            &nbsp;&nbsp;
-                             <Link className="btn btn-outline-primary btn-lg"  to="/TimeLine"
-                            //  onClick={()=>handleScrollClick()}
-                              state={{ID:items.user_id, target:"/HelpCenter"}}>
-                             <i className="fa-solid fa-timeline"></i>
-                              </Link>
-
-                            </div>
-                          </div>
+                          <HelpCenterChat items={items} index={index}/>
                         );
                       })
                   : status === "closed"
                   ? helpCenter
                       .filter((items) => items.status === status)
-                      .map((items) => {
+                      .map((items,index) => {
                         return (
-                          <div
-                            className="card"
-                            style={{
-                              background: colorScheme.card_bg_color,
-                              color: colorScheme.card_txt_color,
-                              boxShadow: colorScheme.box_shadow_one,
-                            }}
-                          >
-                            <div className="card-header">
-                              <div className="card-tools">
-                                <button
-                                  type="button"
-                                  className="btn btn-tool"
-                                  data-card-widget="collapse"
-                                  title="Collapse"
-                                >
-                                  <i className="fas fa-minus" />
-                                </button>
-                                <button
-                                  type="button"
-                                  className="btn btn-tool"
-                                  data-card-widget="remove"
-                                  title="Remove"
-                                >
-                                  <i className="fas fa-times" />
-                                </button>
-                              </div>
-                              <div className="d-flex">
-                            <h3 className="card-title">
-                              <b>{items.title}</b>
-                            </h3>&nbsp;&nbsp;&nbsp;
-                            <h4 className="text-info">(#{items.id})</h4>
-                            </div>
-                            </div>
-                            <div className="card-body">
-                              <h4>{items.username}</h4>
-                              <ReadMoreReact
-                                text={items.body}
-                                min={70}
-                                ideal={140}
-                                max={300}
-                                readMoreText="...Read More"
-                              />
-                            </div>
-                            <div className="card-footer d-flex bd-highlight">
-                              <h6 className="flex-grow-1 bd-highlight">
-                                {items.status === "pending" ? (
-                                  <button className="btn btn-outline-warning">
-                                    Pending
-                                  </button>
-                                ) : (
-                                  <button className="btn btn-outline-success">
-                                    Closed
-                                  </button>
-                                )}
-                                &nbsp;&nbsp;&nbsp;
-                                {items.Idate}
-                              </h6>
-
-                              <Link
-                              to="/HelpChatCenter"
-                              state={{
-                                ID:items.id,
-                                userID: items.user_id,
-                                userName:items.username,
-                                userTitle:items.title,
-                                ticketStatus:items.status,
-                                userBody:items.body,
-                                userDate:items.created_at
-                              }}
-                              className="btn btn-outline-info btn-lg"
-                            >
-                              <i className="fa-sharp fa-solid fa-comment"></i>
-                            </Link>
-
-                            &nbsp;&nbsp;
-                             <Link className="btn btn-outline-primary btn-lg" to="/TimeLine" state={{ID:items.user_id, target:"/HelpCenter"}}>
-                                <i className="fa-solid fa-timeline"></i>
-                              </Link>
-                            </div>
-                          </div>
+                          <HelpCenterChat items={items} index={index}/>
                         );
                       })
                   : helpCenter.map((items, index) => {
                       return (
-                        <div
-                          key={index}
-                          className="card"
-                          style={{
-                            background: colorScheme.card_bg_color,
-                            color: colorScheme.card_txt_color,
-                            boxShadow: colorScheme.box_shadow_one,
-                          }}
-                        >
-                          <div className="card-header">
-                            <div className="card-tools">
-                              <button
-                                type="button"
-                                className="btn btn-tool"
-                                data-card-widget="collapse"
-                                title="Collapse"
-                              >
-                                <i className="fas fa-minus" />
-                              </button>
-                              <button
-                                type="button"
-                                className="btn btn-tool"
-                                data-card-widget="remove"
-                                title="Remove"
-                              >
-                                <i className="fas fa-times" />
-                              </button>
-                            </div>
-                            <div className="d-flex align-items-center">
-                            <h3 className="card-title">
-                              <b>{items.title}</b>
-                            </h3>&nbsp;&nbsp;&nbsp;
-                            <h4 className="text-info">(#{items.id})</h4>
-                            </div>
-                          </div>
-                          <div className="card-body">
-                            <h4 className="text-info">{items.username}</h4>
-                            <ReadMoreReact
-                              text={items.body}
-                              min={70}
-                              ideal={140}
-                              max={300}
-                              readMoreText="...Read More"
-                            />
-                          </div>
-                          <div className="card-footer d-flex bd-highlight">
-                            <h6 className="flex-grow-1 bd-highlight">
-                              {items.status === "pending" ? (
-                                <button className="btn btn-outline-warning">
-                                  Pending
-                                </button>
-                              ) : (
-                                <button className="btn btn-outline-success">
-                                  Closed
-                                </button>
-                              )}
-                              &nbsp;&nbsp;&nbsp;
-                              {items.Idate}
-                            </h6>
-
-                            <Link
-                              to="/HelpChatCenter"
-                              state={{
-                                ID:items.id,
-                                userID: items.user_id,
-                                userName:items.username,
-                                userTitle:items.title,
-                                ticketStatus:items.status,
-                                userBody:items.body,
-                                userDate:items.created_at
-                              }}
-                              className="btn btn-outline-info btn-lg"
-                            >
-                              <i className="fa-sharp fa-solid fa-comment"></i>
-                            </Link>
-                            &nbsp;&nbsp;
-                             <Link className="btn btn-outline-primary btn-lg" to="/TimeLine" state={{ID:items.user_id, target:"/HelpCenter"}}>
-                                <i className="fa-solid fa-timeline"></i>
-                              </Link>
-                          </div>
-                        </div>
+                        <HelpCenterChat items={items} index={index}/>
                       );
                     })}
               </div>

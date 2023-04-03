@@ -63,7 +63,6 @@ const ShareBalanceForm = () => {
           toast.warn(error.response.data.message, {theme:"dark"})
         })
 
-        console.log(userName+""+ userID)
     }
 
 
@@ -93,7 +92,6 @@ const ShareBalanceForm = () => {
             setAmount('')
           }, 2000);
 
-
         })
         .catch((error)=>{
           if(error.response.data.response === '401'){
@@ -104,6 +102,7 @@ const ShareBalanceForm = () => {
           toast.warn("Something went wrong",{theme:"dark"});
           setInput(true);
           setLoading(false)
+          console.log(error)
         }
 
 

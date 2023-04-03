@@ -1,7 +1,10 @@
 import './App.css';
 import React,{useState, useEffect} from 'react' ;
 
-import { BrowserRouter as Router, Routes, Route , ScrollRestoration  } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route   } from "react-router-dom";
+import {QueryClientProvider, QueryClient} from 'react-query';
+import {ReactQueryDevtools} from 'react-query/devtools';
+
 
 // Layout
 import Navbar from './Components/Layout/Navbar.jsx';
@@ -92,6 +95,8 @@ import LiveChatCenter from './Components/HelpCenter/LiveChatCenter.jsx';
 
 
 
+const queryClient = new QueryClient();
+
 function App() {
   const[login , setLogin] = useState(false)
   const SetLocalLogin= async ()=>{
@@ -131,9 +136,11 @@ function App() {
             <Routes>
             <Route path="/" element={<Login/>}/>
             {/* <Route path="/Registeration" element={<Register/>}/> */}
-          </Routes>
-      </Router>
+            </Routes>
+          </Router>
         :
+          <QueryClientProvider client = {queryClient}>
+
            <Router >
            <Navbar/>
            <Sidebar/>
@@ -215,6 +222,8 @@ function App() {
            <Footer/>
            
            </Router>
+           {/* <ReactQueryDevtools initialIsOpen = {false} position='bottom-right'/> */}
+            </QueryClientProvider>
 
       }
    

@@ -1,14 +1,15 @@
 import UserTimelineModal from "../UserTimeline/UserTimelineModal";
-import QuerySelect from "./DepositSelection.js";
 import React, { useState, useEffect } from "react";
+import QuerySelect from "./DepositSelection.js";
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from "../Colors/Styles.js";
 import { toast } from "react-toastify";
 import Filter from "../Filters/Filter";
 import { Modal } from "pretty-modal";
+import {useQuery} from 'react-query';
 import Moment from "react-moment";
-import "moment-timezone";
 import axios from "axios";
+import "moment-timezone";
 
 const AllDepositsTable = () => {
   const [checkBox, setCheckBox] = useState(false);
@@ -31,6 +32,8 @@ const AllDepositsTable = () => {
   const[showLength, setShowLength] = useState(30);
 
   const [index , setIndex] = useState('');
+
+  const[examDep , setExampDep] = useState([])
 
   const DepoSheetIdentifier = "DepositSheet";
 
@@ -63,6 +66,23 @@ const AllDepositsTable = () => {
       });
   }
 
+
+//   function gettingDepositsWithRTK(){
+
+//     return axios.post(`${process.env.REACT_APP_BASE_URL}getalldeposits`)
+//     .then((data) => {
+//       setExampDep(data.data.Data)
+//     });
+        
+
+//   }
+
+//   const {isLoading , data , isError , error , isFetching} = useQuery('All_Deposits', gettingDepositsWithRTK,{
+//     refetchOnWindowFocus:true,
+//     // refetchIntervalInBackground:true
+//   }
+//   );
+// console.log({isLoading , isFetching})
   const remainingDepositUsers = getDepos.slice(showLength);
 
 
@@ -82,7 +102,7 @@ const AllDepositsTable = () => {
   //     }, 2000);
   // }
 
-  // Global Filter function (Date,Status, Price, Phone):
+  // Global Filter function for (Date,Status, Price, Phone):
 
   function gettingDate(val) {
     setTempArr(val);

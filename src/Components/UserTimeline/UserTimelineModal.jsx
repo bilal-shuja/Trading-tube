@@ -15,7 +15,8 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
   const[userTotal , setUserTotal] = useState('');
   const[userInfo , setUserInfo] = useState('');
   const[userDepo , setUserDepo] = useState([]);
-  const[getReferral, setReferral] = useState([])
+  const[getReferral, setReferral] = useState([]);
+  const [getInvestment , setInvestment] = useState([]);
   const[roleID , setRoleID] = useState('');
   const[showTotalMemOne , setShowTotalMemOne] = useState('');
   const[showTotalMemTwo , setShowTotalMemTwo] = useState('');
@@ -88,6 +89,21 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
     })
     }
 
+    function getUserInvestments(){
+      const investObj = {
+        user_id:ID
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}fetch_investment_uid`,investObj)
+      .then((res)=>{
+        setInvestment(res.data.data)
+      })
+      .catch((error)=>{
+         return null
+      })
+    }
+    
+  console.log(getInvestment)
+
 
     
     function getAllUsers(){
@@ -130,7 +146,6 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
     axios.post(`${process.env.REACT_APP_BASE_URL}fetch_referral`,userObj)
     .then((res)=>{
       setReferral(res.data.data)
-
     })
     .catch((error)=>{
        return null
@@ -178,6 +193,8 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
         isShowUserModal === true &&
         <UserTimelineModalSub
         ID = {items.id}
+        // ariaHideApp={false}
+        appElement={document.getElementById('root') || undefined}
         isShow = {isShowUserModal}
         onHide={onHide}
       />
@@ -226,6 +243,8 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
         isShowUserModal === true &&
         <UserTimelineModalSub
         ID = {items.id}
+        // ariaHideApp={false}
+        appElement={document.getElementById('root') || undefined}
         isShow = {isShowUserModal}
         onHide={onHide}
       />
@@ -237,11 +256,51 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
     }
 
 
+    function ReferralTimeline({items , index}){
+      const [isShowUserModal,setShowUserModal] = useState(false)
+
+      function onHide(){
+        setShowUserModal(false)
+      }
+
+      return(
+        <>
+         <div className="d-flex mt-3">
+                <h4 className="text-bold">Referred by:&nbsp;&nbsp;{items.username}
+                &nbsp;&nbsp;({items.referal_code})&nbsp;&nbsp;
+
+                  <button className="btn btn-outline-primary" onClick={ ()=>{
+                    setShowUserModal(true)                  
+                    }}>
+                    <i className="fa-solid fa-timeline"></i>
+                  </button> <br/>
+                Ph#({items.phone})
+                </h4>
+                </div>
+
+
+                {
+                  isShowUserModal === true &&
+                  <UserTimelineModalSub
+                  ID = {items.id}
+                  // ariaHideApp={false}
+                  appElement={document.getElementById('root') || undefined}
+                  isShow = {isShowUserModal}
+                  onHide={onHide}
+                />
+                }
+        </>
+      )
+
+    }
+
+
     useEffect(() => {
         getUserInfo()
         getDepositInfo()
         getWithdrawalInfo()
         getAllUsers()
+        getUserInvestments()
         getUserTotals()
         gettingReferralTotal()
         SetLocalLogin()
@@ -256,14 +315,9 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
         <div className="col-sm-6">
           <h1>Timeline</h1>
           {
-            getReferral.map((items)=>{
+            getReferral.map((items,index)=>{
               return(
-                <div className="d-flex mt-3">
-                <h4 className="text-bold">Referred by:&nbsp;&nbsp;{items.username}
-                &nbsp;&nbsp;({items.referal_code})<br/>
-                Ph#({items.phone})
-                </h4>
-                </div>
+                <ReferralTimeline items={items} index={index}/>
               )
             })
           }
@@ -343,7 +397,7 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
 
                   
             <div>
-              <i className="fas fa-money-bill-transfer bg-white" />
+              <i className="fas fa-building-columns bg-white" />
               <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
               {
                   display !== 2 ? 
@@ -395,6 +449,56 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
                 }
               </div>
             </div>
+
+
+                {/* Users Investment Section */}
+
+            <div>
+              <i className="fas fa-money-bill-transfer bg-white" />
+              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+              {
+                  display !== 3 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(3)}><i className="fa-solid fa-arrow-down"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
+
+              }
+                <h3 className="timeline-header text-white">Total Investments</h3>
+              {
+                 display !== 3 ? null:
+                <div className="timeline-body">
+                 <div className="row">
+
+                    {
+                      getInvestment.map((items,index)=>{
+                        return(
+                          <div className="col-lg-4 p-2">
+                          <li style={{listStyle:"none"}}>Package ID:&nbsp;<b>{items.package_id}</b> </li>
+                          <li style={{listStyle:"none"}}>Package End Date:&nbsp; <b>{items.end_date}</b></li>
+                          <li style={{listStyle:"none"}}>Single Earning:&nbsp; <b>{items.single_earning}</b></li>
+
+                          
+                          <li style={{listStyle:"none"}}>Balance Got: &nbsp; <b>{items.balance_got}</b></li>
+                          <li style={{listStyle:"none"}}>Balance Left: &nbsp; <b>{items.balance_left}</b></li> 
+                          <li style={{listStyle:"none"}}>Earning compilation: &nbsp; <b>{items.earn_date}</b></li> 
+
+                          
+
+                          </div>
+                        )
+                      })
+                    }
+                 
+
+               
+                      </div>
+        
+          
+                </div>
+
+                }
+              </div>
+            </div>
             
 
 
@@ -405,15 +509,15 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
               <i className="fas fa-briefcase bg-white" />
               <div className="timeline-item" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
               {
-                  display !== 3 ? 
-              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(3)}><i className="fa-solid fa-arrow-down"></i></span>
+                  display !== 4 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(4)}><i className="fa-solid fa-arrow-down"></i></span>
                 :
               <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
 
               }
                 <h3 className="timeline-header text-white">Deposite Info</h3>
                 {
-                display !== 3 ? null:
+                display !== 4 ? null:
                 <div className="timeline-body">
           
                 {
@@ -453,15 +557,15 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
               <i className="fas fa-money-bill-wave bg-white" />
               <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
               {
-                  display !== 4 ? 
-              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(4)}><i className="fa-solid fa-arrow-down"></i></span>
+                  display !== 5 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(5)}><i className="fa-solid fa-arrow-down"></i></span>
                 :
               <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
 
               }
                 <h3 className="timeline-header text-white">Withdrawal Info</h3>
                 {
-                  display !== 4 ? null:
+                  display !== 5 ? null:
                 <div className="timeline-body">
                 {
                   userWithdrawal.length !== 0 ?
@@ -502,15 +606,15 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
               <i className="fas fa-people-group bg-white" />
               <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
               {
-                  display !== 5 ? 
-              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(5)}><i className="fa-solid fa-arrow-down"></i></span>
+                  display !== 6 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(6)}><i className="fa-solid fa-arrow-down"></i></span>
                 :
               <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
 
               }
                 <h3 className="timeline-header text-white">Teams</h3>
                 {
-                    display !== 5 ? null:
+                    display !== 6 ? null:
                 <div className="timeline-body">
 
                   <h3 className="ml-2 text-center text-danger"> <b>"Team One"</b></h3>
