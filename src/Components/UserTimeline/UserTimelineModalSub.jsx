@@ -17,7 +17,14 @@ const UserTimelineModalSub = ({ID,isShow,onHide}) => {
     const [userTotal , setUserTotal] = useState('');
     const [userInfo , setUserInfo] = useState('');
     const [userDepo , setUserDepo] = useState([]);
-    const [getReferral, setReferral] = useState([])
+    const [getReferral, setReferral] = useState([]);
+    const [getInvestment , setInvestment] = useState([]);
+    const[teamComission , setTeamComission] = useState([]);
+    const[sendBalance , setSendBalance] = useState([]);
+    const[activeInvest , setActiveInvest] = useState([]);
+
+
+
     const [roleID , setRoleID] = useState('');
     const[display , setDisplay] = useState(0);
 
@@ -116,6 +123,34 @@ const SetLocalLogin = async () => {
     })
     }
 
+    function getUserInvestments(){
+      const investObj = {
+        user_id:ID
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}fetch_investment_uid`,investObj)
+      .then((res)=>{
+        setInvestment(res.data.data)
+      })
+      .catch((error)=>{
+         return null
+      })
+    }
+
+    function getActiveInvestments(){
+      const investObj = {
+        investor_id:ID
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}fetchInvestment_investorid`,investObj)
+      .then((res)=>{
+        setActiveInvest(res.data.data)
+      })
+      .catch((error)=>{
+         return null
+      })
+
+    }
+    
+
     function gettingReferralTotal(){
       const userObj = {
         user_id:ID
@@ -128,6 +163,17 @@ const SetLocalLogin = async () => {
        return null
     })
     }
+
+    function getSendBalance(){
+      axios.post(`${process.env.REACT_APP_BASE_URL}fetch_sendbalance_userid/${ID}`,)
+      .then((res)=>{
+        setSendBalance(res.data.data)
+      })
+      .catch((error)=>{
+         return null
+      })
+  
+      }
 
     function GetTeamOne({items , index}){
       const [isShowUserModal,setShowUserModal] = useState(false)
@@ -153,10 +199,11 @@ const SetLocalLogin = async () => {
                        
                        <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
                        <li>Level:&nbsp;<b>{items.level}</b> </li>
-                       <li>Email:&nbsp;<b>{items.email}</b></li>
+                       {/* <li>Email:&nbsp;<b>{items.email}</b></li> */}
                        <li>Phone:&nbsp;<b>{items.phone}</b></li>
                        <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
- 
+                       <li>Investment Status:&nbsp;<b>{items.is_finished === null?"Never Invested":items.is_finished ==="false"?"Investment End":"Investment Ongoing"}</b></li>
+                       
                        <li>Question:&nbsp;<b>{items.question}</b></li>
                        <li>Answer:&nbsp;<b>{items.answer}</b> </li>
  
@@ -204,10 +251,11 @@ const SetLocalLogin = async () => {
                         
                         <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
                         <li>Level:&nbsp;<b>{items.level}</b> </li>
-                        <li>Email:&nbsp;<b>{items.email}</b></li>
+                        {/* <li>Email:&nbsp;<b>{items.email}</b></li> */}
                         <li>Phone:&nbsp;<b>{items.phone}</b></li>
                         <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
-  
+                        <li>Investment Status:&nbsp;<b>{items.is_finished === null?"Never Invested":items.is_finished ==="false"?"Investment End":"Investment Ongoing"}</b></li>
+
                         <li>Question:&nbsp;<b>{items.question}</b></li>
                         <li>Answer:&nbsp;<b>{items.answer}</b> </li>
                         <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.Idate}</b></li> 
@@ -229,8 +277,57 @@ const SetLocalLogin = async () => {
 
     }
 
+    function ReferralTimeline({items , index}){
+      const [isShowUserModal,setShowUserModal] = useState(false)
+
+      function onHide(){
+        setShowUserModal(false)
+      }
+
+      return(
+        <>
+         <div className="d-flex mt-3">
+                <h4 className="text-bold">Referred by:&nbsp;&nbsp;{items.username}
+                &nbsp;&nbsp;({items.referal_code})&nbsp;&nbsp;
+
+                  <button className="btn btn-outline-primary" onClick={ ()=>{
+                    setShowUserModal(true)                  
+                    }}>
+                    <i className="fa-solid fa-timeline"></i>
+                  </button> <br/>
+                Ph#({items.phone})
+                </h4>
+                </div>
+
+
+                {
+                  isShowUserModal === true &&
+                  <UserTimelineModal
+                  ID = {items.id}
+                  // ariaHideApp={false}
+                  appElement={document.getElementById('root') || undefined}
+                  isShow = {isShowUserModal}
+                  onHide={onHide}
+                />
+                }
+        </>
+      )
+
+    }
     
-    
+    function fetchTeamComission(){
+      const userObj = {
+        user_id:ID
+    }
+      axios.post(`${process.env.REACT_APP_BASE_URL}fetch_promotion_record_by_userid`,userObj)
+      .then((res)=>{
+        setTeamComission(res.data.Record)
+      })
+      .catch((error)=>{
+         return null
+      })
+      
+    }
 
 
     useEffect(() => {
@@ -240,6 +337,10 @@ const SetLocalLogin = async () => {
         getAllUsers()
         getUserTotals()
         gettingReferralTotal()
+        getUserInvestments()
+        getSendBalance()
+        getActiveInvestments()
+        fetchTeamComission()
         SetLocalLogin()
     }, [])
   
@@ -252,14 +353,10 @@ const SetLocalLogin = async () => {
           <div className="col-sm-6">
             <h1>Timeline</h1>
             {
-              getReferral.map((items)=>{
+              getReferral.map((items,index)=>{
                 return(
-                  <div className="d-flex mt-3">
-                  <h4 className="text-bold">Referred by:&nbsp;&nbsp;{items.username}
-                  &nbsp;&nbsp;({items.referal_code})<br/>
-                   Ph#({items.phone})
-                  </h4>
-                  </div>
+                  <ReferralTimeline items={items} index={index}/>
+                  
                 )
               })
             }
@@ -289,9 +386,10 @@ const SetLocalLogin = async () => {
               {/* <div className="time-label">
                 <span className="bg-white">10 Feb. 2014</span>
               </div> */}
+
+                {/* UserInfo Card */}
               <div>
                 <i className="fas fa-user bg-white" />
-                {/* UserInfo Card */}
                 
                 <div className="timeline-item" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
                 <span className="time"><i className="fas fa-calendar-days" />&nbsp;&nbsp;{userInfo.Idate}</span>
@@ -332,13 +430,9 @@ const SetLocalLogin = async () => {
       
                 }
               </div>
-        
-                {/* UserInfo Card */}
-  
               </div>
   
-  
-                    
+            {/* Users Total Cash flow */}                    
               <div>
                 <i className="fas fa-money-bill-transfer bg-white" />
                 <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
@@ -393,24 +487,70 @@ const SetLocalLogin = async () => {
                 </div>
               </div>
               
+              
+            {/* Users Investment Section */}
+            <div>
+              <i className="fas fa-money-bill-transfer bg-white" />
+              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+              {
+                  display !== 3 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(3)}><i className="fa-solid fa-arrow-down"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
+
+              }
+                <h3 className="timeline-header text-white">Total Investments</h3>
+              {
+                 display !== 3 ? null:
+                <div className="timeline-body">
+                 <div className="row">
+
+                    {
+                      getInvestment.map((items,index)=>{
+                        return(
+                          <div className="col-lg-4 p-2">
+                            <h4 className="text-warning"style={{listStyle:"none"}}>#{index+1}</h4>
+                          <li style={{listStyle:"none"}}>Package ID:&nbsp;<b>{items.package_id}</b> </li>
+                          <li style={{listStyle:"none"}}>Package End Date:&nbsp; <b>{items.end_date}</b></li>
+                          <li style={{listStyle:"none"}}>Single Earning:&nbsp; <b>{items.single_earning}</b></li>
+
+                          
+                          <li style={{listStyle:"none"}}>Balance Got: &nbsp; <b>{items.balance_got}</b></li>
+                          <li style={{listStyle:"none"}}>Balance Left: &nbsp; <b>{items.balance_left}</b></li> 
+                          <li style={{listStyle:"none"}}>Earning compilation: &nbsp; <b>{items.earn_date}</b></li> 
+
+                          
+
+                          </div>
+                        )
+                      })
+                    }
+                 
+
+               
+                      </div>
+        
+          
+                </div>
+
+                }
+              </div>
+            </div>
   
-  
-  
-  
-  
+              {/* Users Deposit Section */}
               <div>
                 <i className="fas fa-briefcase bg-white" />
                 <div className="timeline-item" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
                 {
-                    display !== 3 ? 
-                <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(3)}><i className="fa-solid fa-arrow-down"></i></span>
+                    display !== 4 ? 
+                <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(4)}><i className="fa-solid fa-arrow-down"></i></span>
                   :
                 <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
   
                 }
                   <h3 className="timeline-header text-white">Deposite Info</h3>
                   {
-                  display !== 3 ? null:
+                  display !== 4 ? null:
                   <div className="timeline-body">
             
                   {
@@ -445,20 +585,21 @@ const SetLocalLogin = async () => {
                  
                 </div>
               </div>
-  
+              
+              {/* Users Withdrawl Section */}
               <div>
                 <i className="fas fa-money-bill-wave bg-white" />
                 <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
                 {
-                    display !== 4 ? 
-                <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(4)}><i className="fa-solid fa-arrow-down"></i></span>
+                    display !== 5 ? 
+                <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(5)}><i className="fa-solid fa-arrow-down"></i></span>
                   :
                 <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
   
                 }
                   <h3 className="timeline-header text-white">Withdrawal Info</h3>
                   {
-                    display !== 4 ? null:
+                    display !== 5 ? null:
                   <div className="timeline-body">
                   {
                     userWithdrawal.length !== 0 ?
@@ -494,20 +635,172 @@ const SetLocalLogin = async () => {
                   }
                 </div>
               </div>
-  
+                
+                
+                {/* Users Team Comission Section */}
+            <div>
+              <i className="fas fa-people-line bg-white" />
+              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+              {
+                  display !== 6 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(6)}><i className="fa-solid fa-arrow-down"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
+
+              }
+                <h3 className="timeline-header text-white">Team Comissions</h3>
+                {
+                  display !== 6 ? null:
+                <div className="timeline-body">
+                {
+                  teamComission.length !== 0 ?
+                 <div className="row">
+                  {
+                   teamComission.map((items,index)=>{
+                    return(
+                      <div key={index+1} className="col-lg-4 mt-2">
+                      <h4 className="text-warning">No:{index+1}</h4>
+                      <li>Username:&nbsp;<b>{items.username}</b> </li>
+                      <li>Phone#:&nbsp;<b>{items.phone}</b> </li>
+                      <li>referral code:&nbsp;<b>{items.from}</b> </li>
+                      <li>Amount:&nbsp;<b>{items.amount}</b> </li>
+                      <li>Comission:&nbsp;<b>{items.percentage} %</b> </li>
+                      <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.created_at}</b></li> 
+
+                      <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
+                      </div>
+                    )
+                })
+              }
+                 </div>
+                 :
+                 <h3 className="text-center">No Team Comissions!</h3>
+               }
+
+                </div>
+                }
+              </div>
+            </div>
+
+
+
+                {/* Send Balance Section */}
+                <div>
+              <i className="fa fa-money-bills bg-white" />
+              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+              {
+                  display !== 7 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(7)}><i className="fa-solid fa-arrow-down"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
+
+              }
+                <h3 className="timeline-header text-white">Send Balance</h3>
+                {
+                  display !== 7 ? null:
+                <div className="timeline-body">
+                {
+                  sendBalance.length !== 0 ?
+                 <div className="row">
+                  {
+                   sendBalance.map((items,index)=>{
+                    return(
+                      <div key={index+1} className="col-lg-4 mt-2">
+                      <h4 className="text-warning">#{index+1}</h4>
+                      <li>UserID:&nbsp;<b>{items.user_id}</b> </li>
+                      <li>Username:&nbsp;<b>{items.username}</b> </li>
+                      <li>User phone#:&nbsp;<b>{items.userphone}</b> </li>
+
+                      <li>Sender ID:&nbsp;<b>{items.sender_id}</b> </li>
+                      <li>Sender Name:&nbsp;<b>{items.sender_name}</b> </li>
+                      <li>Sender Phone:&nbsp;<b>{items.sender_phone} </b> </li>
+                      <li>Sended Amount:&nbsp;<b>{items.send_amount} </b> </li>
+
+                      <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.date}</b></li> 
+
+                      {/* <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li> */}
+                      </div>
+                    )
+                })
+              }
+                 </div>
+                 :
+                 <h3 className="text-center">No Data!</h3>
+               }
+
+                </div>
+                }
+              </div>
+            </div>
+
+
+                  
+                   {/* Active Investment */}
+                   <div>
+              <i className="fa fa-star-of-life bg-white" />
+              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+              {
+                  display !== 8 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(8)}><i className="fa-solid fa-arrow-down"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
+
+              }
+                <h3 className="timeline-header text-white">Active Investments</h3>
+                {
+                  display !== 8 ? null:
+                <div className="timeline-body">
+                {
+                  activeInvest.length !== 0 ?
+                 <div className="row">
+                  {
+                   activeInvest.map((items,index)=>{
+                    return(
+                      <div key={index+1} className="col-lg-4 mt-2">
+                      <h4 className="text-warning">#{index+1}</h4>
+                      
+                      <li>Package ID:&nbsp;<b>{items.package_id}</b> </li>
+                      <li>Packgae Title:&nbsp;<b>{items.title}</b> </li>
+                      <li>Package Status:&nbsp;<b>{items.status}</b> </li>
+                      <li>Package Price:&nbsp;<b>{items.applied_price}</b> </li>
+
+                      <li>Income:&nbsp;<b>{items.applied_income}</b> </li>
+                      <li>Package Start:&nbsp;<b>{items.created_at}</b> </li>
+
+                      <li>Package End:&nbsp;<b>{items.end_date} </b> </li>
+
+                      {/* <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.date}</b></li>  */}
+
+                      {/* <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li> */}
+                      </div>
+                    )
+                })
+              }
+                 </div>
+                 :
+                 <h3 className="text-center">No Active Package!</h3>
+               }
+
+                </div>
+                }
+              </div>
+            </div>
+              
+              
+              {/* Users Team Section */}  
               <div>
                 <i className="fas fa-people-group bg-white" />
                 <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
                 {
-                    display !== 5 ? 
-                <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(5)}><i className="fa-solid fa-arrow-down"></i></span>
+                    display !== 9 ? 
+                <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(9)}><i className="fa-solid fa-arrow-down"></i></span>
                   :
                 <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
   
                 }
                   <h3 className="timeline-header text-white">Teams</h3>
                   {
-                      display !== 5 ? null:
+                      display !== 9 ? null:
                   <div className="timeline-body">
   
                     <h3 className="ml-2 text-center text-danger"> <b>"Team One"</b></h3>

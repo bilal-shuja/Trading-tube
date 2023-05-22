@@ -1,7 +1,6 @@
 import React,{useState , useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
 import colorScheme from '../Colors/Styles.js';
-import { toast } from "react-toastify";
 import axios from "axios";
 
 const LevelSheet = () => {

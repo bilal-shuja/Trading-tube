@@ -188,9 +188,8 @@ function UserList ({items,index}){
     
     
     <button className="btn btn-outline-primary btn-sm" onClick={ ()=>{
-      
       setShowUserModal(true)
-      
+
       }}>
       <i className="fa-solid fa-timeline"></i>
     </button>

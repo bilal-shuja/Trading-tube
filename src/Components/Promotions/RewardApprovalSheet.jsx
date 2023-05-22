@@ -11,6 +11,7 @@ import "moment-timezone";
 import axios from "axios";
 
 const RewardApprovalSheet = () => {
+  
   const [promotionSheet, setPromotionSheet] = useState([]);
   const [promotionSheetTemArr, setpromotionSheetTempArr] = useState([]);
   const [roleID, setRoleID] = useState("");
@@ -58,7 +59,6 @@ const RewardApprovalSheet = () => {
       .then((res) => {
         setPromotionSheet(res.data.Rewards);
         setpromotionSheetTempArr(res.data.Rewards);
-        console.log(res.data.Rewards);
       })
       .catch((error) => {
         return error;

@@ -1,4 +1,5 @@
 import UserTimelineModal from '../UserTimeline/UserTimelineModal';
+import ConfirmQuery from '../ConfirmQuery/ConfirmQueryModal';
 import QuerySelect from './WithdrawalSelection.js';
 import React,{useState, useEffect} from 'react';
 import "react-toastify/dist/ReactToastify.css";
@@ -65,26 +66,7 @@ const WithdrawalSheet = () => {
     const remainingWithdrawalUsers = withdrawalData.slice(showLength);
 
 
-  function withdrawalReq(id){
-    const withdrawalObj = {
-      id:id
-    }
 
-    axios.post(`${process.env.REACT_APP_BASE_URL}approve_status`,withdrawalObj)
-    .then((res)=>{
-      toast.info(`Withdrawal ${res.data.message}`,{theme:"dark"});
-    })
-    .catch((error)=>{
-      if(error.status === 401){
-      toast.warn(error.data.message,{theme:"dark"});
-
-      }
-      else{
-        toast.warn("Something went wrong",{theme:"dark"});
-      }
-  
-    })
-  }
 function approveWithdrawalByDate(){
   const withdrawalDateObj = {
     date:appWithdrawalDate,
@@ -217,9 +199,48 @@ function submitHostQuery(){
 function WithdrawalSheetFun({items , index}){
 
   const [isShowUserModal,setShowUserModal] = useState(false)
+  const[isShow,setShow] = useState(false);
+  const[checkStatus , setCheckStatus] = useState(items.status)
 
   function onHide(){
     setShowUserModal(false)
+  }
+  function onActionBack (val){
+    setShow(false)
+    if(val === "Yes"){
+  
+       withdrawalReq()
+       setCheckStatus("approved")
+   }
+    else{
+      
+     return null;
+    }
+  
+   }
+
+   function withdrawalReq(id){
+    const withdrawalObj = {
+      id:items.id
+    }
+
+    axios.post(`${process.env.REACT_APP_BASE_URL}approve_status`,withdrawalObj)
+    .then((res)=>{
+      toast.info(`Withdrawal ${res.data.message}`,{theme:"dark"});
+    })
+    .catch((error)=>{
+      if(error.status === 401){
+      toast.warn(error.data.message,{theme:"dark"});
+      setCheckStatus("unapproved")
+
+      }
+      else{
+        toast.warn("Something went wrong",{theme:"dark"});
+        setCheckStatus("unapproved")
+
+      }
+  
+    })
   }
   return(
     <>
@@ -234,10 +255,10 @@ function WithdrawalSheetFun({items , index}){
     <td>{items.account_number}</td>
     <td>{items.requested_amount}</td>
     {
-        items.status === "approved"?
-        <td style={{ color: "#64dd17" }}>{items.status}</td>
+        checkStatus === "approved"?
+        <td style={{ color: "#64dd17" }}>{checkStatus}</td>
         :
-        <td style={{ color: "#ff1744" }}>{items.status}</td>
+        <td style={{ color: "#ff1744" }}>{checkStatus}</td>
 
       }
 
@@ -249,18 +270,37 @@ function WithdrawalSheetFun({items , index}){
       <td>
         <div className="d-flex justify-content-center">
           <>
-          <button onClick={()=>withdrawalReq(items.id)} className="btn btn-outline-info">
+          {
+            checkStatus === "approved" ? null :
+            <>
+          <button onClick={() => setShow(true)} 
+          className="btn btn-outline-info btn-sm"
+          data-toggle="tooltip"
+          data-placement="top"
+          title="approved/unapproved withdrawal"
+          >
             <i className="fa fa-circle-check"></i>
           </button>
+            </>
+          }
+      
           &nbsp;&nbsp;
 
-          <button className="btn btn-outline-primary btn-sm" onClick={()=>{setShowUserModal(true)}}>
+        <button className="btn btn-outline-primary btn-sm" onClick={()=>{setShowUserModal(true)}}>
         <i className="fa-solid fa-timeline"></i>
         </button>
+
+
+        <ConfirmQuery
+          isShow={isShow}
+           body={`Are you sure you want to ${items.status === "unapproved"?"approved":"unapproved"} ${items.username} withdrawal?`}
+           action={onActionBack}
+         />
+
         
         &nbsp;&nbsp;
         {
-         items.status === "approved"?
+         checkStatus === "approved"?
          null
          :
           <button onClick={() => {

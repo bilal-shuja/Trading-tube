@@ -1,4 +1,5 @@
 import UserTimelineModal from "../UserTimeline/UserTimelineModal";
+import ConfirmQuery from '../ConfirmQuery/ConfirmQueryModal';
 import React, { useState, useEffect } from "react";
 import QuerySelect from "./DepositSelection.js";
 import "react-toastify/dist/ReactToastify.css";
@@ -29,11 +30,10 @@ const AllDepositsTable = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [memID, setMemID] = useState("");
   const [depoID, setDepoID] = useState("");
-  const[showLength, setShowLength] = useState(30);
+  const[showLength, setShowLength] = useState(35);
 
   const [index , setIndex] = useState('');
 
-  const[examDep , setExampDep] = useState([])
 
   const DepoSheetIdentifier = "DepositSheet";
 
@@ -127,23 +127,7 @@ const AllDepositsTable = () => {
 
   // Function which approves individual deposits of users:
 
-  function approveSingleDepo(id) {
-    const depObj = {
-      id: id,
-    };
-    axios
-      .post(`${process.env.REACT_APP_BASE_URL}show`, depObj)
-      .then((res) => {
-        toast.info(`Deposit ${res.data.message}`, { theme: "dark" });
-      })
-      .catch((error) => {
-        if (error.status === 401) {
-          toast.info(error.data.message, { theme: "dark" });
-        } else {
-          toast.info("Something went wrong", { theme: "dark" });
-        }
-      });
-  }
+
 
   // Function which approves deposit by according to date:
   function approveDepoByDate() {
@@ -261,10 +245,48 @@ const AllDepositsTable = () => {
   // Child Deposit Sheet function:
 
   function DepositSheet({ items, index }) {
+    const[isShow,setShow] = useState(false);
     const [isShowUserModal, setShowUserModal] = useState(false);
-
+    const [checkStatus , setCheckStatus] = useState(items.status)
     function onHide() {
       setShowUserModal(false);
+    }
+
+    function onActionBack (val){
+      setShow(false)
+      if(val === "Yes"){
+    
+        approveSingleDepo()
+        setCheckStatus("approved")
+
+     }
+      else{
+        
+       return null;
+      }
+    
+     }
+
+     function approveSingleDepo() {
+      const depObj = {
+        id: items.id,
+      };
+      axios
+        .post(`${process.env.REACT_APP_BASE_URL}show`, depObj)
+        .then((res) => {
+          toast.info(`Deposit ${res.data.message}`, { theme: "dark" });
+        })
+        .catch((error) => {
+          if (error.status === 401) {
+            toast.info(error.data.message, { theme: "dark" });
+           setCheckStatus("unapproved")
+
+          } else {
+            toast.info("Something went wrong", { theme: "dark" });
+           setCheckStatus("unapproved")
+
+          }
+        });
     }
 
     return (
@@ -295,10 +317,10 @@ const AllDepositsTable = () => {
             />
           </td>
 
-          {items.status === "approved" ? (
-            <td style={{ color: "#64dd17" }}>{items.status}</td>
+          {checkStatus === "approved" ? (
+            <td style={{ color: "#64dd17" }}>{checkStatus}</td>
           ) : (
-            <td style={{ color: "#ff1744" }}>{items.status}</td>
+            <td style={{ color: "#ff1744" }}>{checkStatus}</td>
           )}
           <td>{items.Idate}</td>
           <td>
@@ -309,15 +331,28 @@ const AllDepositsTable = () => {
             <div className="d-flex align-items-center">
               {roleID === "2" || roleID === "3" || roleID === "4" ? null : (
                 <>
+
+                {
+                  checkStatus === "approved"? null :
+                  <>
                   <button
-                    onClick={() => approveSingleDepo(items.id)}
-                    className="btn btn-outline-info btn-sm"
-                    data-toggle="tooltip"
-                    data-placement="top"
-                    title="approved/unapproved deposit"
-                  >
-                    <i className="fa fa-person-circle-check"></i>
-                  </button>
+                  onClick={() => setShow(true)}
+                  className="btn btn-outline-info btn-sm"
+                  data-toggle="tooltip"
+                  data-placement="top"
+                  title="approved/unapproved deposit"
+                >
+                  <i className="fa fa-person-circle-check"></i>
+                </button>
+
+                <ConfirmQuery
+                isShow={isShow}
+                body={`Are you sure you want to ${items.status === "unapproved"?"approved":"unapproved"} ${items.username} deposit?`}
+                action={onActionBack}
+                />
+                </>
+                }
+             
                   &nbsp;&nbsp;
                   <button
                     className="btn btn-outline-primary btn-sm"
@@ -328,7 +363,7 @@ const AllDepositsTable = () => {
                     <i className="fa-solid fa-timeline"></i>
                   </button>
                   &nbsp;&nbsp;
-                  {items.status === "approved" ? null : (
+                  {checkStatus === "approved" ? null : (
                     <button
                       onClick={() => {
                         setIsOpen(true);
@@ -561,10 +596,12 @@ const AllDepositsTable = () => {
                           <tbody className="text-center">
                             {depoTemArr
                               .filter(
-                                (item) =>
+                                (item, index) => index <= showLength && (
                                   item.status === "approved" ||
                                   item.status === "unapproved" ||
                                   item.status === "All"
+                                )
+                             
                               )
                               .map((items, index) => {
                                 return (

@@ -4,10 +4,10 @@ import colorScheme from "../Colors/Styles.js";
 
 const Filter = ({
             PackageData,DepositData, InvestData,BalanceData ,PromotionData,StopPromotionData,
-              luckyDrawData,ParticipantData,MemeberData,BalanceSheetData,RetBalanceSheetData,DateFilter,StatusFilter,
+              luckyDrawData,ParticipantData,MemeberData,BalanceSheetData,RetBalanceSheetData,TeamComissionData,DateFilter,StatusFilter,
               PhoneFilter , PriceStatus, UsernameFilter,PackageTableIdentifier, DepoSheetIdentifier,InvestmentSheetIdentifier,
               BalanceSheetIdentifier,PromotionSheetIdentifier,StopPromoSheetIdentifier,LuckyDrawSheetIdentifier,ParticipantSheetIdentifier,
-              MemberSheetIdentifier,ShareBalanceSheetIdentifier,RetBalanceSheetIdentifier
+              MemberSheetIdentifier,ShareBalanceSheetIdentifier,RetBalanceSheetIdentifier,TeamComissionSheetIdentifier 
             }) => {
 
 
@@ -117,6 +117,16 @@ const Filter = ({
       else{
         DateFilter(RetBalanceSheetData)
       }
+    }
+    else if(TeamComissionSheetIdentifier){
+      if(e.target.value !== " "){
+        const dateFilter = TeamComissionData.filter((items)=> items.created_at === e.target.value)
+        DateFilter(dateFilter)      
+      }
+      else{
+        DateFilter(TeamComissionData)
+      }
+
     }
       
       else{
@@ -464,6 +474,17 @@ const Filter = ({
         }
   
       }
+      else if(TeamComissionSheetIdentifier){
+        if(e.target.value !== " "){
+          const phoneFilter = TeamComissionData.filter((items)=>items.phone === e.target.value )
+          PhoneFilter(phoneFilter)      
+        }
+        else{
+          PhoneFilter(TeamComissionData)
+        }
+  
+      }
+
 
       
        
@@ -526,6 +547,16 @@ const Filter = ({
         }
   
       }
+      else if(TeamComissionSheetIdentifier){
+        if(e.target.value !== " "){
+          const phoneFilter = TeamComissionData.filter((items)=>  items.username  === e.target.value )
+          UsernameFilter(phoneFilter)      
+        }
+        else{
+          UsernameFilter(TeamComissionData)
+        }
+      }
+
       else{
         return null;
       }
@@ -537,7 +568,7 @@ const Filter = ({
   return (
     <>
     {
-      MemberSheetIdentifier || ShareBalanceSheetIdentifier || RetBalanceSheetIdentifier ? null:
+      MemberSheetIdentifier || ShareBalanceSheetIdentifier || RetBalanceSheetIdentifier || TeamComissionSheetIdentifier ? null:
         <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier?"col-sm-3":"col-sm-3"}>
                     <label htmlFor="" className="form-label">Filter by {LuckyDrawSheetIdentifier || ParticipantSheetIdentifier ? "Fee":"Price"}:</label>
                         <div className="form-group">
@@ -561,7 +592,7 @@ const Filter = ({
 
                     
                     {
-                     StopPromoSheetIdentifier || ParticipantSheetIdentifier || MemberSheetIdentifier || ShareBalanceSheetIdentifier || RetBalanceSheetIdentifier? null:
+                     StopPromoSheetIdentifier || ParticipantSheetIdentifier || MemberSheetIdentifier || ShareBalanceSheetIdentifier || RetBalanceSheetIdentifier || TeamComissionSheetIdentifier? null:
                       <div className="col-sm-3">
                       <label htmlFor="" className="form-label"> Search with Status:</label>
                     <div className="form-group">
@@ -580,7 +611,7 @@ const Filter = ({
                     </div>
                     }
       
-         <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier?"col-sm-3":"col-sm-3"}>
+         <div className={PromotionSheetIdentifier || StopPromoSheetIdentifier || ParticipantSheetIdentifier || TeamComissionSheetIdentifier?"col-sm-3":"col-sm-3"}>
                 <label htmlFor="" className="form-label "> Search with Date:</label>
                     <div className="form-group">
                       <input type="text" className="form-control" placeholder="Search by Date..."
@@ -593,7 +624,7 @@ const Filter = ({
                  </div>
             </div>
 {
-  DepoSheetIdentifier || MemberSheetIdentifier || PromotionSheetIdentifier || ShareBalanceSheetIdentifier || RetBalanceSheetIdentifier? 
+  DepoSheetIdentifier || MemberSheetIdentifier || PromotionSheetIdentifier || ShareBalanceSheetIdentifier || RetBalanceSheetIdentifier || TeamComissionSheetIdentifier? 
   <div className="col-sm-3">
                 <label htmlFor="" className="form-label "> Search with Phone:</label>
                     <div className="form-group">
@@ -611,7 +642,7 @@ const Filter = ({
 }
 
 {
-  DepoSheetIdentifier || MemberSheetIdentifier || PromotionSheetIdentifier || ShareBalanceSheetIdentifier || RetBalanceSheetIdentifier? 
+  DepoSheetIdentifier || MemberSheetIdentifier || PromotionSheetIdentifier || ShareBalanceSheetIdentifier || RetBalanceSheetIdentifier || TeamComissionSheetIdentifier? 
   <div className="col-sm-3">
                 <label htmlFor="" className="form-label "> Search with Username:</label>
                     <div className="form-group">

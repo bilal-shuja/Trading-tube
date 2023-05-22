@@ -15,8 +15,13 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
   const[userTotal , setUserTotal] = useState('');
   const[userInfo , setUserInfo] = useState('');
   const[userDepo , setUserDepo] = useState([]);
+  const[sendBalance , setSendBalance] = useState([]);
+
   const[getReferral, setReferral] = useState([]);
   const [getInvestment , setInvestment] = useState([]);
+  const[teamComission , setTeamComission] = useState([]);
+  const[activeInvest , setActiveInvest] = useState([]);
+
   const[roleID , setRoleID] = useState('');
   const[showTotalMemOne , setShowTotalMemOne] = useState('');
   const[showTotalMemTwo , setShowTotalMemTwo] = useState('');
@@ -101,8 +106,22 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
          return null
       })
     }
+
+
+    function getActiveInvestments(){
+      const investObj = {
+        investor_id:ID
+      }
+      axios.post(`${process.env.REACT_APP_BASE_URL}fetchInvestment_investorid`,investObj)
+      .then((res)=>{
+        setActiveInvest(res.data.data)
+      })
+      .catch((error)=>{
+         return null
+      })
+
+    }
     
-  console.log(getInvestment)
 
 
     
@@ -139,6 +158,17 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
     })
     }
 
+    function getSendBalance(){
+    axios.post(`${process.env.REACT_APP_BASE_URL}fetch_sendbalance_userid/${ID}`,)
+    .then((res)=>{
+      setSendBalance(res.data.data)
+    })
+    .catch((error)=>{
+       return null
+    })
+
+    }
+
     function gettingReferralTotal(){
       const userObj = {
         user_id:ID
@@ -150,6 +180,20 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
     .catch((error)=>{
        return null
     })
+    }
+
+    function fetchTeamComission(){
+      const userObj = {
+        user_id:ID
+    }
+      axios.post(`${process.env.REACT_APP_BASE_URL}fetch_promotion_record_by_userid`,userObj)
+      .then((res)=>{
+        setTeamComission(res.data.Record)
+      })
+      .catch((error)=>{
+         return null
+      })
+      
     }
 
     
@@ -176,9 +220,11 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
         
         <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
         <li>Level:&nbsp;<b>{items.level}</b> </li>
-        <li>Email:&nbsp;<b>{items.email}</b></li>
+        {/* <li>Email:&nbsp;<b>{items.email}</b></li> */}
         <li>Phone:&nbsp;<b>{items.phone}</b></li>
         <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
+
+        <li>Investment Status:&nbsp;<b>{items.is_finished === null?"Never Invested":items.is_finished ==="false"?"Investment End":"Investment Ongoing"}</b></li>
 
         <li>Question:&nbsp;<b>{items.question}</b></li>
         <li>Answer:&nbsp;<b>{items.answer}</b> </li>
@@ -228,9 +274,11 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
         
         <li>Referral Code:&nbsp;<b>{items.referal_code}</b> </li>
         <li>Level:&nbsp;<b>{items.level}</b> </li>
-        <li>Email:&nbsp;<b>{items.email}</b></li>
+        {/* <li>Email:&nbsp;<b>{items.email}</b></li> */}
         <li>Phone:&nbsp;<b>{items.phone}</b></li>
         <li>Cnic:&nbsp;<b>{items.cnic}</b> </li>
+        <li>Investment Status:&nbsp;<b>{items.is_finished === null?"Never Invested":items.is_finished ==="false"?"Investment End":"Investment Ongoing"}</b></li>
+
 
         <li>Question:&nbsp;<b>{items.question}</b></li>
         <li>Answer:&nbsp;<b>{items.answer}</b> </li>
@@ -302,7 +350,10 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
         getAllUsers()
         getUserInvestments()
         getUserTotals()
+        getSendBalance()
         gettingReferralTotal()
+        fetchTeamComission()
+        getActiveInvestments()
         SetLocalLogin()
     }, [])
     
@@ -346,11 +397,11 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
             {/* <div className="time-label">
               <span className="bg-white">10 Feb. 2014</span>
             </div> */}
+
+              {/* UserInfo Card */}
             <div>
               <i className="fas fa-user bg-white" />
-              {/* UserInfo Card */}
-              
-              <div className="timeline-item" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+            <div className="timeline-item" style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
               <span className="time"><i className="fas fa-calendar-days" />&nbsp;&nbsp;{userInfo.Idate}</span>
               {
                   display !==1 ? 
@@ -389,13 +440,10 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
     
               }
             </div>
-      
-              {/* UserInfo Card */}
-
             </div>
 
 
-                  
+            {/* Users Total Cash flow */}
             <div>
               <i className="fas fa-building-columns bg-white" />
               <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
@@ -451,8 +499,7 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
             </div>
 
 
-                {/* Users Investment Section */}
-
+            {/* Users Investment Section */}
             <div>
               <i className="fas fa-money-bill-transfer bg-white" />
               <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
@@ -473,6 +520,7 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
                       getInvestment.map((items,index)=>{
                         return(
                           <div className="col-lg-4 p-2">
+                            <h4 className="text-warning"style={{listStyle:"none"}}>#{index+1}</h4>
                           <li style={{listStyle:"none"}}>Package ID:&nbsp;<b>{items.package_id}</b> </li>
                           <li style={{listStyle:"none"}}>Package End Date:&nbsp; <b>{items.end_date}</b></li>
                           <li style={{listStyle:"none"}}>Single Earning:&nbsp; <b>{items.single_earning}</b></li>
@@ -503,7 +551,7 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
 
 
 
-
+              {/* Users Deposit Section */}
 
             <div>
               <i className="fas fa-briefcase bg-white" />
@@ -552,6 +600,8 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
                
               </div>
             </div>
+
+              {/* Users Withdrawl Section */}
 
             <div>
               <i className="fas fa-money-bill-wave bg-white" />
@@ -602,8 +652,10 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
               </div>
             </div>
 
+
+                {/* Users Team Comission Section */}
             <div>
-              <i className="fas fa-people-group bg-white" />
+              <i className="fas fa-people-line bg-white" />
               <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
               {
                   display !== 6 ? 
@@ -612,9 +664,157 @@ const UserTimelineModal = ({ID,isShow,onHide}) => {
               <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
 
               }
+                <h3 className="timeline-header text-white">Team Comissions</h3>
+                {
+                  display !== 6 ? null:
+                <div className="timeline-body">
+                {
+                  teamComission.length !== 0 ?
+                 <div className="row">
+                  {
+                   teamComission.map((items,index)=>{
+                    return(
+                      <div key={index+1} className="col-lg-4 mt-2">
+                      <h4 className="text-warning">#{index+1}</h4>
+                      <li>Username:&nbsp;<b>{items.username}</b> </li>
+                      <li>Phone#:&nbsp;<b>{items.phone}</b> </li>
+                      <li>referral code:&nbsp;<b>{items.from}</b> </li>
+                      <li>Amount:&nbsp;<b>{items.amount}</b> </li>
+                      <li>Comission:&nbsp;<b>{items.percentage} %</b> </li>
+                      <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.created_at}</b></li> 
+
+                      <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li>
+                      </div>
+                    )
+                })
+              }
+                 </div>
+                 :
+                 <h3 className="text-center">No Team Comissions!</h3>
+               }
+
+                </div>
+                }
+              </div>
+            </div>
+
+                   {/* Send Balance Section */}
+            <div>
+              <i className="fa fa-money-bills bg-white" />
+              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+              {
+                  display !== 7 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(7)}><i className="fa-solid fa-arrow-down"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
+
+              }
+                <h3 className="timeline-header text-white">Send Balance</h3>
+                {
+                  display !== 7 ? null:
+                <div className="timeline-body">
+                {
+                  sendBalance.length !== 0 ?
+                 <div className="row">
+                  {
+                   sendBalance.map((items,index)=>{
+                    return(
+                      <div key={index+1} className="col-lg-4 mt-2">
+                      <h4 className="text-warning">#{index+1}</h4>
+                      <li>UserID:&nbsp;<b>{items.user_id}</b> </li>
+                      <li>Username:&nbsp;<b>{items.username}</b> </li>
+                      <li>User phone#:&nbsp;<b>{items.userphone}</b> </li>
+
+                      <li>Sender ID:&nbsp;<b>{items.sender_id}</b> </li>
+                      <li>Sender Name:&nbsp;<b>{items.sender_name}</b> </li>
+                      <li>Sender Phone:&nbsp;<b>{items.sender_phone} </b> </li>
+                      <li>Sended Amount:&nbsp;<b>{items.send_amount} </b> </li>
+
+                      <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.date}</b></li> 
+
+                      {/* <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li> */}
+                      </div>
+                    )
+                })
+              }
+                 </div>
+                 :
+                 <h3 className="text-center">No Data!</h3>
+               }
+
+                </div>
+                }
+              </div>
+            </div>
+              
+              
+                   {/* Active Investment */}
+            <div>
+              <i className="fa fa-star-of-life bg-white" />
+              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+              {
+                  display !== 8 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(8)}><i className="fa-solid fa-arrow-down"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
+
+              }
+                <h3 className="timeline-header text-white">Active Investments</h3>
+                {
+                  display !== 8 ? null:
+                <div className="timeline-body">
+                {
+                  activeInvest.length !== 0 ?
+                 <div className="row">
+                  {
+                   activeInvest.map((items,index)=>{
+                    return(
+                      <div key={index+1} className="col-lg-4 mt-2">
+                      <h4 className="text-warning">#{index+1}</h4>
+                      
+                      <li>Package ID:&nbsp;<b>{items.package_id}</b> </li>
+                      <li>Packgae Title:&nbsp;<b>{items.title}</b> </li>
+                      <li>Package Status:&nbsp;<b>{items.status}</b> </li>
+                      <li>Package Price:&nbsp;<b>{items.applied_price}</b> </li>
+
+                      <li>Income:&nbsp;<b>{items.applied_income}</b> </li>
+                      <li>Package Start:&nbsp;<b>{items.created_at}</b> </li>
+
+                      <li>Package End:&nbsp;<b>{items.end_date} </b> </li>
+
+                      {/* <li style={{listStyle:"none"}}> <i className="fas fa-calendar-days"/>&nbsp;&nbsp;<b>{items.date}</b></li>  */}
+
+                      {/* <li style={{listStyle:"none"}}> <i className="fas fa-clock"/>&nbsp;&nbsp;&nbsp;<b><Moment date={items.updated_at} format="hh:mm:ss"/></b></li> */}
+                      </div>
+                    )
+                })
+              }
+                 </div>
+                 :
+                 <h3 className="text-center">No Active Package!</h3>
+               }
+
+                </div>
+                }
+              </div>
+            </div>
+              
+              
+
+              {/* Users Team Section */}
+            <div> 
+              <i className="fas fa-people-group bg-white" />
+              <div className="timeline-item"  style={{background: colorScheme.card_bg_color,color: colorScheme.card_txt_color}}>
+              {
+                  display !== 9 ? 
+              <span className="btn btn-outline-info btn-sm float-right" onClick={()=>handleDisplay(9)}><i className="fa-solid fa-arrow-down"></i></span>
+                :
+              <span className="btn btn-outline-primary btn-sm float-right" onClick={()=>handleDisplay(0)}><i className="fa-solid fa-arrow-up"></i></span>
+
+              }
                 <h3 className="timeline-header text-white">Teams</h3>
                 {
-                    display !== 6 ? null:
+                    display !== 9 ? null:
                 <div className="timeline-body">
 
                   <h3 className="ml-2 text-center text-danger"> <b>"Team One"</b></h3>

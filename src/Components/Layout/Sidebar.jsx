@@ -96,6 +96,15 @@ const Sidebar = () => {
                           <p>Suspended Users</p>
                         </Link>
                       </li>
+
+                      <li className="nav-item">
+                        <Link to="/TopInvesterSheet" className="nav-link ">
+                          <i className="far fa-circle nav-icon" />
+                          <p>Top Investers Sheet</p>
+                        </Link>
+                      </li>
+
+                      
                     </ul>
                   </li>
                 ) : null}
@@ -260,6 +269,12 @@ const Sidebar = () => {
                     </p>
                   </a>
                   <ul className="nav nav-treeview">
+                  <li className="nav-item">
+                <Link to="/TeamComissionSheet" className="nav-link ">
+                  <i className="far fa-circle nav-icon" />
+                  <p>Team Comission Sheet</p>
+                </Link>
+              </li>
                     <li className="nav-item">
                       <Link to="/RewardApprovalSheet" className="nav-link ">
                         <i className="far fa-circle nav-icon" />
@@ -267,12 +282,7 @@ const Sidebar = () => {
                       </Link>
                     </li>
 
-                    {/* <li className="nav-item">
-                <Link to="/StopPromotionSheet" className="nav-link ">
-                  <i className="far fa-circle nav-icon" />
-                  <p>Stop Promotions</p>
-                </Link>
-              </li> */}
+                   
                   </ul>
                 </li>
 

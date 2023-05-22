@@ -15,14 +15,14 @@ const ConfirmQueryModal = ({ isShow, body, action }) => {
         <div className="col-lg-12">
           <button
             onClick={() => action("No")}
-            className="btn btn-outline-info btn-md"
+            className="btn btn-outline-danger btn-md"
           >
             No
           </button>
 
           <button
             onClick={() => action("Yes")}
-            className="btn btn-outline-danger float-right btn-md"
+            className="btn btn-outline-info float-right btn-md"
           >
             Agree?
           </button>

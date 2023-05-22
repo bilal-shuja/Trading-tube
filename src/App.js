@@ -31,6 +31,7 @@ import UserSheet from './Components/Users/UserSheet.jsx';
 import UpdateUserForm from './Components/Users/UpdateUserForm.jsx';
 import TimeLine from './Components/UserTimeline/UserTimelineSheet.jsx';
 import SuspendedUsers from './Components/Users/SuspendedUserSheet.jsx';
+import TopInvesterSheet from './Components/Users/TopInvesterSheet.jsx';
 
 
 // Packages 
@@ -51,6 +52,7 @@ import WithdrawalRejectSheet from './Components/Withdrawals/WithdrawalRejectionS
 // Promotions
 import RewardApprovalSheet from './Components/Promotions/RewardApprovalSheet.jsx';
 import StopPromoSheet from './Components/Promotions/StopPromotionSheet.jsx';
+import TeamComissionSheet from './Components/Promotions/TeamComissionSheet.jsx';
 
 // Lucky Draw
 import AddLuckyDrawForm from './Components/LuckyDraw/AddLuckyDraw.jsx';
@@ -119,13 +121,6 @@ function App() {
   }, [])
 
   
-  // useEffect(() => {
-    
-  // window.self.addEventListener("scroll",()=>{
-  //     sessionStorage.setItem(window.location.pathname , window.scrollY);
-  //   })
-  // }, [])
-
 
 
   return (
@@ -151,6 +146,9 @@ function App() {
            <Route path="/UpdateUserForm" element={<UpdateUserForm/>}/>
            <Route path="/TimeLine" element={<TimeLine/>}/>
            <Route path="/SuspendedUsers" element={<SuspendedUsers/>}/>
+           <Route path="/TopInvesterSheet" element={<TopInvesterSheet/>}/>
+
+           
 
            <Route path="/RegMemForm" element={<RegMemForm/>}/>
            <Route path="/MemberSheet" element={<MemberSheet/>}/>
@@ -178,6 +176,9 @@ function App() {
 
            <Route path="/RewardApprovalSheet" element={<RewardApprovalSheet/>}/>
            <Route path="/StopPromotionSheet" element={<StopPromoSheet/>}/>
+           <Route path="/TeamComissionSheet" element={<TeamComissionSheet/>}/>
+          
+           
 
            <Route path="/AddLuckyDrawForm" element={<AddLuckyDrawForm/>}/>
            <Route path="/LuckyDrawSheet" element={<LuckyDrawSheet/>}/>
